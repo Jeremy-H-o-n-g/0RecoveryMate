@@ -1,0 +1,21 @@
+[
+  {
+    "id": "ankle",
+    "nameZh": "脚踝",
+    "view": "both",
+    "svgIds": [
+      "ankle-left-front",
+      "ankle-right-front",
+      "ankle-left-back",
+      "ankle-right-back"
+    ],
+    "exerciseIds": [
+      "ankle-pilot-placeholder"
+    ],
+    "commonSports": [
+      "running",
+      "basketball",
+      "soccer"
+    ]
+  }
+]

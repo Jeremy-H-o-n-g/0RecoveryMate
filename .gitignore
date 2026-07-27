@@ -1,0 +1,49 @@
+Configure-ClaudeCode-GLM52-Windows-x64.ps1
+flappy_jeremyh_screenshot.png
+FLAPPY_JEREMYH.md
+flappy_jeremyh.py
+jeremyh_highscore.txt
+__pycache__/flappy_jeremyh.cpython-313.pyc
+
+# ---- RecoverMate ----
+# Secrets / env
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Data / outputs (never commit real participant data)
+data/output/
+data/private/
+data/*.db
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+.env
+.env.local
+.vercel
+node_modules
+.next
+coverage
+playwright-report
+test-results
+data/research/raw/*
+media/raw/*
+*.log

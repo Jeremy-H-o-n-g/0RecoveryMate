@@ -1,0 +1,18 @@
+{
+  "productBoundary": "general educational recovery/warm-up guidance only",
+  "publishableReviewStatuses": [
+    "approved"
+  ],
+  "requiredExerciseFields": [
+    "sourceTitle",
+    "sourceUrl",
+    "licenseId",
+    "reviewedBy",
+    "reviewedAt",
+    "captionUrl",
+    "transcriptUrl",
+    "stopSignals"
+  ],
+  "productionAnalytics": false,
+  "publicUploads": false
+}
