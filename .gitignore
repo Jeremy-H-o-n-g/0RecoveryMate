@@ -41,6 +41,7 @@ Thumbs.db
 .vercel
 node_modules
 .next
+tsconfig.tsbuildinfo
 coverage
 playwright-report
 test-results

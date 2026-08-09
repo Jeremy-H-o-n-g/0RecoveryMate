@@ -1,0 +1,36 @@
+RecoverMate - S05 test report
+Generated: 2026-08-09
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint
+                       exit 0  (no issues)
+2. npm run typecheck -> tsc --noEmit
+                       exit 0
+3. npm run test      -> vitest run
+                       Test Files  1 passed (1)
+                       Tests       1 passed (1)
+                       exit 0
+                       (note: non-fatal Vite warning about ESM syntax in
+                        vitest.config.ts loaded as CommonJS; test still passes)
+4. npm run build     -> next build (Next.js 16.3.0, Turbopack)
+                       Compiled successfully in ~9.1s
+                       TypeScript finished OK
+                       Static routes prerendered: / , /_not-found
+                       exit 0
+
+RESULT: all four commands PASS.
+
+Other S05 acceptance:
+- No secrets or local database committed: node_modules/, .next/, and .env are
+  gitignored; a source/config scan found no secrets. git status shows only source
+  files (no build artifacts staged).
+- Design tokens cover background, text, focus, accent, and reduced-motion
+  (see app/globals.css: --background/--surface, --foreground/--muted, --focus,
+  --accent/--accent-2, --motion-scale + prefers-reduced-motion block).
+
+Deferred evidence:
+- homepage-S05.png is PENDING: it requires a headless browser against a running
+  `next start` server; no browser library is installed in this environment, so it
+  is not fabricated. The build produced the static `/` route, so the homepage
+  renders. To capture later: `next start` + `npx playwright screenshot`.

@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/*
+ * RecoverMate design tokens (S05).
+ * Dark, cyber-sport visual system. Tokens cover the five required categories:
+ * background, text, focus, accent, and reduced-motion.
+ */
+:root {
+  --background: #07090f;   /* deep ink background */
+  --surface: #0e1320;      /* glass panel surface */
+  --foreground: #e6f1ff;   /* primary text */
+  --muted: #8aa0c2;        /* muted text */
+  --accent: #00e5d1;       /* neon cyan accent */
+  --accent-2: #7c5cff;     /* neon violet accent */
+  --focus: #ffd24d;        /* high-visibility focus ring */
+  --border: #1c2740;       /* hairline border */
+  --motion-scale: 1;       /* reduced-motion toggle (1 = motion enabled) */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-focus: var(--focus);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Focus visibility: accent-based, high-contrast ring (state is not color alone). */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reduced-motion: flip the motion token and disable non-essential animation. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-scale: 0;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
