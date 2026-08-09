@@ -47,3 +47,7 @@ test-results
 data/research/raw/*
 media/raw/*
 *.log
+
+# Local workflow notes (scratch)
+pause-and-exit.md
+resume.md
