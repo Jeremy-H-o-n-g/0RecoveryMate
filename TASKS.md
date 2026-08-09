@@ -11,23 +11,23 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S04
-Unit title: 信息架构、用户旅程与界面蓝图
-Unit focus: Turn the proposal's seven-step experience into page, state, route, and responsive-layout blueprints.
-Current prompt: `prompts/S04-Information-Architecture-and-UX-Blueprint.md`
-Prior-state requirement: S01–S03 scope, safety, and research contracts have passed.
-Status: **Activated — not yet started.** Do not implement until S04 is opened.
+Unit code: S05
+Unit title: 仓库初始化、版本锁定与设计令牌
+Unit focus: Establish a runnable Next.js App Router project on a supported LTS, quality scripts, and cyber-sport design tokens.
+Current prompt: `prompts/S05-Repository-and-Design-Tokens.md`
+Prior-state requirement: P1 exit gate passed; Node 24 LTS, Git, and editor verified.
+Status: **Activated — not yet started.** Do not implement until S05 is opened.
 
 ## Acceptance Criteria for Current Unit
-- The seven-step user experience is fully mappable to pages and states.
-- Front/back body-view switching has a clear control.
-- The mobile layout needs no horizontal scrolling.
+- The four commands (`lint`, `typecheck`, `test`, `build`) pass.
+- No secrets or local database are committed.
+- Design tokens cover background, text, focus, accent, and reduced-motion.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
 - [x] S02 - 健康边界与内容证据协议
 - [x] S03 - 形成性研究设计与成功指标
-- [ ] S04 - 信息架构、用户旅程与界面蓝图
+- [x] S04 - 信息架构、用户旅程与界面蓝图
 - [ ] S05 - 仓库初始化、版本锁定与设计令牌
 - [ ] S06 - 前视人体 SVG 与语义热点
 - [ ] S07 - 后视人体图、切换与触控/键盘兼容
@@ -57,46 +57,46 @@ Status: **Activated — not yet started.** Do not implement until S04 is opened.
 - 2026-07-27: Preserve the Next.js App Router architecture; use a currently supported patched LTS line for a new repository.
 - 2026-07-27: Default six regions are shoulder, arm, lower back, knee, calf, and ankle.
 - 2026-07-27: Public upload/CMS is outside the current baseline; content updates use reviewed Git/JSON changes.
-- 2026-07-27 (S01): Requirements ledger created at `docs/baseline-ledger.md`; BR-01..BR-15 verified against proposal §7 (p.7); scope layers (M/RF/OP/XS), vertical slice (VS-1..VS-6), metrics (SM-1..SM-6), and decisions (DC-1..DC-6) recorded.
-- 2026-07-27 (S01): Six-region default set confirmed from the authoritative proposal (§3.1 p.3, §10 p.9).
-- 2026-07-27 (S01): S01 acceptance criteria met at definition level; structural verification passed. Authoritative source treated as the 11-page proposal PDF; earlier "13 pages" wording corrected.
-- 2026-07-27 (S02): Content policy v1 defined in `config/content-policy.json` (`reviewStatus` machine; only `approved` publishable; 9 required fields incl. `reviewStatus`; buildGate) and `docs/ContentSafetyPolicy.md`; `docs/SourceLedger.md` created; no fabricated endorsements; soreness not auto-interpreted as injury.
-- 2026-08-09 (S03): Formative usability study protocol v1 defined in `docs/ResearchProtocol.md` — RQ (body map vs list), AB/BA counterbalanced (5 per order), metrics (completion rate, median time, misselection), descriptive only, no significance, no medical-effectiveness claim.
-- 2026-08-09 (S03): Record table `data/templates/usability-observations.csv` confirmed anonymized (`participant_id` only; no name/health/diagnosis); `docs/ConsentScript.md` drafted; pilot template `data/templates/pilot-observation.csv` created (not run).
+- 2026-07-27 (S01): Requirements ledger created at `docs/baseline-ledger.md`; BR-01..BR-15 verified; authoritative source treated as the 11-page proposal PDF.
+- 2026-07-27 (S02): Content policy v1 in `config/content-policy.json` (`reviewStatus` machine; only `approved` publishable; 9 required fields; buildGate) and `docs/ContentSafetyPolicy.md`; `docs/SourceLedger.md` created; no fabricated endorsements.
+- 2026-08-09 (S03): Formative usability protocol v1 in `docs/ResearchProtocol.md` (AB/BA, 5 per order; descriptive only; no significance; stop-at-any-time); anonymized record table; `docs/ConsentScript.md`; pilot template.
+- 2026-08-09 (S04): UX blueprint in `docs/UXBlueprint.md` — seven-step experience mapped to pages/routes (`/`, `/body/[part]`, `/exercise/[id]`, optional `/flow/[sport]`); mobile-first (no horizontal scroll); loading/empty/error; safety prompt before action; keyboard+touch parity (not hover-dependent); color not sole cue. State model in `docs/StateModel.md` with a return path for every state; `docs/Architecture.md` enhanced additively.
+- 2026-08-09 (S04): `docs/ux-flow-S04.png` auto-generated (process flow, not UI mockups); student Figma/hand-drawn screens pending.
 
 ## Known Issues
 - Exact qualified content reviewer is not yet named.
 - Final original/third-party SVG choice is unresolved.
 - Media hosting remains local-first until the performance budget is measured.
-- Page-count reference resolved: the authoritative proposal PDF is 11 pages (canonical); earlier "13 pages" wording updated.
-- The page-by-page proposal review for S01 was performed by the implementation partner (AI); formal student/mentor ledger sign-off is recommended (rollback: `3717579`).
-- S02 refusal test (`docs/unsafe-copy-test.md`) is a defined contract, not a live run; automated enforcement is pending S10/S11; page-level safety prompt implemented in S15.
-- S03 study execution is pending: recruiting 10 volunteers with consent, mentor review of task wording, and the pilot timing run are student manual work (not done); `pilot-observation.csv` is a template, not real data.
+- Page-count reference resolved: authoritative proposal PDF is 11 pages (canonical).
+- S01 ledger review and S02 policy wording were performed by the implementation partner (AI); student/mentor sign-off and professional review (S11) are pending.
+- S02 refusal test is a defined contract (not live); enforcement pending S10/S11; page-level safety prompt in S15.
+- S03 study execution pending (10 volunteers + consent, mentor task-wording review, pilot run); `pilot-observation.csv` is a template.
+- S04 screens not yet hand-drawn/Figma'd by the student; mentor info-priority review and not-hover-dependent confirmation pending real implementation.
+- S05 (next) requires real `npm` execution and a genuine `package-lock.json`; the four commands must actually pass — nothing may be fabricated.
 
 ## Last Test Evidence
-- Automated: `scripts/check-environment.mjs` → "Node environment OK: v24.18.0", exit 0 (Node v24.18.0 LTS). S01 structural verification: 15 unique BRs with session + verification; all ledger ID families present → ALL CHECKS PASS. S02: `content-policy.json` valid JSON; publishable statuses, 9 required fields, 5 review states, build gate, refusal templates, page-level prompt, refusal coverage (TC-1/TC-2/TC-3) all OK → ALL CHECKS PASS. S03: record table has no name/health/diagnosis columns; AB/BA with 5 per order; every task (T1–T3) has start + end conditions; no-significance and no-medical-effectiveness rules present; stop-at-any-time rule present → ALL CHECKS PASS. No `package.json`/app yet (repo init is S05); no automated app tests exist.
-- Manual: S01 proposal reviewed page by page by the implementation partner (11 pp). S02 policy/wording drafted by the implementation partner; professional review-process confirmation pending (S11); 3 dangerous wordings defined as a contract test (not a live run). S03 protocol drafted by the implementation partner; student/mentor review of task wording and the pilot run are pending.
+- Automated: `scripts/check-environment.mjs` → "Node environment OK: v24.18.0", exit 0. S01 structural verification ALL CHECKS PASS. S02 content-policy JSON valid + checks ALL CHECKS PASS. S03 protocol checks ALL CHECKS PASS. S04 checks ALL CHECKS PASS (7-step mapping; front/back control; mobile no-scroll; return-path-per-state; safety before action; not-hover/color/no-diagnosis; valid `ux-flow-S04.png` 1537×786). No `package.json`/app yet (repo init is S05); no automated app tests exist.
+- Manual: S01 proposal reviewed page by page (implementation partner, 11 pp). S02 policy drafted (impl partner; professional review pending S11). S03 protocol drafted (impl partner; student/mentor wording review + pilot pending). S04 blueprint drafted (impl partner; student Figma screens + mentor info-priority review pending).
 - Content/media: Not started.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: Vertical slice defined in `docs/baseline-ledger.md` §5 (backend-free); not implemented (S09).
+- End-to-end demo path: Vertical slice defined in `docs/baseline-ledger.md` §5; not implemented (S09).
 
 ## S01 Completion Notes (completed 2026-07-27)
-- **Deliverables:** `docs/baseline-ledger.md`, `docs/traceability-review-S01.md`; updated `docs/ProjectPlan.md`, `docs/Traceability.md`, `README.md`.
-- **Acceptance:** all three criteria met at definition level; structural check ALL CHECKS PASS.
-- **Checkpoints:** pre-S01 `dc9c0d6`; S01 WIP `3717579`; S01 complete `d69336a`.
+- Deliverables: `docs/baseline-ledger.md`, `docs/traceability-review-S01.md`; updated `docs/ProjectPlan.md`, `docs/Traceability.md`, `README.md`. Checkpoints: `dc9c0d6` → `3717579` → `d69336a`.
 
 ## S02 Completion Notes (completed 2026-08-09)
-- **Deliverables:** `config/content-policy.json` (v1), `docs/ContentSafetyPolicy.md` (v1), `docs/SourceLedger.md`; evidence `docs/content-policy-v1.md`, `docs/unsafe-copy-test.md`.
-- **Acceptance:** all three criteria met at policy/schema level; JSON valid; ALL CHECKS PASS.
-- **Checkpoints:** pre-S02 `d69336a`; S02 complete `99b410d`.
+- Deliverables: `config/content-policy.json` (v1), `docs/ContentSafetyPolicy.md`, `docs/SourceLedger.md`, `docs/content-policy-v1.md`, `docs/unsafe-copy-test.md`. Checkpoints: pre-S02 `d69336a`; complete `99b410d`.
 
 ## S03 Completion Notes (completed 2026-08-09)
-- **Deliverables:** `docs/ResearchProtocol.md`, `docs/ConsentScript.md`, `data/templates/usability-observations.csv` (refined), `data/templates/pilot-observation.csv` (template); evidence `docs/research-protocol-v1.md`.
-- **Acceptance:** (1) research question, metrics, exclusion rules clear — MET; (2) small-sample limitations written into the plan — MET; (3) any participant can stop at any time — MET.
-- **Verification:** record table anonymized; AB/BA 5-per-order; tasks have start + end conditions; no-significance/no-medical-effectiveness; no health history; stop rule — ALL CHECKS PASS; `check-environment.mjs` exit 0.
-- **Changed files (S03):** `docs/ResearchProtocol.md`, `docs/ConsentScript.md`, `data/templates/usability-observations.csv`, `data/templates/pilot-observation.csv`, `docs/research-protocol-v1.md`, `TASKS.md`.
-- **Honest scope note:** recruiting 10 volunteers with consent, mentor review of task wording, and the pilot timing run are **student manual work — pending, not fabricated**; `pilot-observation.csv` is a template, not real data.
-- **Checkpoints:** pre-S03 `99b410d`; S03 complete (this commit).
+- Deliverables: `docs/ResearchProtocol.md`, `docs/ConsentScript.md`, `data/templates/usability-observations.csv`, `data/templates/pilot-observation.csv`, `docs/research-protocol-v1.md`. Checkpoints: pre-S03 `99b410d`; complete `7d51f58`.
+
+## S04 Completion Notes (completed 2026-08-09)
+- **Deliverables:** `docs/UXBlueprint.md`, `docs/StateModel.md`; enhanced `docs/Architecture.md` (additive); evidence `docs/state-review-S04.md`, `docs/ux-flow-S04.png`.
+- **Acceptance:** (1) seven-step UX mappable to pages/states — MET; (2) front/back switch has a clear control — MET; (3) mobile needs no horizontal scroll — MET.
+- **Verification:** ALL CHECKS PASS; `check-environment.mjs` exit 0.
+- **Changed files (S04):** `docs/UXBlueprint.md`, `docs/StateModel.md`, `docs/Architecture.md`, `docs/state-review-S04.md`, `docs/ux-flow-S04.png`, `TASKS.md`.
+- **Honest scope note:** `ux-flow-S04.png` is an auto-generated process flow, not UI mockups; student Figma/hand-drawn key screens, mentor info-priority review, and not-hover-dependent confirmation on the real build are pending. No visual polish, accounts, social, or diagnosis flows added.
+- **Checkpoints:** pre-S04 `7d51f58`; S04 complete (this commit).
 
 ## Next Unit
-- S05 - 仓库初始化、版本锁定与设计令牌; repository init, version lock, and design tokens only. (S04 is now the active unit; do not implement S04 or S05 until opened.)
+- S06 - 前视人体 SVG 与语义热点; front-view body SVG with semantic hotspots only. (S05 is now the active unit; do not implement S05 or S06 until opened.)
