@@ -16,7 +16,7 @@ Unit title: 前视人体 SVG 与语义热点
 Unit focus: Build the front-view body outline and semantic hotspots (shoulder, arm, knee, ankle, …) so each region is focusable, identifiable, and testable.
 Current prompt: `prompts/S06-Front-Body-SVG.md`
 Prior-state requirement: S05 project and tokens passed; SVG source and license are recorded.
-Status: **Activated — not yet started.** Do not implement until S06 is opened.
+Status: **In Progress — paused 2026-08-09 (mid-session, per pause-and-exit.md).** Do not activate S07. See "S06 WIP / Resume" below.
 
 ## Acceptance Criteria for Current Unit
 - All planned hotspots are keyboard-activatable.
@@ -104,5 +104,29 @@ Status: **Activated — not yet started.** Do not implement until S06 is opened.
 - **Honest scope note:** installs and the four gates were executed by the implementation partner (real, not fabricated); `homepage-S05.png` is pending (no headless browser; not fabricated). `next@16.3.0` used (current Next 16 LTS; proposal example was 16.2.11).
 - **Checkpoints:** pre-S05 `2deec09`; S05 complete (this commit).
 
+## S06 WIP / Resume (paused 2026-08-09, mid-session)
+- **Status:** S06 In Progress (paused per pause-and-exit.md). S07 is NOT activated.
+- **Completed this unit:**
+  - `public/body-front.svg` — original, self-authored, stylized, NON-diagnostic front-view figure (license: self-authored; matches DC-2; honors "no unknown-source SVG").
+  - `components/BodyPart.tsx` — accessible hotspot as a native `<button>` (Tab + Enter/Space, aria-label, 44x44 min touch target; focus ring via globals.css).
+  - `components/BodyMapFront.tsx` — `FRONT_HOTSPOTS` (10: shoulder/arm/knee/calf/ankle × L/R), `rectsOverlap`, renders SVG + hotspots.
+  - `tests/body-map-front.test.tsx` — geometry (44x44, no overlap, unique id/label), render (aria-label per button), keyboard (Enter/Space activation).
+  - Installed devDeps: jsdom@^30, @testing-library/react@^16.3.2, @testing-library/dom@^10.4.1, @testing-library/user-event@^14.6.3.
+- **Unfinished / not yet verified:**
+  - S06 acceptance ("all hotspots keyboard-activatable; no overlap; license traceable") is NOT yet verified — the body-map test has NOT been executed.
+  - `vitest.config.ts` `include` was NOT updated to cover `tests/**.tsx` (edit was pending when pause was called), so `npm test` still runs only `test/sanity.test.ts` and the new test file is filtered out.
+  - Evidence not yet created: `docs/svg-license-S06.md`, `docs/test-report-S06.txt`, `docs/body-front-S06.png`.
+  - S06 not marked complete; S07 not activated.
+- **Changed files (this WIP):** `public/body-front.svg` (new), `components/BodyPart.tsx` (new), `components/BodyMapFront.tsx` (new), `tests/body-map-front.test.tsx` (new), `package.json` + `package-lock.json` (testing deps), `TASKS.md`.
+- **Test commands + exact results (captured at pause):**
+  - `npm run lint` → exit 0 (new .tsx files lint clean).
+  - `npm run typecheck` → exit 0 (new .tsx files typecheck clean).
+  - `npm run build` → exit 0 (Next 16.3.0; 2 static routes; components not yet mounted on a route).
+  - `npm run test` → exit 0 but only 1 file/1 test (sanity) ran — S06 body-map test NOT included.
+  - `npx vitest run tests/body-map-front.test.tsx` → exit 1, "No test files found" (filtered out by the include pattern) — not executable until the config edit.
+- **Precise next action to resume:** (1) edit `vitest.config.ts` `include` to add `"tests/**/*.{test,spec}.{ts,tsx}"`; (2) run `npm test`, confirm the body-map test passes (fix if needed); (3) re-run lint/typecheck/build; (4) create `docs/svg-license-S06.md` (self-authored provenance), `docs/test-report-S06.txt`, `docs/body-front-S06.png` (needs headless browser); (5) only then mark S06 complete and activate S07.
+- **Known issues carried:** SVG is self-authored for S06 (student should still save the Figma/original-work process as proof — pending); reviewer unnamed (S11); `body-front-S06.png` will need a headless browser.
+- **No secrets/generated artifacts:** new files are source/SVG/test only; `node_modules`/`.next`/`tsconfig.tsbuildinfo` are gitignored; no secrets in the diff.
+
 ## Next Unit
-- S07 - 后视人体图、切换与触控/键盘兼容; back-view body, toggle, and touch/keyboard compatibility only. (S06 is now the active unit; do not implement S06 or S07 until opened.)
+- S07 - 后视人体图、切换与触控/键盘兼容; back-view body, toggle, and touch/keyboard compatibility only. (S06 remains the active unit; do not implement S06 or S07 until opened.)
