@@ -1,0 +1,10 @@
+step,description,start_condition,end_condition,timing_method,result,notes
+1,Read consent and confirm readiness,Consent given,Participant says ready,n/a,,[fill during pilot]
+2,Prototype A (body map) loads,Task start,Body map interactive,n/a,,[fill during pilot]
+3,T1 on A,First interaction,Detail opened or 90 s elapsed,Stopwatch,,[fill during pilot]
+4,T2 on A,First interaction,Detail opened or 90 s elapsed,Stopwatch,,[fill during pilot]
+5,Switch to Prototype B (list),Order swap,List view shown,n/a,,[fill during pilot]
+6,T1 on B,First interaction,Detail opened or 90 s elapsed,Stopwatch,,[fill during pilot]
+7,T2 on B,First interaction,Detail opened or 90 s elapsed,Stopwatch,,[fill during pilot]
+8,Timer start/stop verified,Timer start,Timer stop matches task end,Stopwatch,,[fill during pilot]
+9,Optional general feedback,Session end,Notes captured,Not timed,,[fill during pilot]
