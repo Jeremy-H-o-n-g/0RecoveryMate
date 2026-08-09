@@ -1,5 +1,8 @@
 # RecoverMate Requirements Traceability
 
+**Source:** Jeremy Hong proposal §7 (p.7) — `resources/RecoverMate_Project_Plan_and_Feasibility.pdf`.
+**Reviewed S01** — every row has a unique ID, a session mapping, and a verification method. See `traceability-review-S01.md` and `baseline-ledger.md` §4. All items are `Planned`/`Refinement`; none are fabricated as approved.
+
 | ID | Requirement | Sessions | Verification | Status |
 |---|---|---|---|---|
 | BR-01 | 首页以可交互人体模型为核心导航 | S04, S06–S09 | 键盘/触控/E2E + 截图 | Planned |

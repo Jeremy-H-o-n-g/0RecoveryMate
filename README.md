@@ -2,6 +2,11 @@
 
 This starter contains the project-state system, bounded session prompts, sample schemas, and preparation files. It intentionally does not implement future sessions.
 
+## Baseline & Requirements (S01)
+- Requirements ledger: [`docs/baseline-ledger.md`](docs/baseline-ledger.md)
+- Traceability matrix: [`docs/Traceability.md`](docs/Traceability.md)
+- S01 review evidence: [`docs/traceability-review-S01.md`](docs/traceability-review-S01.md)
+
 ## Start
 
 1. Complete the 3-hour environment module in the Kickoff Preparation Guide.
