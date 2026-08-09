@@ -1,0 +1,50 @@
+# RecoverMate Source Ledger
+
+**Status:** defined in S02. Provenance and review tracking for every exercise. All current entries are `draft`/placeholder — **none are approved** for release. Companion policy: [`ContentSafetyPolicy.md`](ContentSafetyPolicy.md), [`config/content-policy.json`](../config/content-policy.json).
+
+## 1. Purpose
+Make every action's source, license, review status, and accessibility assets traceable so that only `approved`, fully-attributed content can ship.
+
+## 2. Required fields per exercise (approval gate)
+| Field | Description | Required for `approved` |
+|---|---|---|
+| `sourceTitle` | Title of the source/reference | yes |
+| `sourceUrl` | Canonical link to the source | yes |
+| `licenseId` | License/rights identifier (see registry) | yes |
+| `reviewedBy` | Qualified reviewer name/role | yes |
+| `reviewedAt` | ISO date of review | yes |
+| `captionUrl` | Synchronized captions file | yes |
+| `transcriptUrl` | Descriptive transcript file | yes |
+| `stopSignals` | Red-flag stop-signal text | yes |
+| `reviewStatus` | State from the machine below | must be `approved` |
+
+Missing any field, or `reviewStatus != approved` ⇒ build gate fails (excluded from release).
+
+## 3. `reviewStatus` state machine
+| State | Publishable? | Meaning |
+|---|---|---|
+| `draft` | no | created, not yet reviewed |
+| `in-review` | no | under professional review |
+| `approved` | **yes (only)** | reviewed and approved |
+| `rejected` | no | reviewed and rejected |
+| `blocked` | no | license/source/rights missing, or content unsafe |
+
+## 4. License registry (placeholder — to be confirmed, not fabricated)
+| `licenseId` | Meaning | Status |
+|---|---|---|
+| `self-authored` | Original work by the student, with signed talent release | to confirm (S12) |
+| `cc-by-sa-4.0` | Adapted third-party media (e.g., OpenMoji) — attribution + share-alike | to confirm (S06) |
+| `_unset` | No license yet | default for placeholders; **not publishable** |
+
+Final `licenseId` values, reviewer identities, and consent records are confirmed in S06/S11/S12.
+
+## 5. Ledger template
+| exerciseId | sourceTitle | sourceUrl | licenseId | reviewedBy | reviewedAt | captions | transcript | stopSignals | reviewStatus |
+|---|---|---|---|---|---|---|---|---|---|
+
+## 6. Current entries
+| exerciseId | reviewStatus | Notes |
+|---|---|---|
+| `ankle-pilot-placeholder` | `draft` | Placeholder only; all source/license/review fields empty; `[professional-review-required]`. **Not publishable.** |
+
+No exercise is `approved` yet. The build gate (S10/S11) will reject a release that contains anything but `approved` rows.

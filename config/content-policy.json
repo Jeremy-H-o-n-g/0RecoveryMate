@@ -1,8 +1,16 @@
 {
-  "productBoundary": "general educational recovery/warm-up guidance only",
+  "version": "1.0",
+  "productBoundary": "general educational recovery/warm-up guidance only; non-diagnostic",
   "publishableReviewStatuses": [
     "approved"
   ],
+  "reviewStatuses": {
+    "draft": "created, not yet reviewed; must NOT be published",
+    "in-review": "under professional review; must NOT be published",
+    "approved": "reviewed and approved; the only status permitted in a release build",
+    "rejected": "reviewed and rejected; must NOT be published",
+    "blocked": "license, source, or rights missing, or content unsafe; must NOT be published"
+  },
   "requiredExerciseFields": [
     "sourceTitle",
     "sourceUrl",
@@ -11,8 +19,63 @@
     "reviewedAt",
     "captionUrl",
     "transcriptUrl",
-    "stopSignals"
+    "stopSignals",
+    "reviewStatus"
   ],
+  "buildGate": {
+    "rule": "Any exercise whose reviewStatus is not in publishableReviewStatuses, or that lacks any requiredExerciseFields, must fail content validation and be excluded from the release build.",
+    "enforcedBy": "build-time content validation (Zod manifest)",
+    "wiredIn": "S10/S11",
+    "currentStatus": "defined; not yet wired (no app/build until S05)"
+  },
+  "unsafeContent": {
+    "rule": "Refuse or redirect; never produce. Do not use disclaimers to excuse unreliable content.",
+    "categories": [
+      "diagnosis or injury grading",
+      "treatment prescriptions or medication/dosage guidance",
+      "interpreting soreness as a specific injury",
+      "guaranteed outcomes or recovery promises",
+      "facilitating self-harm, substance misuse, or unsafe exertion",
+      "individualized medical advice"
+    ]
+  },
+  "refusal": {
+    "style": "brief and non-judgmental; state the boundary; redirect to general guidance or professional assessment",
+    "templates": [
+      "RecoverMate gives general recovery guidance only and cannot diagnose or treat. If symptoms are severe or persist, please seek qualified assessment.",
+      "I cannot recommend treatments or dosages. Please consult a qualified professional."
+    ]
+  },
+  "redFlags": {
+    "description": "Stop signals shown on every exercise detail; users should stop and seek qualified assessment.",
+    "items": [
+      "severe pain",
+      "noticeable swelling",
+      "inability to move or bear weight",
+      "numbness",
+      "symptoms that persist or affect performance"
+    ]
+  },
+  "escalation": {
+    "onRedFlag": "display the stop-signal prompt prominently; do not diagnose; recommend stopping and seeking qualified professional assessment",
+    "sourceToAdapt": "AAOS public warning-sign guidance (a reference to consult, not an endorsement of RecoverMate)",
+    "doNot": "do not auto-interpret soreness as a specific injury; do not promise outcomes"
+  },
+  "pageLevelSafetyPrompt": {
+    "rule": "Every exercise detail MUST show the red-flag/stop-signal prompt, and it must not be obscured by visuals.",
+    "requirements": [
+      "present in the DOM before media/animation",
+      "high-contrast, legible text (WCAG 2.2 AA contrast)",
+      "not hidden behind overlays, particles, or autoplay media",
+      "remains visible and readable with prefers-reduced-motion enabled",
+      "reachable and operable by keyboard and screen readers"
+    ],
+    "implementedIn": "S15"
+  },
+  "endorsements": {
+    "rule": "Do not fabricate organizational endorsements (e.g., ACSM, AAOS). Public references are sources to consult, not endorsements of RecoverMate."
+  },
   "productionAnalytics": false,
-  "publicUploads": false
+  "publicUploads": false,
+  "dataMinimization": "collect no health history, diagnoses, or production body-part selections; research data is anonymized and offline"
 }
