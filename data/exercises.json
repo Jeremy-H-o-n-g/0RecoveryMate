@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ankle-pilot-placeholder",
+    "nameZh": "[待专业审核的脚踝动作占位]",
+    "nameEn": "[Ankle placeholder pending professional review]",
+    "durationSeconds": 60,
+    "difficulty": "not-set",
+    "muscles": [],
+    "videoUrl": "",
+    "previewUrl": "",
+    "posterUrl": "",
+    "captionUrl": "",
+    "transcriptUrl": "",
+    "steps": ["[professional-review-required]"],
+    "tips": [],
+    "stopSignals": ["[professional-review-required]"],
+    "sourceTitle": "",
+    "sourceUrl": "",
+    "licenseId": "",
+    "reviewedBy": "",
+    "reviewedAt": "",
+    "reviewStatus": "draft"
+  }
+]

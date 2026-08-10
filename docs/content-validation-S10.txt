@@ -1,0 +1,57 @@
+RecoverMate - S10 content-validation report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+`npm run validate:content` (tsx scripts/validate-content.ts):
+  RecoverMate content validation
+  OK - no content errors.
+  exit 0
+
+Checks performed by validateContent():
+  - BodyPartSchema.array().safeParse(data/body-parts.json)
+  - ExerciseSchema.array().safeParse(data/exercises.json)
+  - unique body-part ids
+  - unique exercise ids
+  - body-part -> exercise referential integrity
+  - approved exercises: local media files exist (video/caption/transcript)
+
+Build gate (bad references block the build):
+  lib/content.ts parses both files with Zod AND asserts every body-part
+  .exerciseId exists; a bad schema value or a dangling reference throws at module
+  load during `next build` SSG -> the build fails. Verified above: build succeeds
+  on valid data.
+
+Commands and exact results:
+  npm run lint             -> eslint, exit 0
+  npm run typecheck        -> tsc --noEmit, exit 0
+  npm run test             -> vitest: 6 files / 32 tests passed, exit 0
+    incl. tests/content-schema.test.ts (9):
+       * accepts a valid draft exercise
+       * rejects a missing required field
+       * rejects a bad URL
+       * rejects an approved exercise missing source/license/captions
+       * accepts an approved exercise with full provenance + accessibility
+       * validateContent passes on the current data
+       * validateContent flags an unknown exercise reference
+       * validateContent flags duplicate exercise ids
+       * validateContent flags an approved exercise with a missing local media file
+  npm run validate:content -> "OK - no content errors.", exit 0
+  npm run build            -> next build, exit 0
+
+Acceptance mapping (S10):
+- Every published exercise has source/review/license/captions/transcript/stop-signals:
+  MET (ExerciseSchema .refine enforces it for reviewStatus === "approved"; tested).
+- Bad references block the build:
+  MET (lib/content.ts referential-integrity gate runs during build; validate:content
+  also checks refs, duplicate ids, and media existence).
+
+RESULT: all commands PASS.
+
+Notes:
+- Current data has only the DRAFT ankle placeholder; it is not approved and is
+  clearly marked. No approved content exists yet (reviewer confirmation is S11).
+- data/exercises.json is the canonical exercise source now; data/sample/exercises.json
+  is a superseded sample (kept for now, may be removed in a later cleanup).
+- Scope additions beyond the literal S10 list, each justified: lib/content.ts
+  (parses exercises via the schema + referential-integrity build gate), and
+  package.json (validate:content script + tsx devDep to run the standalone validator).

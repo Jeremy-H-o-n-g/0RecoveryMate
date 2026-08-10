@@ -11,16 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S10
-Unit title: 动作内容 Schema 与构建时校验
-Unit focus: Define the structure/media/source/review/accessibility fields for 12–18 exercises and make the build fail on invalid content.
-Current prompt: `prompts/S10-Content-Schema-and-Validation.md`
-Prior-state requirement: ankle slice stable; component interfaces frozen.
-Status: **Activated — not yet started.** Do not implement until S10 is opened. Note: S10 lists `data/exercises.json` (current exercises are at `data/sample/exercises.json`) and adds `npm run validate:content` + a build-time content gate.
+Unit code: S11
+Unit title: 来源台账、专业审核与内容锁定
+Unit focus: Select 2–3 candidate exercises per region and lock the shootable list via source + professional review.
+Current prompt: `prompts/S11-Source-Review-and-Content-Lock.md`
+Prior-state requirement: S10 schema and publish gate passed.
+Status: **Activated — not yet started.** ⚠️ S11's core requires professional-review **sign-off** by a qualified reviewer; the reviewer is still unnamed (DC-3) and forging signatures is forbidden. The draftable parts (candidate exercises + source ledger) can proceed, but sign-off (`review-signoff-S11.pdf`) is blocked until a reviewer is named.
 
 ## Acceptance Criteria for Current Unit
-- Every published exercise has source, review, license, captions/transcript, and stop signals.
-- Bad references block the build.
+- Each of the six regions has at least 2 shootable candidate exercises.
+- All text is signed off by the reviewer.
+- The license path is clear.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -32,7 +33,7 @@ Status: **Activated — not yet started.** Do not implement until S10 is opened.
 - [x] S07 - 后视人体图、切换与触控/键盘兼容
 - [x] S08 - BodyMap 状态、数据契约与路由
 - [x] S09 - 脚踝垂直切片验收
-- [ ] S10 - 动作内容 Schema 与构建时校验
+- [x] S10 - 动作内容 Schema 与构建时校验
 - [ ] S11 - 来源台账、专业审核与内容锁定
 - [ ] S12 - 拍摄规范、分镜与首条视频采集
 - [ ] S13 - 视频编辑、字幕、转录与媒体优化
@@ -64,29 +65,31 @@ Status: **Activated — not yet started.** Do not implement until S10 is opened.
 - 2026-08-10 (S06): Front body SVG + `BodyPart`/`BodyMapFront` (accessible `<button>` hotspots) + tests; component testing set up (jsdom + Testing Library + user-event).
 - 2026-08-10 (S07): Back body SVG + `BodyMapBack` (incl. lower-back) + `BodyMapSwitcher` (front/back toggle, aria-pressed, focus retention) + tests.
 - 2026-08-10 (S08): Type-safe data contract — `schemas/body-part.ts` (Zod), `data/body-parts.json` (6 regions), `lib/content.ts` (server-only query fns; excludes unreviewed), `app/body/[part]/page.tsx` (static route; notFound on invalid) + tests.
-- 2026-08-10 (S09): Ankle vertical slice wired end-to-end (no backend) — `app/page.tsx` (client; mounts switcher; onSelect→region→router), `app/body/[part]/page.tsx` renders `ExerciseCard`, `components/ExerciseCard.tsx`, `app/exercise/[id]/page.tsx` (server route; safety before action; placeholder steps; URL-driven `?done=1` completion; notFound on invalid). `lib/content.ts` expanded (getExercise/getExerciseIds/getPartExercises/getRegionByHotspot).
-- 2026-08-10 (S09): The slice surfaces the DRAFT ankle placeholder, clearly marked (not approved, not medical guidance), per S09's allowance for clearly-marked placeholders; production approved-only enforcement stays via the build gate (S10/S11). `tests/e2e/ankle-slice.spec.tsx` verifies the 5-step data chain + card + invalid + deep-link + ankle-thin.
+- 2026-08-10 (S09): Ankle vertical slice wired end-to-end (no backend) — home(body map)→/body/ankle→ExerciseCard→/exercise/[id] (safety before action; `?done=1` completion; notFound on invalid); surfaces clearly-marked DRAFT placeholder; `tests/e2e/ankle-slice.spec.tsx`.
+- 2026-08-10 (S10): Exercise schema (`schemas/exercise.ts`, Zod) — structure/media/source/review/accessibility; difficulty is non-medical (movement complexity); `reviewStatus` required, never defaults to approved; approved requires full provenance + captions/transcript/stop-signals/steps (`.refine`). Build gate: `lib/content.ts` parses both files via Zod + body→exercise referential integrity at module load (bad refs fail the build). `data/exercises.json` is canonical; `scripts/validate-content.ts` (`npm run validate:content` via tsx) checks schema + dup ids + media; `validateContent()` exported for tests.
+- 2026-08-10 (S10): tsx devDep added; tsx/esbuild/unrs-resolver install scripts approved under npm allow-scripts.
 
 ## Known Issues
-- Exact qualified content reviewer is not yet named.
+- ⚠️ Exact qualified content reviewer is not yet named (DC-3) — blocks S11 sign-off.
 - SVG is self-authored (DC-2): student should save original-work proof + mentor confirmation (pending).
 - Media hosting remains local-first until the performance budget is measured.
 - Authoritative proposal PDF is 11 pages (canonical).
-- S01 ledger review and S02 policy wording were performed by the implementation partner; student/mentor sign-off and professional review (S11) pending.
-- S02 refusal test is a defined contract (not live); enforcement pending S10/S11; page-level safety prompt in S15.
+- S01 ledger review and S02 policy wording were performed by the implementation partner; professional review (S11) pending.
+- S02 refusal test is a defined contract (not live); live enforcement via the build gate now wired (S10); page-level safety prompt in S15.
 - S03 study execution pending (10 volunteers + consent, mentor task-wording review, pilot run).
 - S04 screens not yet hand-drawn/Figma'd; mentor info-priority review pending.
 - S05 `homepage-S05.png` pending (no headless browser). Production analytics remain off.
-- S06/S07 PNGs are SVG rasterizations (cairosvg); S07 `mobile-touch-S07.mp4` pending (real device).
-- S08 `route-evidence-S08.png` deferred (no browser). Exercises are still the draft sample at `data/sample/exercises.json`.
-- S09 `ankle-slice-S09.mp4` deferred (real-browser walkthrough = student manual work). `/exercise/[id]` renders dynamically because it reads `?done=` for completion; static-export optimization, if needed, is S24/S27. S10 will formalize the exercise schema + `data/exercises.json` + the build-time content gate.
+- S06/S07 PNGs are SVG rasterizations; S07 `mobile-touch-S07.mp4` pending (real device).
+- S08 `route-evidence-S08.png` deferred (no browser).
+- S09 `ankle-slice-S09.mp4` deferred (real-browser walkthrough = student manual work). `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
+- S10: `data/sample/exercises.json` is superseded by `data/exercises.json` (kept for now). Current content is only the DRAFT ankle placeholder; no approved content yet (S11).
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. **S09:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 5 files / 23 tests passed exit 0 (incl. `tests/e2e/ankle-slice.spec.tsx`: hotspot→region→exercise chain, placeholder card, invalid→null, deep-link, ankle-thin); `npm run build` exit 0, routes `/`, `/_not-found`, `/body/[part]` SSG ×6, `/exercise/[id]` dynamic → **all four PASS** (see `docs/e2e-report-S09.txt`).
-- Manual: S01–S08 drafted/executed by implementation partner (sign-offs/reviews pending). S09 slice + tests written by implementation partner; real-browser walkthrough (desktop+mobile video) is student manual work (pending).
-- Content/media: Not started (S10 defines the exercise content schema).
+- Automated: `node scripts/check-environment.mjs` → exit 0. **S10:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 6 files / 32 tests passed exit 0 (incl. `tests/content-schema.test.ts`: schema accept/reject cases + `validateContent` referential/duplicate/media checks); `npm run validate:content` → "OK - no content errors." exit 0; `npm run build` exit 0 → **all PASS** (see `docs/content-validation-S10.txt`).
+- Manual: S01–S09 drafted/executed by implementation partner (sign-offs/reviews pending). S10 schema/validator authored by implementation partner; confirm-field-set-with-reviewer + difficulty-label-meaning + per-region counts are student manual work (pending).
+- Content/media: Schema + build gate done (S10); actual content fill + professional review is S11.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle vertical slice implemented + verified at the data/integration level (S09); on-device walkthrough pending.
+- End-to-end demo path: ankle vertical slice implemented + verified (S09); content schema + gate done (S10); real content + review is S11.
 
 ## Completion notes (checkpoints)
 - S01 (2026-07-27): `dc9c0d6` → `3717579` → `d69336a`.
@@ -97,14 +100,15 @@ Status: **Activated — not yet started.** Do not implement until S10 is opened.
 - S06 (2026-08-10): pre `c2e4431` → WIP `682d828` → `42be299`.
 - S07 (2026-08-10): pre `42be299` → `ca0b543`.
 - S08 (2026-08-10): pre `ca0b543` → `9dbd94b`.
+- S09 (2026-08-10): pre `9dbd94b` → `6d95164`.
 
-## S09 Completion Notes (completed 2026-08-10)
-- **Deliverables:** `app/page.tsx` (client; body map → region nav), `components/ExerciseCard.tsx`, `app/exercise/[id]/page.tsx` (server; safety-first, `?done=1` completion, notFound on invalid); expanded `lib/content.ts` and `app/body/[part]/page.tsx` (justified scope); `tests/e2e/ankle-slice.spec.tsx`; evidence `docs/e2e-report-S09.txt`.
-- **Acceptance:** (1) 5-step slice no break points — MET; (2) placeholders clearly marked, not medical — MET; (3) refresh + direct URL work — MET.
-- **Verification:** lint/typecheck/build exit 0; test 5 files / 23 tests passed → ALL CHECKS PASS (`docs/e2e-report-S09.txt`).
-- **Changed files (S09):** `app/page.tsx`, `app/body/[part]/page.tsx`, `lib/content.ts`, `components/ExerciseCard.tsx`, `app/exercise/[id]/page.tsx`, `tests/e2e/ankle-slice.spec.tsx`, `docs/e2e-report-S09.txt`, `TASKS.md`.
-- **Honest scope note:** slice surfaces the DRAFT ankle placeholder, clearly marked (not approved/medical); real-browser walkthrough video is student manual work (deferred). `/exercise/[id]` is dynamic (reads `?done=`); static-export optimization is later.
-- **Checkpoints:** pre-S09 `9dbd94b`; S09 complete (this commit).
+## S10 Completion Notes (completed 2026-08-10)
+- **Deliverables:** `schemas/exercise.ts` (Zod ExerciseSchema), `data/exercises.json` (canonical), `scripts/validate-content.ts` (`npm run validate:content`), `tests/content-schema.test.ts`; expanded `lib/content.ts` (parse + referential-integrity build gate) and `package.json` (validate:content + tsx); evidence `docs/content-validation-S10.txt`, `docs/schema-decisions-S10.md`.
+- **Acceptance:** (1) every published exercise has source/review/license/captions/transcript/stop-signals — MET (`.refine` for approved); (2) bad references block the build — MET (lib module-load gate + validate:content).
+- **Verification:** lint/typecheck/build exit 0; test 6 files / 32 tests; `validate:content` "OK - no content errors." → ALL PASS.
+- **Changed files (S10):** `schemas/exercise.ts`, `data/exercises.json`, `scripts/validate-content.ts`, `tests/content-schema.test.ts`, `lib/content.ts`, `package.json`, `package-lock.json`, `docs/content-validation-S10.txt`, `docs/schema-decisions-S10.md`, `TASKS.md`.
+- **Honest scope note:** schema/validator authored by implementation partner; no content is approved (reviewer unnamed → S11); `data/sample/exercises.json` superseded but kept.
+- **Checkpoints:** pre-S10 `6d95164`; S10 complete (this commit).
 
 ## Next Unit
-- S11 - 来源台账、专业审核与内容锁定; source ledger, professional review, and content lock only. (S10 is now the active unit; do not implement S10 or S11 until opened.)
+- S12 - 拍摄规范、分镜与首条视频采集; shoot spec, storyboard, and first video capture only. (S11 is now the active unit; do not implement S11 or S12 until opened.)
