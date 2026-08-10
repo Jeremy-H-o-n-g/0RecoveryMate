@@ -1,0 +1,8 @@
+[
+  { "id": "shoulder", "nameZh": "肩", "nameEn": "Shoulder", "view": "both", "svgIds": ["shoulder-left", "shoulder-right"], "exerciseIds": [], "commonSports": [] },
+  { "id": "arm", "nameZh": "手臂", "nameEn": "Arm", "view": "both", "svgIds": ["arm-left", "arm-right"], "exerciseIds": [], "commonSports": [] },
+  { "id": "lower-back", "nameZh": "腰背", "nameEn": "Lower back", "view": "back", "svgIds": ["lower-back"], "exerciseIds": [], "commonSports": [] },
+  { "id": "knee", "nameZh": "膝", "nameEn": "Knee", "view": "both", "svgIds": ["knee-left", "knee-right"], "exerciseIds": [], "commonSports": [] },
+  { "id": "calf", "nameZh": "小腿", "nameEn": "Calf", "view": "both", "svgIds": ["calf-left", "calf-right"], "exerciseIds": [], "commonSports": [] },
+  { "id": "ankle", "nameZh": "脚踝", "nameEn": "Ankle", "view": "both", "svgIds": ["ankle-left", "ankle-right"], "exerciseIds": ["ankle-pilot-placeholder"], "commonSports": ["running", "basketball", "soccer"] }
+]

@@ -1,0 +1,51 @@
+RecoverMate - S08 schema report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+Schema: schemas/body-part.ts (Zod v4)
+- BodyViewSchema  = z.enum(["front", "back", "both"])
+- BodyPartSchema  = z.object({ id, nameZh, nameEn, view, svgIds(>=1), exerciseIds, commonSports })
+- BodyPart type   = z.infer<typeof BodyPartSchema> (single source of truth,
+                    re-exported from types/content.ts)
+
+Data: data/body-parts.json (six regions: shoulder, arm, lower-back, knee, calf, ankle)
+
+Validation results:
+- Zod parse runs at module load in lib/content.ts; `next build` executes it
+  during static generation -> build-time validation is effective.
+- tests/body-part-data.test.ts (5 tests, all PASS):
+    * parses the data file against the Zod schema
+    * exactly six unique region ids
+    * every svgId references a real hotspot id (front + back components)
+    * valid id returns the part; invalid id returns null
+    * unreviewed exercises are excluded from query results
+
+Acceptance mapping (S08):
+- Six region ids unique: MET (test).
+- Invalid URL -> safe error page: MET
+  (app/body/[part]/page.tsx calls notFound() -> Next 404 for unknown ids; the
+  invalid-id branch is verified via getBodyPart(invalid) === null; the rendered
+  page is Next's default safe 404, no health/diagnostic content).
+- Routes do not depend on client-only private state: MET
+  (server component; derives from route params + the lib/content server module;
+  no "use client", no client state).
+
+Build routes (from `npm run build`):
+  (Static) /
+  (Static) /_not-found
+  (SSG)    /body/[part] -> /body/shoulder, /body/arm, /body/lower-back,
+                           /body/knee, /body/calf, /body/ankle
+                           (via generateStaticParams)
+
+Deferred evidence (NOT fabricated):
+- route-evidence-S08.png: a visual screenshot of a route page and the 404 needs
+  a headless browser, which is not available here. The build route table above
+  is textual evidence that the routes are generated and schema-validated at
+  build time.
+
+Notes:
+- Exercises are still the draft sample (data/sample/exercises.json); the formal
+  exercise schema + build-time content gate is S10/S11.
+- Hotspot-click -> /body/[id] navigation wiring is pending until the body map is
+  mounted on a page (the switcher is not yet routed); the route + data contract
+  themselves are complete and tested.
