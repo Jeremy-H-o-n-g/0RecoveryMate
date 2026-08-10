@@ -1,0 +1,50 @@
+RecoverMate - S07 test report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint
+                       exit 0
+2. npm run typecheck -> tsc --noEmit
+                       exit 0
+3. npm run test      -> vitest run
+                       Test Files  3 passed (3)
+                       Tests       13 passed (13)
+                       exit 0
+   Files:
+   - test/sanity.test.ts (1)
+   - tests/body-map-front.test.tsx (5)
+   - tests/body-map-switcher.test.tsx (7):
+       * back hotspots meet 44x44 and do not overlap
+       * back view includes lower-back (front view does not)
+       * front map shown by default, back map not shown
+       * front<->back switch exposes state via aria-pressed
+       * switch activates by keyboard (Space)
+       * focus retained on the switch control after switching
+       * all six regions reachable across views; tapping a back hotspot fires onSelect
+4. npm run build     -> next build (Next.js 16.3.0)
+                       2 static routes (/, /_not-found)
+                       exit 0
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S07):
+- Front/back state recognizable by assistive technology: MET
+  (aria-pressed on the switch buttons + aria-live announcement + per-map group
+  aria-label; all asserted in tests).
+- All regions reachable in at least one view: MET
+  (front covers shoulder/arm/knee/calf/ankle; back adds lower-back; asserted).
+- Switching does not lose page context: MET
+  (focus is retained on the switch control after toggling; asserted).
+
+Deferred evidence (NOT fabricated):
+- mobile-touch-S07.mp4: real-device touch video capture is student manual work
+  (requires a physical device); pending. The automated tap/keyboard tests cover
+  the interaction logic; on-device validation is still required.
+
+Notes:
+- S07 components are not yet mounted on a route (wiring is S08), so the
+  production build still serves the S05 placeholder homepage; the components are
+  exercised by lint, typecheck, and the unit tests.
+- public/body-back.svg is original/self-authored (license self-authored), under
+  the same terms as docs/svg-license-S06.md.
