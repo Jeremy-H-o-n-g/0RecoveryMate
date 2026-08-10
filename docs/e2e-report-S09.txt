@@ -1,0 +1,58 @@
+RecoverMate - S09 ankle vertical-slice report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+Slice (5 steps, no backend, ankle only):
+  Home (body map) -> select ankle hotspot -> /body/ankle
+    -> ExerciseCard (clearly-marked placeholder) -> /exercise/ankle-pilot-placeholder
+    -> detail (safety prompt BEFORE action; placeholder steps; ?done=1 completion)
+    -> Back to /body/ankle
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest run: 5 files / 23 tests passed, exit 0
+   incl. tests/e2e/ankle-slice.spec.tsx (5):
+       * hotspot -> region -> exercise chain resolves (no break)
+       * ExerciseCard renders a clearly-marked placeholder linking to the detail
+       * invalid exercise id -> null (404 path)
+       * exercise id is a pre-renderable route (deep-linkable)
+       * slice stays ankle-thin (only ankle has a placeholder; no 18x copy)
+4. npm run build     -> next build, exit 0. Routes:
+       (Static)  /
+       (Static)  /_not-found
+       (SSG)     /body/[part] x6 (shoulder, arm, lower-back, knee, calf, ankle)
+       (Dynamic) /exercise/[id] (server-rendered on demand; reads ?done= for completion)
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S09):
+- 5-step slice has no break points: MET
+  (data-chain test + wired navigation home->/body/ankle->card->/exercise->back;
+   all routes build).
+- All placeholders clearly marked, not medical content: MET
+  (ExerciseCard banner "[Demo placeholder - not reviewed]"; detail alert
+   "[Demo placeholder ... NOT medical guidance]"; exercise fields
+   "[professional-review-required]"; reviewStatus draft).
+- Refresh and direct (deep-link) URL both work: MET
+  (routes exist; /exercise/ankle-pilot-placeholder renders on direct URL;
+   completion via ?done=1 persists on refresh; back link returns to /body/ankle).
+
+Notes / honest scope:
+- The slice surfaces the DRAFT ankle placeholder ("ankle-pilot-placeholder"),
+  clearly marked, per S09's allowance for clearly-marked placeholders. It is NOT
+  approved and NOT medical guidance. Production approved-only enforcement stays
+  via the build gate (S10/S11).
+- Scope additions beyond the literal S09 list, each justified by the 5-step slice:
+    lib/content.ts (getExercise/getExerciseIds/getPartExercises/getRegionByHotspot),
+    app/body/[part]/page.tsx (renders ExerciseCard),
+    tests/e2e/ankle-slice.spec.ts (.ts -> .tsx to render the React card).
+- Completion is URL-driven (?done=1): refreshable + deep-linkable with no client
+  state. /exercise/[id] therefore renders dynamically (reads searchParams); it
+  works on direct URL/refresh. Static-export optimization, if needed, is S24/S27.
+- The "Back" link targets /body/ankle (ankle slice only; not expanded to 6 regions).
+
+Deferred evidence (NOT fabricated):
+- ankle-slice-S09.mp4: the real-browser walkthrough (desktop + mobile) is student
+  manual work (S09 lists it explicitly); not fabricatable here. The automated
+  ankle-slice spec + build cover the slice logic; on-device walkthrough pending.

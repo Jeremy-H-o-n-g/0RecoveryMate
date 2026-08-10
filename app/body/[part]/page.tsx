@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getApprovedExerciseIds,
-  getBodyPart,
-  getBodyParts,
-} from "../../../lib/content";
+import ExerciseCard from "../../../components/ExerciseCard";
+import { getBodyPart, getBodyParts, getPartExercises } from "../../../lib/content";
 
 export function generateStaticParams() {
   return getBodyParts().map((p) => ({ part: p.id }));
@@ -22,7 +19,7 @@ export default async function BodyPartPage({
     notFound();
   }
 
-  const exerciseIds = getApprovedExerciseIds(bodyPart.id);
+  const exercises = getPartExercises(bodyPart.id);
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
@@ -39,14 +36,14 @@ export default async function BodyPartPage({
         {bodyPart.nameEn} · view: {bodyPart.view}
       </p>
 
-      {exerciseIds.length === 0 ? (
-        <p className="mt-6 text-muted">No reviewed guidance yet.</p>
+      {exercises.length === 0 ? (
+        <p className="mt-6 text-muted">No demo placeholder yet.</p>
       ) : (
-        <ul className="mt-6 list-disc pl-6 text-foreground">
-          {exerciseIds.map((id) => (
-            <li key={id}>{id}</li>
+        <div className="mt-6 grid gap-3">
+          {exercises.map((ex) => (
+            <ExerciseCard key={ex.id} exercise={ex} />
           ))}
-        </ul>
+        </div>
       )}
     </main>
   );

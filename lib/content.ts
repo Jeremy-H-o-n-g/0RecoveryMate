@@ -36,3 +36,31 @@ export function getApprovedExerciseIds(partId: string): string[] {
     )
     .map((e) => e.id);
 }
+
+/** Raw exercise record shape (from the sample data). */
+export type ExerciseRecord = (typeof exercisesData)[number];
+
+export function getExercise(id: string): ExerciseRecord | null {
+  return exercisesData.find((e) => e.id === id) ?? null;
+}
+
+export function getExerciseIds(): string[] {
+  return exercisesData.map((e) => e.id);
+}
+
+/**
+ * Demo-slice listing: returns the part's exercises INCLUDING clearly-marked
+ * placeholders. Used only by the ankle vertical slice (S09), whose acceptance
+ * allows clearly-marked, non-medical placeholders. Production release still
+ * enforces approved-only via the build gate (S10/S11).
+ */
+export function getPartExercises(partId: string): ExerciseRecord[] {
+  const part = getBodyPart(partId);
+  if (!part) return [];
+  return exercisesData.filter((e) => part.exerciseIds.includes(e.id));
+}
+
+/** Maps a hotspot id (e.g. "ankle-left") to its region id (e.g. "ankle"). */
+export function getRegionByHotspot(hotspotId: string): string | null {
+  return bodyParts.find((p) => p.svgIds.includes(hotspotId))?.id ?? null;
+}
