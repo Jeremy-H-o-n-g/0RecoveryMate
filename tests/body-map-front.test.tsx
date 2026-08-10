@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+
+// Isolate the DOM between tests (vitest globals are off, so Testing Library's
+// auto-cleanup is not registered automatically).
+afterEach(() => {
+  cleanup();
+});
 import userEvent from "@testing-library/user-event";
 import BodyMapFront, {
   FRONT_HOTSPOTS,

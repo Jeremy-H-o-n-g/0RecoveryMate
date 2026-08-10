@@ -11,17 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S06
-Unit title: 前视人体 SVG 与语义热点
-Unit focus: Build the front-view body outline and semantic hotspots (shoulder, arm, knee, ankle, …) so each region is focusable, identifiable, and testable.
-Current prompt: `prompts/S06-Front-Body-SVG.md`
-Prior-state requirement: S05 project and tokens passed; SVG source and license are recorded.
-Status: **In Progress — paused 2026-08-09 (mid-session, per pause-and-exit.md).** Do not activate S07. See "S06 WIP / Resume" below.
+Unit code: S07
+Unit title: 后视人体图、切换与触控/键盘兼容
+Unit focus: Build the back-view body map and implement front/back switching, clear L/R direction markers, and consistent pointer+keyboard interaction with focus retention.
+Current prompt: `prompts/S07-Back-Body-and-Input-Compatibility.md`
+Prior-state requirement: front-view hotspot tests pass; shared BodyPart API is stable.
+Status: **Activated — not yet started.** Do not implement until S07 is opened.
 
 ## Acceptance Criteria for Current Unit
-- All planned hotspots are keyboard-activatable.
-- Hotspots do not overlap in a way that causes misselection.
-- The SVG license is traceable.
+- The front/back state is recognizable by assistive technology.
+- All regions are reachable in at least one view.
+- Switching does not lose page context.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -29,7 +29,7 @@ Status: **In Progress — paused 2026-08-09 (mid-session, per pause-and-exit.md)
 - [x] S03 - 形成性研究设计与成功指标
 - [x] S04 - 信息架构、用户旅程与界面蓝图
 - [x] S05 - 仓库初始化、版本锁定与设计令牌
-- [ ] S06 - 前视人体 SVG 与语义热点
+- [x] S06 - 前视人体 SVG 与语义热点
 - [ ] S07 - 后视人体图、切换与触控/键盘兼容
 - [ ] S08 - BodyMap 状态、数据契约与路由
 - [ ] S09 - 脚踝垂直切片验收
@@ -60,29 +60,30 @@ Status: **In Progress — paused 2026-08-09 (mid-session, per pause-and-exit.md)
 - 2026-07-27 (S01): Requirements ledger at `docs/baseline-ledger.md`; BR-01..BR-15 verified; authoritative source = 11-page proposal PDF.
 - 2026-07-27 (S02): Content policy v1 in `config/content-policy.json` (reviewStatus machine; only `approved` publishable) and `docs/ContentSafetyPolicy.md`; `docs/SourceLedger.md` created; no fabricated endorsements.
 - 2026-08-09 (S03): Formative usability protocol v1 in `docs/ResearchProtocol.md` (AB/BA, 5 per order; descriptive only; stop-at-any-time); anonymized record table; `docs/ConsentScript.md`; pilot template.
-- 2026-08-09 (S04): UX blueprint `docs/UXBlueprint.md` (seven-step → pages/routes/states; mobile no-scroll; safety before action; not hover-dependent; color not sole cue); state model `docs/StateModel.md`; `docs/Architecture.md` enhanced; `docs/ux-flow-S04.png` auto-generated.
-- 2026-08-09 (S05): Next.js App Router project initialized at repo root (create-next-app) with a genuine `package-lock.json` from real `npm install`. Actual versions (see `setup-versions.txt`): next 16.3.0 (Active LTS), react 19.2.8, typescript 5.9.3, tailwindcss 4.3.3, eslint 9.39.5, vitest 4.1.10, framer-motion 13.0.0, zod 4.4.3.
-- 2026-08-09 (S05): Quality scripts configured and passing — `lint` (eslint), `typecheck` (tsc --noEmit), `test` (vitest run), `build` (next build). `unrs-resolver` install script approved under npm allow-scripts so ESLint's native resolver works.
-- 2026-08-09 (S05): Design tokens in `app/globals.css` cover background, surface, foreground, muted, focus, accent, accent-2, border, motion-scale + prefers-reduced-motion. Minimal shell: `app/layout.tsx`, `app/page.tsx`.
+- 2026-08-09 (S04): UX blueprint `docs/UXBlueprint.md` (seven-step → pages/routes/states; mobile no-scroll; safety before action; not hover-dependent; color not sole cue); state model `docs/StateModel.md`; `docs/Architecture.md` enhanced; `docs/ux-flow-S04.png`.
+- 2026-08-09 (S05): Next.js App Router project at repo root (genuine lockfile). Versions (`setup-versions.txt`): next 16.3.0, react 19.2.8, typescript 5.9.3, tailwindcss 4.3.3, eslint 9.39.5, vitest 4.1.10, framer-motion 13.0.0, zod 4.4.3. Four quality scripts pass.
+- 2026-08-09 (S05): Design tokens in `app/globals.css` cover background/surface/foreground/muted/focus/accent/accent-2/border/motion-scale + prefers-reduced-motion.
+- 2026-08-10 (S06): Front-view body SVG at `public/body-front.svg` — original, self-authored, non-diagnostic (license self-authored; honors "no unknown-source SVG"). `components/BodyPart.tsx` = accessible `<button>` hotspot (Tab + Enter/Space, aria-label, 44x44 min touch). `components/BodyMapFront.tsx` = 10 front hotspots (shoulder/arm/knee/calf/ankle × L/R) + `rectsOverlap`.
+- 2026-08-10 (S06): Component testing set up — `vitest.config.ts` includes `tests/**.tsx`; devDeps jsdom@^30, @testing-library/react@^16.3.2, @testing-library/dom@^10.4.1, @testing-library/user-event@^14.6.3. Tests verify 44x44 touch target, no overlap, aria-labels, and Enter/Space activation (with explicit `afterEach(cleanup)` since vitest globals are off).
 
 ## Known Issues
 - Exact qualified content reviewer is not yet named.
-- Final original/third-party SVG choice is unresolved (DC-2) — S06 prior-state requires SVG source/license to be recorded.
+- SVG is self-authored for S06 (DC-2): student should still save the Figma/original-work process as proof and confirm acceptability with the mentor (pending).
 - Media hosting remains local-first until the performance budget is measured.
 - Authoritative proposal PDF is 11 pages (canonical).
 - S01 ledger review and S02 policy wording were performed by the implementation partner; student/mentor sign-off and professional review (S11) pending.
 - S02 refusal test is a defined contract (not live); enforcement pending S10/S11; page-level safety prompt in S15.
 - S03 study execution pending (10 volunteers + consent, mentor task-wording review, pilot run).
 - S04 screens not yet hand-drawn/Figma'd; mentor info-priority review pending.
-- S05 `homepage-S05.png` evidence is pending (needs headless browser + running server; not fabricated). Next telemetry is anonymous dev usage stats, not end-user tracking; production analytics remain off.
-- S05 scope note: the prompt's "create or modify only" list (package.json, package-lock.json, app/layout.tsx, app/globals.css, .gitignore, .env.example) was insufficient for a runnable project whose `build`/`lint`/`typecheck`/`test` must pass; the standard Next.js configs (tsconfig.json, next.config.ts, postcss.config.mjs, eslint.config.mjs, next-env.d.ts), `app/page.tsx` (a route is required to build), and a vitest config + sample test (required for `test` to pass) were added to satisfy acceptance.
+- S05 `homepage-S05.png` evidence pending (needs headless browser; not fabricated). Next telemetry is anonymous dev usage stats, not end-user tracking; production analytics remain off.
+- S06 components are NOT yet mounted on a route (wiring is S08), so the production build still serves the S05 placeholder homepage. `docs/body-front-S06.png` is a rasterization of the SVG (not an interactive-component screenshot; that needs a browser).
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. S01–S04 doc checks ALL CHECKS PASS. **S05:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 1/1 passed exit 0; `npm run build` Next 16.3.0 compiled, 2 static routes, exit 0 → **all four PASS** (see `docs/test-report-S05.txt`, `setup-versions.txt`).
-- Manual: S01–S04 drafted by implementation partner (sign-offs/reviews pending as noted). S05 installs and quality-gate runs executed by the implementation partner (real `npm install`, real lockfile, real command results) — recorded in `setup-versions.txt` / `docs/test-report-S05.txt`.
+- Automated: `node scripts/check-environment.mjs` → exit 0. **S06:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 2 files / 6 tests passed exit 0 (sanity + `tests/body-map-front.test.tsx`: touch-target 44x44, no overlap, unique ids/labels, aria-label per button, Enter/Space activation); `npm run build` Next 16.3.0, 2 static routes, exit 0 → **all four PASS** (see `docs/test-report-S06.txt`).
+- Manual: S01–S05 drafted/executed by implementation partner (sign-offs/reviews pending as noted). S06 components + tests written by implementation partner; student manual work pending (verify hotspot positions, real-device test, original-work proof for the SVG).
 - Content/media: Not started.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: Vertical slice defined (`docs/baseline-ledger.md` §5); not implemented (S09). App shell builds (S05).
+- End-to-end demo path: Vertical slice defined (`docs/baseline-ledger.md` §5); not implemented (S09). App shell builds (S05); front body map components + tests done (S06), not yet routed (S08).
 
 ## S01 Completion Notes (completed 2026-07-27)
 - Checkpoints: `dc9c0d6` → `3717579` → `d69336a`.
@@ -97,36 +98,15 @@ Status: **In Progress — paused 2026-08-09 (mid-session, per pause-and-exit.md)
 - Checkpoints: pre-S04 `7d51f58`; complete `e44248d`.
 
 ## S05 Completion Notes (completed 2026-08-09)
-- **Deliverables:** `package.json`, `package-lock.json` (real), `app/layout.tsx`, `app/globals.css` (design tokens), `.gitignore` (added `tsconfig.tsbuildinfo`), `.env.example` (unchanged, clean); plus the configs/test harness required for the gates (`tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `next-env.d.ts`, `app/page.tsx`, `vitest.config.ts`, `test/sanity.test.ts`); evidence `setup-versions.txt`, `docs/test-report-S05.txt`.
-- **Acceptance:** (1) four commands pass — MET; (2) no secrets/local DB committed — MET (node_modules/.next/.env gitignored; source scan clean); (3) design tokens cover background/text/focus/accent/reduced-motion — MET.
-- **Verification:** lint/typecheck/test/build all exit 0 (see `docs/test-report-S05.txt`).
-- **Changed files (S05):** the app scaffold + configs + evidence above + `TASKS.md`.
-- **Honest scope note:** installs and the four gates were executed by the implementation partner (real, not fabricated); `homepage-S05.png` is pending (no headless browser; not fabricated). `next@16.3.0` used (current Next 16 LTS; proposal example was 16.2.11).
-- **Checkpoints:** pre-S05 `2deec09`; S05 complete (this commit).
+- Checkpoints: pre-S05 `2deec09`; complete `c2e4431`.
 
-## S06 WIP / Resume (paused 2026-08-09, mid-session)
-- **Status:** S06 In Progress (paused per pause-and-exit.md). S07 is NOT activated.
-- **Completed this unit:**
-  - `public/body-front.svg` — original, self-authored, stylized, NON-diagnostic front-view figure (license: self-authored; matches DC-2; honors "no unknown-source SVG").
-  - `components/BodyPart.tsx` — accessible hotspot as a native `<button>` (Tab + Enter/Space, aria-label, 44x44 min touch target; focus ring via globals.css).
-  - `components/BodyMapFront.tsx` — `FRONT_HOTSPOTS` (10: shoulder/arm/knee/calf/ankle × L/R), `rectsOverlap`, renders SVG + hotspots.
-  - `tests/body-map-front.test.tsx` — geometry (44x44, no overlap, unique id/label), render (aria-label per button), keyboard (Enter/Space activation).
-  - Installed devDeps: jsdom@^30, @testing-library/react@^16.3.2, @testing-library/dom@^10.4.1, @testing-library/user-event@^14.6.3.
-- **Unfinished / not yet verified:**
-  - S06 acceptance ("all hotspots keyboard-activatable; no overlap; license traceable") is NOT yet verified — the body-map test has NOT been executed.
-  - `vitest.config.ts` `include` was NOT updated to cover `tests/**.tsx` (edit was pending when pause was called), so `npm test` still runs only `test/sanity.test.ts` and the new test file is filtered out.
-  - Evidence not yet created: `docs/svg-license-S06.md`, `docs/test-report-S06.txt`, `docs/body-front-S06.png`.
-  - S06 not marked complete; S07 not activated.
-- **Changed files (this WIP):** `public/body-front.svg` (new), `components/BodyPart.tsx` (new), `components/BodyMapFront.tsx` (new), `tests/body-map-front.test.tsx` (new), `package.json` + `package-lock.json` (testing deps), `TASKS.md`.
-- **Test commands + exact results (captured at pause):**
-  - `npm run lint` → exit 0 (new .tsx files lint clean).
-  - `npm run typecheck` → exit 0 (new .tsx files typecheck clean).
-  - `npm run build` → exit 0 (Next 16.3.0; 2 static routes; components not yet mounted on a route).
-  - `npm run test` → exit 0 but only 1 file/1 test (sanity) ran — S06 body-map test NOT included.
-  - `npx vitest run tests/body-map-front.test.tsx` → exit 1, "No test files found" (filtered out by the include pattern) — not executable until the config edit.
-- **Precise next action to resume:** (1) edit `vitest.config.ts` `include` to add `"tests/**/*.{test,spec}.{ts,tsx}"`; (2) run `npm test`, confirm the body-map test passes (fix if needed); (3) re-run lint/typecheck/build; (4) create `docs/svg-license-S06.md` (self-authored provenance), `docs/test-report-S06.txt`, `docs/body-front-S06.png` (needs headless browser); (5) only then mark S06 complete and activate S07.
-- **Known issues carried:** SVG is self-authored for S06 (student should still save the Figma/original-work process as proof — pending); reviewer unnamed (S11); `body-front-S06.png` will need a headless browser.
-- **No secrets/generated artifacts:** new files are source/SVG/test only; `node_modules`/`.next`/`tsconfig.tsbuildinfo` are gitignored; no secrets in the diff.
+## S06 Completion Notes (completed 2026-08-10)
+- **Deliverables:** `public/body-front.svg` (original, self-authored), `components/BodyPart.tsx`, `components/BodyMapFront.tsx`, `tests/body-map-front.test.tsx`; `vitest.config.ts` (include `tests/**.tsx`); devDeps jsdom + Testing Library + user-event; evidence `docs/svg-license-S06.md`, `docs/test-report-S06.txt`, `docs/body-front-S06.png`.
+- **Acceptance:** (1) all planned hotspots keyboard-activatable — MET (Enter/Space test); (2) no hotspot overlap — MET (geometry test); (3) license traceable — MET (`docs/svg-license-S06.md`, self-authored).
+- **Verification:** lint/typecheck/build exit 0; test 2 files / 6 tests passed → ALL CHECKS PASS (`docs/test-report-S06.txt`).
+- **Changed files (S06):** `public/body-front.svg`, `components/BodyPart.tsx`, `components/BodyMapFront.tsx`, `tests/body-map-front.test.tsx`, `vitest.config.ts`, `package.json`, `package-lock.json`, `docs/svg-license-S06.md`, `docs/test-report-S06.txt`, `docs/body-front-S06.png`, `TASKS.md`.
+- **Honest scope note:** SVG + components + tests authored by the implementation partner; `body-front-S06.png` is the SVG rasterized via cairosvg (not the interactive component; no browser available). A test-isolation fix (`afterEach(cleanup)`) was applied. Components not mounted on a route yet (S08).
+- **Checkpoints:** pre-S06 `c2e4431`; S06 WIP `682d828`; S06 complete (this commit).
 
 ## Next Unit
-- S07 - 后视人体图、切换与触控/键盘兼容; back-view body, toggle, and touch/keyboard compatibility only. (S06 remains the active unit; do not implement S06 or S07 until opened.)
+- S08 - BodyMap 状态、数据契约与路由; BodyMap state, data contract, and routes only. (S07 is now the active unit; do not implement S07 or S08 until opened.)

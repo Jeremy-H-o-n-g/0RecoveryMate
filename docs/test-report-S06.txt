@@ -1,0 +1,37 @@
+RecoverMate - S06 test report
+Generated: 2026-08-09
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint
+                       exit 0
+2. npm run typecheck -> tsc --noEmit
+                       exit 0
+3. npm run test      -> vitest run
+                       Test Files  2 passed (2)
+                       Tests       6 passed (6)
+                       exit 0
+   Files:
+   - test/sanity.test.ts (1 test)
+   - tests/body-map-front.test.tsx (5 tests):
+       * every hotspot meets the 44x44 minimum touch target
+       * no two hotspots overlap
+       * unique, non-empty id and label per hotspot
+       * one button per hotspot with an accessible name (aria-label)
+       * keyboard activation via Enter and Space (user-event)
+4. npm run build     -> next build (Next.js 16.3.0)
+                       2 static routes (/, /_not-found)
+                       exit 0
+
+RESULT: all four commands PASS.
+
+Note: S06 components are not yet mounted on a route (wiring is S08), so the
+production build still serves the S05 placeholder homepage; the components are
+exercised by lint, typecheck, and the unit test. A test-isolation fix
+(explicit afterEach(cleanup)) was applied so Testing Library does not leak DOM
+between tests (vitest globals are off).
+
+Acceptance mapping (S06):
+- All planned hotspots keyboard-activatable: MET (Enter/Space test passes).
+- Hotspots do not overlap (no misselection): MET (geometry test passes).
+- License traceable: MET (docs/svg-license-S06.md, self-authored).
