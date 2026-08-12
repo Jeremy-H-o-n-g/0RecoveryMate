@@ -1,0 +1,33 @@
+RecoverMate - S13 media report (pipeline + budget plan)
+Generated: 2026-08-10
+Status: SPEC ONLY — no media produced (S12 capture pending).
+
+File conventions (see docs/VideoProductionProtocol.md + VideoPostProductionProtocol.md):
+  /videos/<id>.mp4          web MP4 (H.264/AAC, 720p)
+  /videos/<id>-preview.mp4  ~3s preview (muted, low bitrate)
+  /videos/<id>-poster.jpg   poster frame
+  /captions/<id>.vtt        WebVTT captions (manual proofread)
+  /transcripts/<id>.md      descriptive transcript
+
+Encoding targets (to finalize in S24):
+  resolution: 1280x720 (no upscale)
+  video bitrate: ~1-1.5 Mbps (tune to budget)
+  audio: AAC, narrated (or silent alt take)
+
+Media budget: finalized in S24; S13 sets the placeholder targets above. No files
+yet, so no size measurements. The build gate (validate:content) will check local
+media existence for approved exercises once files exist.
+
+Current media files: NONE (S12 capture pending). data/exercises.json media URLs
+remain empty (the ankle draft placeholder). No fabricated MP4/captions/transcript.
+
+Accessibility: captions + descriptive transcript are required for approved
+content (content policy; build-gate enforced). Captions are proofread manually
+(S13 do-not-do: no auto-gen without proofread); the reviewer re-checks
+text/narration. Reviewer placeholder: <<REVIEWER_NAME_TBD>>.
+
+S13 tests/checks — all PENDING real media:
+  - browser playback                 : pending
+  - caption track enable             : pending
+  - file-size budget                 : pending
+  - silent-take comprehensibility    : pending
