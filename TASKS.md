@@ -11,17 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S11
-Unit title: 来源台账、专业审核与内容锁定
-Unit focus: Select 2–3 candidate exercises per region and lock the shootable list via source + professional review.
-Current prompt: `prompts/S11-Source-Review-and-Content-Lock.md`
-Prior-state requirement: S10 schema and publish gate passed.
-Status: **In Progress — BLOCKED on a human decision (2026-08-10).** S11 requires professional-review **sign-off** by a qualified reviewer; the reviewer is still unnamed (DC-3) and forging signatures is forbidden. Sign-off (`review-signoff-S11.pdf`) and candidate-source selection cannot be completed until a reviewer is named + the student provides real sources. The review-log structure was created (`docs/ContentReviewLog.md`); S12 is NOT activated. See "S11 Blocker" below.
+Unit code: S12
+Unit title: 拍摄规范、分镜与首条视频采集
+Unit focus: Shoot a reviewable dual-angle exercise video with phone + tripod; keep consent + shot records.
+Current prompt: `prompts/S12-Video-Storyboard-and-Pilot-Capture.md`
+Prior-state requirement: exercise list locked + performer consent + venue safety confirmed.
+Status: **In Progress — SPEC DRAFTED, CAPTURE PENDING (2026-08-10).** Prior-state is NOT met (S11 content not locked; no consent/safety confirmed). The shoot spec + log template are drafted; actual filming is student manual work (cannot be fabricated). S13 NOT activated. See "S12 Status" below.
 
 ## Acceptance Criteria for Current Unit
-- Each of the six regions has at least 2 shootable candidate exercises.
-- All text is signed off by the reviewer.
-- The license path is clear.
+- Key movement postures are not cropped (requires real footage).
+- Asset rights are clear (requires consent on file).
+- Unsafe / sensitive-background takes are rejected (requires real takes).
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -34,8 +34,8 @@ Status: **In Progress — BLOCKED on a human decision (2026-08-10).** S11 requir
 - [x] S08 - BodyMap 状态、数据契约与路由
 - [x] S09 - 脚踝垂直切片验收
 - [x] S10 - 动作内容 Schema 与构建时校验
-- [ ] S11 - 来源台账、专业审核与内容锁定  *(In Progress — blocked; see S11 Blocker)*
-- [ ] S12 - 拍摄规范、分镜与首条视频采集
+- [ ] S11 - 来源台账、专业审核与内容锁定 *(PARKED — reviewer placeholder `<<REVIEWER_NAME_TBD>>`; docs done, sign-off deferred)*
+- [ ] S12 - 拍摄规范、分镜与首条视频采集 *(In Progress — spec drafted; capture pending)*
 - [ ] S13 - 视频编辑、字幕、转录与媒体优化
 - [ ] S14 - 动作卡片、筛选与渐进呈现
 - [ ] S15 - 动作详情路由与可访问视频播放器
@@ -58,59 +58,51 @@ Status: **In Progress — BLOCKED on a human decision (2026-08-10).** S11 requir
 - 2026-07-27: Default six regions are shoulder, arm, lower back, knee, calf, and ankle.
 - 2026-07-27: Public upload/CMS is outside the current baseline; content updates use reviewed Git/JSON changes.
 - 2026-07-27 (S01): Requirements ledger at `docs/baseline-ledger.md`; BR-01..BR-15 verified; authoritative source = 11-page proposal PDF.
-- 2026-07-27 (S02): Content policy v1 in `config/content-policy.json` (reviewStatus machine; only `approved` publishable) and `docs/ContentSafetyPolicy.md`; `docs/SourceLedger.md`; no fabricated endorsements.
-- 2026-08-09 (S03): Formative usability protocol v1 in `docs/ResearchProtocol.md` (AB/BA, 5 per order; descriptive only; stop-at-any-time).
-- 2026-08-09 (S04): UX blueprint `docs/UXBlueprint.md`; state model `docs/StateModel.md`; `docs/Architecture.md` enhanced; `docs/ux-flow-S04.png`.
-- 2026-08-09 (S05): Next.js App Router project at repo root (genuine lockfile); versions in `setup-versions.txt`; four quality scripts pass; design tokens cover background/text/focus/accent/reduced-motion.
-- 2026-08-10 (S06): Front body SVG + `BodyPart`/`BodyMapFront` (accessible `<button>` hotspots) + tests; component testing set up.
-- 2026-08-10 (S07): Back body SVG + `BodyMapBack` (incl. lower-back) + `BodyMapSwitcher` (front/back toggle, aria-pressed, focus retention) + tests.
-- 2026-08-10 (S08): Type-safe data contract — `schemas/body-part.ts`, `data/body-parts.json`, `lib/content.ts`, `app/body/[part]/page.tsx` + tests.
-- 2026-08-10 (S09): Ankle vertical slice wired end-to-end (no backend); surfaces clearly-marked DRAFT placeholder; `tests/e2e/ankle-slice.spec.tsx`.
-- 2026-08-10 (S10): Exercise schema (`schemas/exercise.ts`, Zod) + build-time content gate (`lib/content.ts` parses + referential integrity) + `scripts/validate-content.ts` (`npm run validate:content` via tsx). Difficulty is non-medical; approved requires full provenance + accessibility.
-- 2026-08-10 (S11, BLOCKED): `docs/ContentReviewLog.md` created (review process + log + the blocker) and `docs/SourceLedger.md` §7 added. S11 remains BLOCKED — no qualified reviewer is named (DC-3), 0 approved content, no fabricated sign-off/sources. S12 NOT activated.
+- 2026-07-27 (S02): Content policy v1 (`config/content-policy.json` + `docs/ContentSafetyPolicy.md`); `docs/SourceLedger.md`; no fabricated endorsements.
+- 2026-08-09 (S03): Formative usability protocol v1 (`docs/ResearchProtocol.md`).
+- 2026-08-09 (S04): UX blueprint + state model + flow diagram.
+- 2026-08-09 (S05): Next.js App Router project (genuine lockfile); design tokens; four quality scripts pass.
+- 2026-08-10 (S06–S10): front/back body maps + switcher (S06/S07); type-safe data contract + `/body/[part]` route (S08); ankle vertical slice (S09); exercise schema + build-time content gate + `validate:content` (S10).
+- 2026-08-10 (user direction): S11 is PARKED — obtaining the qualified reviewer takes time, so a `<<REVIEWER_NAME_TBD>>` placeholder is left for future update. S12 is activated before S11 acceptance passes (documented deviation), because S11/S12/S13 are real-world content-production sessions; their specs/templates are drafted now and review/capture are deferred (not fabricated).
+- 2026-08-10 (S12, spec drafted): `docs/VideoProductionProtocol.md` (shoot spec), `media/production-log.csv` (template), `media/raw/README.md` (+ `.gitignore` exception). Capture is pending (prior-state: S11 content locked + consent + safety not met; filming is student manual work).
 
 ## Known Issues
-- ⚠️ Exact qualified content reviewer is not yet named (DC-3) — blocks S11 sign-off. S11 cannot complete until a reviewer is named + the student provides real, licensable sources.
+- ⚠️ Qualified content reviewer not yet named (DC-3) — S11 parked; `<<REVIEWER_NAME_TBD>>` placeholder left for future update. S11 sign-off + sources deferred.
+- S12 prior-state unmet (S11 content not locked; no consent/safety) → S12 capture deferred; spec drafted.
+- S11/S12/S13 are real-world content-production sessions; their capture/review cannot be done or fabricated by the implementation partner.
 - SVG is self-authored (DC-2): student should save original-work proof + mentor confirmation (pending).
 - Media hosting remains local-first until the performance budget is measured.
 - Authoritative proposal PDF is 11 pages (canonical).
-- S01 ledger review and S02 policy wording were performed by the implementation partner; professional review (S11) blocked.
 - S02 refusal test is a defined contract (not live); build-time enforcement wired (S10); page-level safety prompt in S15.
-- S03 study execution pending (10 volunteers + consent, mentor task-wording review, pilot run).
-- S04 screens not yet hand-drawn/Figma'd; mentor info-priority review pending.
-- S05 `homepage-S05.png` pending (no headless browser). Production analytics remain off.
-- S06/S07 PNGs are SVG rasterizations; S07 `mobile-touch-S07.mp4` pending (real device).
-- S08 `route-evidence-S08.png` deferred (no browser).
-- S09 `ankle-slice-S09.mp4` deferred (real-browser walkthrough = student manual work). `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
-- S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content is only the DRAFT ankle placeholder; no approved content (blocked → S11).
-- S11: candidate selection (2–3/region), `source-ledger-S11.csv`, and `review-signoff-S11.pdf` are pending a named reviewer + real student sources.
+- S03 study execution pending; S04 screens not yet hand-drawn/Figma'd.
+- S05 `homepage-S05.png`, S08 `route-evidence-S08.png` deferred (no headless browser). S06/S07 PNGs are SVG rasterizations; S07 `mobile-touch-S07.mp4` deferred.
+- S09 `ankle-slice-S09.mp4` deferred; `/exercise/[id]` renders dynamically (static-export optimization is S24/S27).
+- S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content is only the DRAFT ankle placeholder; no approved content.
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. S10 gates green (lint/typecheck/build/test 6 files-32 tests/`validate:content` OK). **S11 (blocked):** changes are docs-only; `npm run validate:content` → "OK - no content errors." exit 0; `npm run test` still 6 files / 32 tests passed. No content approval (0 approved; reviewer unnamed).
-- Manual: S01–S09 drafted/executed by implementation partner (sign-offs/reviews pending). S10 schema/validator authored by implementation partner. S11 (blocked): review-log + ledger status drafted by implementation partner; professional sign-off + source selection CANNOT proceed without a named reviewer (DC-3) + real student sources (not fabricated).
-- Content/media: Schema + build gate done (S10); actual content + professional review blocked (S11).
+- Automated: `node scripts/check-environment.mjs` → exit 0. S10 gates green (lint/typecheck/build/test 6 files-32 tests/`validate:content` OK). **S12 (spec drafted):** docs/csv only; `npm run validate:content` → "OK - no content errors." exit 0; `npm run test` → 6 files / 32 tests pass. No capture (footage pending).
+- Manual: S01–S10 drafted/executed by implementation partner. S11 (parked): review-log + ledger status + reviewer placeholder drafted; professional sign-off + sources deferred. S12 (spec drafted): video production protocol + production-log template + raw-media README drafted; filming is student manual work (pending).
+- Content/media: Schema + build gate done (S10); content review (S11) + capture (S12) are real-world pending.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle vertical slice verified (S09); content schema + gate done (S10); real content + review blocked (S11).
+- End-to-end demo path: ankle slice verified (S09); content schema + gate done (S10); real content/review/capture deferred (S11/S12).
 
 ## Completion notes (checkpoints)
-- S01 (2026-07-27): `dc9c0d6` → `3717579` → `d69336a`.
-- S02 (2026-08-09): pre `d69336a` → `99b410d`.
-- S03 (2026-08-09): pre `99b410d` → `7d51f58`.
-- S04 (2026-08-09): pre `7d51f58` → `e44248d`.
-- S05 (2026-08-09): pre `2deec09` → `c2e4431`.
-- S06 (2026-08-10): pre `c2e4431` → WIP `682d828` → `42be299`.
-- S07 (2026-08-10): pre `42be299` → `ca0b543`.
-- S08 (2026-08-10): pre `ca0b543` → `9dbd94b`.
-- S09 (2026-08-10): pre `9dbd94b` → `6d95164`.
-- S10 (2026-08-10): pre `6d95164` → `299ba2a`.
+- S01: `dc9c0d6` → `3717579` → `d69336a`. · S02: `d69336a` → `99b410d`. · S03: `99b410d` → `7d51f58`.
+- S04: `7d51f58` → `e44248d`. · S05: `2deec09` → `c2e4431`. · S06: `c2e4431` → `682d828` → `42be299`.
+- S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
 
-## S11 Blocker (In Progress — blocked 2026-08-10)
-- S11 acceptance cannot pass without a **human decision**: name a qualified reviewer (DC-3) AND have the student provide real, licensable sources. Forging review signatures / inventing sources is forbidden.
-- **Done (honest, non-fabricated):** `docs/ContentReviewLog.md` (review process + log + the blocker), `docs/SourceLedger.md` §7 (S11 status).
-- **NOT done (blocked):** candidate selection (2–3/region, 12–18 total), professional sign-off, `source-ledger-S11.csv`, `review-signoff-S11.pdf`, any `approved` content.
-- **Status:** S11 is NOT marked complete; S12 is NOT activated. Per S11's stop condition ("stop when a blocker requires a human decision").
-- **Rollback:** pre-S11 `299ba2a`.
-- **To unblock:** (1) name a qualified reviewer (DC-3); (2) student records real sources in `docs/SourceLedger.md` + `source-ledger-S11.csv`; (3) reviewer records approve/modify/reject in `docs/ContentReviewLog.md`; (4) capture `review-signoff-S11.pdf`; (5) then set `approved` in `data/exercises.json` (build gate enforces full provenance + accessibility).
+## S11 Parked (deferred 2026-08-10, per user direction)
+- S11 acceptance cannot pass until a qualified reviewer is named (DC-3) + the student provides real sources. Forging sign-off is forbidden.
+- Done (honest): `docs/ContentReviewLog.md` (review process + log + `<<REVIEWER_NAME_TBD>>` placeholder), `docs/SourceLedger.md` §7.
+- Deferred: candidate selection (2–3/region), professional sign-off, `source-ledger-S11.csv`, `review-signoff-S11.pdf`, any `approved` content.
+- Rollback to S11-blocked state: `4d6ec2c`.
+
+## S12 Status (In Progress — spec drafted, capture pending, 2026-08-10)
+- Done (honest): `docs/VideoProductionProtocol.md` (shoot spec), `media/production-log.csv` (template), `media/raw/README.md` (+ `.gitignore` exception so the README tracks while raw media stays ignored).
+- Deferred (cannot fabricate): actual filming (phone + tripod, dual-angle), `pilot-raw-contact-sheet-S12.jpg`, real production-log rows, `production-log-S12.csv` with real takes.
+- Acceptance NOT met (requires real footage): postures not cropped; rights clear; unsafe takes rejected.
+- Prior-state NOT met: S11 content locked + consent + venue safety.
+- S12 NOT marked complete; S13 NOT activated. Rollback: pre-S12 `4d6ec2c`.
 
 ## Next Unit
-- S12 - 拍摄规范、分镜与首条视频采集; shoot spec, storyboard, and first video capture only. **NOT activated** — S11 is the current unit and is blocked. Do not implement S12 until S11 is unblocked and passes.
+- S13 - 视频编辑、字幕、转录与媒体优化; video editing, captions, transcript, optimization only. **NOT activated** — S12 is current and its capture is pending. Do not implement S13 until S12 capture is done (or until you direct another re-sequence).

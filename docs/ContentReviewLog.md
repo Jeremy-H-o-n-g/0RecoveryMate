@@ -12,10 +12,13 @@ candidate exercise, with reviewer identity, date, and notes. Rows are added ONLY
 when a real review occurs — never fabricated.
 
 ## 2. Reviewer
-- Qualified reviewer: **[not yet named — DC-3, due S11]**. Must hold an
-  appropriate sports/rehabilitation qualification.
-- Reviewer identity may NOT be fabricated. Until one is named, every item stays
-  `pending` and no content may become `approved`.
+- Qualified reviewer: **`<<REVIEWER_NAME_TBD>>`** — *placeholder for future update
+  (DC-3, to be named)*. Must hold an appropriate sports/rehabilitation
+  qualification. Replace this token everywhere (see `docs/SourceLedger.md`,
+  `data/exercises.json` `reviewedBy`) once a real reviewer is named.
+- Reviewer identity may NOT be fabricated. Until the placeholder above is
+  replaced with a real, named reviewer, every item stays `pending` and no content
+  may become `approved`.
 
 ## 3. Decision vocabulary
 - `approved` — publishable (the build gate then requires full provenance +

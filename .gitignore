@@ -47,6 +47,7 @@ playwright-report
 test-results
 data/research/raw/*
 media/raw/*
+!media/raw/README.md
 *.log
 
 # Local workflow notes (scratch)
