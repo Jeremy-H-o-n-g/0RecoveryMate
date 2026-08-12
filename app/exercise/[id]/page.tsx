@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SafetyNotice from "../../../components/SafetyNotice";
+import VideoPlayer from "../../../components/VideoPlayer";
 import { getExercise, getExerciseIds } from "../../../lib/content";
 
 export function generateStaticParams() {
@@ -22,6 +24,7 @@ export default async function ExercisePage({
   }
 
   const isDone = done === "1";
+  const isPlaceholder = exercise.reviewStatus !== "approved";
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
@@ -31,32 +34,41 @@ export default async function ExercisePage({
         </Link>
       </p>
 
-      {/* Safety boundary shown BEFORE the action (S09). */}
-      <p
-        role="alert"
-        className="mt-4 rounded-md border border-focus/60 bg-focus/10 p-3 text-sm text-foreground"
-      >
-        [Demo placeholder — not reviewed; general warm-up concept only; NOT
-        medical guidance.]
-      </p>
+      {isPlaceholder && (
+        <p
+          role="alert"
+          className="mt-4 rounded-md border border-focus/60 bg-focus/10 p-3 text-sm text-foreground"
+        >
+          [Placeholder — not reviewed; general warm-up concept only; NOT medical
+          guidance.]
+        </p>
+      )}
 
       <h1 className="mt-4 text-3xl font-semibold text-accent">
         {exercise.nameZh}
       </h1>
       <p className="mt-1 text-muted">
-        {exercise.durationSeconds}s · {exercise.difficulty}
+        {exercise.durationSeconds}s · {exercise.difficulty} · Status:{" "}
+        {exercise.reviewStatus}
       </p>
 
-      <section aria-label="Stop signals" className="mt-6">
-        <h2 className="text-xl font-semibold text-foreground">Stop signals</h2>
-        <p className="mt-1 text-muted">
-          Stop and seek qualified assessment for severe pain, swelling, inability
-          to move or bear weight, numbness, or symptoms that persist or affect
-          performance.
-        </p>
-        <p className="mt-1 text-muted">{exercise.stopSignals.join("; ")}</p>
-      </section>
+      {/* Safety BEFORE the action (S15). */}
+      <div className="mt-6">
+        <SafetyNotice stopSignals={exercise.stopSignals} />
+      </div>
 
+      {/* Accessible video player (the action). Native controls, no autoplay. */}
+      <div className="mt-6">
+        <VideoPlayer
+          videoUrl={exercise.videoUrl}
+          posterUrl={exercise.posterUrl}
+          captionUrl={exercise.captionUrl}
+          transcriptUrl={exercise.transcriptUrl}
+          exerciseId={exercise.id}
+        />
+      </div>
+
+      {/* Steps are readable without playing the video. */}
       <section aria-label="Steps" className="mt-6">
         <h2 className="text-xl font-semibold text-foreground">Steps</h2>
         <ol className="mt-1 list-decimal pl-6 text-foreground">
@@ -66,7 +78,32 @@ export default async function ExercisePage({
         </ol>
       </section>
 
-      {/* Placeholder timer/completion: URL-driven (?done=1), refreshable, deep-linkable. */}
+      {/* Source / review / license — never hidden (S15 do-not-do). */}
+      <section aria-label="Source and review" className="mt-6">
+        <h2 className="text-xl font-semibold text-foreground">Source &amp; review</h2>
+        <p className="mt-1 text-muted">
+          Review status: {exercise.reviewStatus}
+          {exercise.reviewedBy ? ` · ${exercise.reviewedBy}` : ""}
+          {exercise.reviewedAt ? ` · ${exercise.reviewedAt}` : ""}
+        </p>
+        {exercise.sourceTitle ? (
+          <p className="text-muted">Source: {exercise.sourceTitle}</p>
+        ) : null}
+        {exercise.sourceUrl ? (
+          <p>
+            <a
+              className="underline hover:text-accent"
+              href={exercise.sourceUrl}
+              rel="noopener noreferrer"
+            >
+              Source link
+            </a>
+          </p>
+        ) : null}
+        <p className="text-muted">License: {exercise.licenseId || "[pending]"}</p>
+      </section>
+
+      {/* Completion placeholder; the real timer arrives in S16. */}
       <section aria-label="Timer (placeholder)" className="mt-8">
         {isDone ? (
           <p className="rounded-md border border-accent/50 p-3 text-foreground">
