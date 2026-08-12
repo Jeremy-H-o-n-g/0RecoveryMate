@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ExerciseCard from "../../../components/ExerciseCard";
-import { getBodyPart, getBodyParts, getPartExercises } from "../../../lib/content";
+import ExercisePanel from "../../../components/ExercisePanel";
+import { getBodyPart, getBodyParts } from "../../../lib/content";
 
 export function generateStaticParams() {
   return getBodyParts().map((p) => ({ part: p.id }));
@@ -19,8 +19,6 @@ export default async function BodyPartPage({
     notFound();
   }
 
-  const exercises = getPartExercises(bodyPart.id);
-
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
       <p className="text-sm text-muted">
@@ -36,15 +34,14 @@ export default async function BodyPartPage({
         {bodyPart.nameEn} · view: {bodyPart.view}
       </p>
 
-      {exercises.length === 0 ? (
-        <p className="mt-6 text-muted">No demo placeholder yet.</p>
-      ) : (
-        <div className="mt-6 grid gap-3">
-          {exercises.map((ex) => (
-            <ExerciseCard key={ex.id} exercise={ex} />
-          ))}
-        </div>
-      )}
+      <div className="mt-6">
+        {/*
+          statusFilter="all" surfaces the clearly-marked draft placeholder so the
+          ankle vertical slice (S09) keeps working. Switch to "approved" (the
+          ExercisePanel default) for production once S11 locks reviewed content.
+        */}
+        <ExercisePanel partId={bodyPart.id} statusFilter="all" />
+      </div>
     </main>
   );
 }

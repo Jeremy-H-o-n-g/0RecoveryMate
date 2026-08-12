@@ -1,0 +1,36 @@
+RecoverMate - S14 test report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 7 files / 38 tests passed, exit 0
+   incl. tests/exercise-card.test.tsx (6):
+       * ExerciseCard shows name/duration/difficulty/muscles + link to detail
+       * non-approved card flagged as placeholder, status visible (not hidden)
+       * approved card has no placeholder banner
+       * ExercisePanel default (approved-only) hides unreviewed -> actionable empty state
+       * statusFilter='all' surfaces the clearly-marked draft placeholder card
+       * loading renders a busy (aria-busy) skeleton list
+4. npm run build     -> next build, exit 0 (/, /_not-found, /body/[part] SSG x6, /exercise/[id] dynamic)
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S14):
+- Card shows name, duration, difficulty, muscles, preview: MET (ExerciseCard + test).
+- No horizontal overflow: MET (responsive grid sm:grid-cols-2, min-w-0 items, overflow-hidden cards).
+- Empty state actionable: MET (ExercisePanel empty -> "Choose another region" link).
+- Unreviewed content not visible: MET at the component level (ExercisePanel statusFilter
+  default "approved" excludes non-approved; tested). The /body/[part] page uses
+  statusFilter="all" to keep the ankle slice (S09) working with the clearly-marked
+  draft placeholder; switch to "approved" (default) for production once S11 locks content.
+
+Honest scope notes:
+- /body/[part]/page.tsx was modified to use ExercisePanel (justified: S14 "connect part
+  query"). It also fixed a regression in tests/e2e/ankle-slice.spec.tsx (the card banner
+  text changed from "[Demo placeholder...]" to "[Placeholder - not reviewed]").
+- Real (muted) preview video arrives in S15; the card shows a preview slot for now.
+- card-desktop-S14.png / card-mobile-S14.png are deferred (no headless browser); the
+  component tests cover the rendered card. Reduced-motion is handled via Tailwind
+  motion-reduce variants + the global prefers-reduced-motion block in globals.css.

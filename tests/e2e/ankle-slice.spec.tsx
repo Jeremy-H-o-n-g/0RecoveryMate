@@ -39,7 +39,7 @@ describe("ankle vertical slice (S09) - end-to-end data chain", () => {
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe(`/exercise/${ANKLE_EXERCISE_ID}`);
     // Placeholder is clearly marked (not medical content).
-    expect(screen.getByText(/\[Demo placeholder/i)).toBeDefined();
+    expect(screen.getByText(/\[Placeholder/i)).toBeDefined();
   });
 
   it("invalid exercise id yields null (404 path)", () => {
