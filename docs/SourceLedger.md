@@ -48,3 +48,15 @@ Final `licenseId` values, reviewer identities, and consent records are confirmed
 | `ankle-pilot-placeholder` | `draft` | Placeholder only; all source/license/review fields empty; `[professional-review-required]`. **Not publishable.** |
 
 No exercise is `approved` yet. The build gate (S10/S11) will reject a release that contains anything but `approved` rows.
+
+## 7. S11 status (source ledger + professional review) — BLOCKED
+- Candidate selection (2–3 per region, 12–18 total) and real source/license
+  entries are PENDING the student + a qualified reviewer. They are NOT
+  fabricated here.
+- No reviewer is named yet (DC-3) ⇒ no sign-off can be recorded (see
+  [`ContentReviewLog.md`](ContentReviewLog.md)). No item is `approved`.
+- Current entries: still only the `ankle-pilot-placeholder` draft (§6).
+- To unblock: name a reviewer (DC-3); the student records real, licensable
+  sources here and in `source-ledger-S11.csv`; the reviewer signs off per item;
+  then `reviewStatus: "approved"` may be set (the build gate enforces full
+  provenance + accessibility on approved rows).

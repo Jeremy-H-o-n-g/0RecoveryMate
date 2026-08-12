@@ -16,7 +16,7 @@ Unit title: 来源台账、专业审核与内容锁定
 Unit focus: Select 2–3 candidate exercises per region and lock the shootable list via source + professional review.
 Current prompt: `prompts/S11-Source-Review-and-Content-Lock.md`
 Prior-state requirement: S10 schema and publish gate passed.
-Status: **Activated — not yet started.** ⚠️ S11's core requires professional-review **sign-off** by a qualified reviewer; the reviewer is still unnamed (DC-3) and forging signatures is forbidden. The draftable parts (candidate exercises + source ledger) can proceed, but sign-off (`review-signoff-S11.pdf`) is blocked until a reviewer is named.
+Status: **In Progress — BLOCKED on a human decision (2026-08-10).** S11 requires professional-review **sign-off** by a qualified reviewer; the reviewer is still unnamed (DC-3) and forging signatures is forbidden. Sign-off (`review-signoff-S11.pdf`) and candidate-source selection cannot be completed until a reviewer is named + the student provides real sources. The review-log structure was created (`docs/ContentReviewLog.md`); S12 is NOT activated. See "S11 Blocker" below.
 
 ## Acceptance Criteria for Current Unit
 - Each of the six regions has at least 2 shootable candidate exercises.
@@ -34,7 +34,7 @@ Status: **Activated — not yet started.** ⚠️ S11's core requires profession
 - [x] S08 - BodyMap 状态、数据契约与路由
 - [x] S09 - 脚踝垂直切片验收
 - [x] S10 - 动作内容 Schema 与构建时校验
-- [ ] S11 - 来源台账、专业审核与内容锁定
+- [ ] S11 - 来源台账、专业审核与内容锁定  *(In Progress — blocked; see S11 Blocker)*
 - [ ] S12 - 拍摄规范、分镜与首条视频采集
 - [ ] S13 - 视频编辑、字幕、转录与媒体优化
 - [ ] S14 - 动作卡片、筛选与渐进呈现
@@ -62,34 +62,35 @@ Status: **Activated — not yet started.** ⚠️ S11's core requires profession
 - 2026-08-09 (S03): Formative usability protocol v1 in `docs/ResearchProtocol.md` (AB/BA, 5 per order; descriptive only; stop-at-any-time).
 - 2026-08-09 (S04): UX blueprint `docs/UXBlueprint.md`; state model `docs/StateModel.md`; `docs/Architecture.md` enhanced; `docs/ux-flow-S04.png`.
 - 2026-08-09 (S05): Next.js App Router project at repo root (genuine lockfile); versions in `setup-versions.txt`; four quality scripts pass; design tokens cover background/text/focus/accent/reduced-motion.
-- 2026-08-10 (S06): Front body SVG + `BodyPart`/`BodyMapFront` (accessible `<button>` hotspots) + tests; component testing set up (jsdom + Testing Library + user-event).
+- 2026-08-10 (S06): Front body SVG + `BodyPart`/`BodyMapFront` (accessible `<button>` hotspots) + tests; component testing set up.
 - 2026-08-10 (S07): Back body SVG + `BodyMapBack` (incl. lower-back) + `BodyMapSwitcher` (front/back toggle, aria-pressed, focus retention) + tests.
-- 2026-08-10 (S08): Type-safe data contract — `schemas/body-part.ts` (Zod), `data/body-parts.json` (6 regions), `lib/content.ts` (server-only query fns; excludes unreviewed), `app/body/[part]/page.tsx` (static route; notFound on invalid) + tests.
-- 2026-08-10 (S09): Ankle vertical slice wired end-to-end (no backend) — home(body map)→/body/ankle→ExerciseCard→/exercise/[id] (safety before action; `?done=1` completion; notFound on invalid); surfaces clearly-marked DRAFT placeholder; `tests/e2e/ankle-slice.spec.tsx`.
-- 2026-08-10 (S10): Exercise schema (`schemas/exercise.ts`, Zod) — structure/media/source/review/accessibility; difficulty is non-medical (movement complexity); `reviewStatus` required, never defaults to approved; approved requires full provenance + captions/transcript/stop-signals/steps (`.refine`). Build gate: `lib/content.ts` parses both files via Zod + body→exercise referential integrity at module load (bad refs fail the build). `data/exercises.json` is canonical; `scripts/validate-content.ts` (`npm run validate:content` via tsx) checks schema + dup ids + media; `validateContent()` exported for tests.
-- 2026-08-10 (S10): tsx devDep added; tsx/esbuild/unrs-resolver install scripts approved under npm allow-scripts.
+- 2026-08-10 (S08): Type-safe data contract — `schemas/body-part.ts`, `data/body-parts.json`, `lib/content.ts`, `app/body/[part]/page.tsx` + tests.
+- 2026-08-10 (S09): Ankle vertical slice wired end-to-end (no backend); surfaces clearly-marked DRAFT placeholder; `tests/e2e/ankle-slice.spec.tsx`.
+- 2026-08-10 (S10): Exercise schema (`schemas/exercise.ts`, Zod) + build-time content gate (`lib/content.ts` parses + referential integrity) + `scripts/validate-content.ts` (`npm run validate:content` via tsx). Difficulty is non-medical; approved requires full provenance + accessibility.
+- 2026-08-10 (S11, BLOCKED): `docs/ContentReviewLog.md` created (review process + log + the blocker) and `docs/SourceLedger.md` §7 added. S11 remains BLOCKED — no qualified reviewer is named (DC-3), 0 approved content, no fabricated sign-off/sources. S12 NOT activated.
 
 ## Known Issues
-- ⚠️ Exact qualified content reviewer is not yet named (DC-3) — blocks S11 sign-off.
+- ⚠️ Exact qualified content reviewer is not yet named (DC-3) — blocks S11 sign-off. S11 cannot complete until a reviewer is named + the student provides real, licensable sources.
 - SVG is self-authored (DC-2): student should save original-work proof + mentor confirmation (pending).
 - Media hosting remains local-first until the performance budget is measured.
 - Authoritative proposal PDF is 11 pages (canonical).
-- S01 ledger review and S02 policy wording were performed by the implementation partner; professional review (S11) pending.
-- S02 refusal test is a defined contract (not live); live enforcement via the build gate now wired (S10); page-level safety prompt in S15.
+- S01 ledger review and S02 policy wording were performed by the implementation partner; professional review (S11) blocked.
+- S02 refusal test is a defined contract (not live); build-time enforcement wired (S10); page-level safety prompt in S15.
 - S03 study execution pending (10 volunteers + consent, mentor task-wording review, pilot run).
 - S04 screens not yet hand-drawn/Figma'd; mentor info-priority review pending.
 - S05 `homepage-S05.png` pending (no headless browser). Production analytics remain off.
 - S06/S07 PNGs are SVG rasterizations; S07 `mobile-touch-S07.mp4` pending (real device).
 - S08 `route-evidence-S08.png` deferred (no browser).
 - S09 `ankle-slice-S09.mp4` deferred (real-browser walkthrough = student manual work). `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
-- S10: `data/sample/exercises.json` is superseded by `data/exercises.json` (kept for now). Current content is only the DRAFT ankle placeholder; no approved content yet (S11).
+- S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content is only the DRAFT ankle placeholder; no approved content (blocked → S11).
+- S11: candidate selection (2–3/region), `source-ledger-S11.csv`, and `review-signoff-S11.pdf` are pending a named reviewer + real student sources.
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. **S10:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 6 files / 32 tests passed exit 0 (incl. `tests/content-schema.test.ts`: schema accept/reject cases + `validateContent` referential/duplicate/media checks); `npm run validate:content` → "OK - no content errors." exit 0; `npm run build` exit 0 → **all PASS** (see `docs/content-validation-S10.txt`).
-- Manual: S01–S09 drafted/executed by implementation partner (sign-offs/reviews pending). S10 schema/validator authored by implementation partner; confirm-field-set-with-reviewer + difficulty-label-meaning + per-region counts are student manual work (pending).
-- Content/media: Schema + build gate done (S10); actual content fill + professional review is S11.
+- Automated: `node scripts/check-environment.mjs` → exit 0. S10 gates green (lint/typecheck/build/test 6 files-32 tests/`validate:content` OK). **S11 (blocked):** changes are docs-only; `npm run validate:content` → "OK - no content errors." exit 0; `npm run test` still 6 files / 32 tests passed. No content approval (0 approved; reviewer unnamed).
+- Manual: S01–S09 drafted/executed by implementation partner (sign-offs/reviews pending). S10 schema/validator authored by implementation partner. S11 (blocked): review-log + ledger status drafted by implementation partner; professional sign-off + source selection CANNOT proceed without a named reviewer (DC-3) + real student sources (not fabricated).
+- Content/media: Schema + build gate done (S10); actual content + professional review blocked (S11).
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle vertical slice implemented + verified (S09); content schema + gate done (S10); real content + review is S11.
+- End-to-end demo path: ankle vertical slice verified (S09); content schema + gate done (S10); real content + review blocked (S11).
 
 ## Completion notes (checkpoints)
 - S01 (2026-07-27): `dc9c0d6` → `3717579` → `d69336a`.
@@ -101,14 +102,15 @@ Status: **Activated — not yet started.** ⚠️ S11's core requires profession
 - S07 (2026-08-10): pre `42be299` → `ca0b543`.
 - S08 (2026-08-10): pre `ca0b543` → `9dbd94b`.
 - S09 (2026-08-10): pre `9dbd94b` → `6d95164`.
+- S10 (2026-08-10): pre `6d95164` → `299ba2a`.
 
-## S10 Completion Notes (completed 2026-08-10)
-- **Deliverables:** `schemas/exercise.ts` (Zod ExerciseSchema), `data/exercises.json` (canonical), `scripts/validate-content.ts` (`npm run validate:content`), `tests/content-schema.test.ts`; expanded `lib/content.ts` (parse + referential-integrity build gate) and `package.json` (validate:content + tsx); evidence `docs/content-validation-S10.txt`, `docs/schema-decisions-S10.md`.
-- **Acceptance:** (1) every published exercise has source/review/license/captions/transcript/stop-signals — MET (`.refine` for approved); (2) bad references block the build — MET (lib module-load gate + validate:content).
-- **Verification:** lint/typecheck/build exit 0; test 6 files / 32 tests; `validate:content` "OK - no content errors." → ALL PASS.
-- **Changed files (S10):** `schemas/exercise.ts`, `data/exercises.json`, `scripts/validate-content.ts`, `tests/content-schema.test.ts`, `lib/content.ts`, `package.json`, `package-lock.json`, `docs/content-validation-S10.txt`, `docs/schema-decisions-S10.md`, `TASKS.md`.
-- **Honest scope note:** schema/validator authored by implementation partner; no content is approved (reviewer unnamed → S11); `data/sample/exercises.json` superseded but kept.
-- **Checkpoints:** pre-S10 `6d95164`; S10 complete (this commit).
+## S11 Blocker (In Progress — blocked 2026-08-10)
+- S11 acceptance cannot pass without a **human decision**: name a qualified reviewer (DC-3) AND have the student provide real, licensable sources. Forging review signatures / inventing sources is forbidden.
+- **Done (honest, non-fabricated):** `docs/ContentReviewLog.md` (review process + log + the blocker), `docs/SourceLedger.md` §7 (S11 status).
+- **NOT done (blocked):** candidate selection (2–3/region, 12–18 total), professional sign-off, `source-ledger-S11.csv`, `review-signoff-S11.pdf`, any `approved` content.
+- **Status:** S11 is NOT marked complete; S12 is NOT activated. Per S11's stop condition ("stop when a blocker requires a human decision").
+- **Rollback:** pre-S11 `299ba2a`.
+- **To unblock:** (1) name a qualified reviewer (DC-3); (2) student records real sources in `docs/SourceLedger.md` + `source-ledger-S11.csv`; (3) reviewer records approve/modify/reject in `docs/ContentReviewLog.md`; (4) capture `review-signoff-S11.pdf`; (5) then set `approved` in `data/exercises.json` (build gate enforces full provenance + accessibility).
 
 ## Next Unit
-- S12 - 拍摄规范、分镜与首条视频采集; shoot spec, storyboard, and first video capture only. (S11 is now the active unit; do not implement S11 or S12 until opened.)
+- S12 - 拍摄规范、分镜与首条视频采集; shoot spec, storyboard, and first video capture only. **NOT activated** — S11 is the current unit and is blocked. Do not implement S12 until S11 is unblocked and passes.
