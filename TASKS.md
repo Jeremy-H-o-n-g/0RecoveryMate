@@ -11,17 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S16
-Unit title: 环形计时器状态机与数学验证
-Unit focus: Implement idle/running/paused/complete/reset states with structured, drift-free timer math; verify the circular progress.
-Current prompt: `prompts/S16-Timer-State-Machine.md`
-Prior-state requirement: S15 player and exercise data are stable.
-Status: **Activated — not yet started.** S16 is pure code (no content dependency). Do not implement until S16 is opened.
+Unit code: S17
+Unit title: 分步指引、播放器与计时同步
+Unit focus: Coordinate the video player, step highlighting, and timer under user control; keep them consistent on pause/seek; allow manual step navigation.
+Current prompt: `prompts/S17-Step-Video-Timer-Synchronization.md`
+Prior-state requirement: S16 timer state machine tests passed.
+Status: **Activated — not yet started.** S17 is code (a session controller coordinating the S15 player + S16 timer + steps). Do not implement until S17 is opened.
 
 ## Acceptance Criteria for Current Unit
-- State transitions are deterministic and repeatable.
-- Visual progress matches the remaining time.
-- The completion event fires exactly once.
+- Pausing the video also pauses the timer.
+- The user can manually adjust the current step.
+- Any exception can be safely reset.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -39,7 +39,7 @@ Status: **Activated — not yet started.** S16 is pure code (no content dependen
 - [ ] S13 - 视频编辑、字幕、转录与媒体优化 *(PARKED — spec drafted; editing deferred)*
 - [x] S14 - 动作卡片、筛选与渐进呈现
 - [x] S15 - 动作详情路由与可访问视频播放器
-- [ ] S16 - 环形计时器状态机与数学验证
+- [x] S16 - 环形计时器状态机与数学验证
 - [ ] S17 - 分步指引、播放器与计时同步
 - [ ] S18 - 完成反馈、粒子效果与减少动画
 - [ ] S19 - 响应式集成、错误状态与第一轮回归
@@ -64,9 +64,10 @@ Status: **Activated — not yet started.** S16 is pure code (no content dependen
 - 2026-08-09 (S05): Next.js App Router project (genuine lockfile); design tokens; four quality scripts pass.
 - 2026-08-10 (S06–S10): front/back body maps + switcher (S06/S07); type-safe data contract + `/body/[part]` route (S08); ankle vertical slice (S09); exercise schema + build-time content gate + `validate:content` (S10).
 - 2026-08-10 (user direction): S11/S12/S13 (real-world content-production) are parked — reviewer `<<REVIEWER_NAME_TBD>>`, capture, editing deferred (not fabricated); specs/templates drafted. Code sessions S14+ proceed against placeholder content.
-- 2026-08-10 (S12/S13, spec drafted): `docs/VideoProductionProtocol.md`, `docs/VideoPostProductionProtocol.md`, `media/production-log.csv`, `media/raw/README.md`, `public/{videos,captions,transcripts}/README.md`, `docs/media-report-S13.txt`, `docs/caption-review-S13.md`. Capture/editing pending.
-- 2026-08-10 (S14, COMPLETE): `components/ExerciseCard.tsx` enhanced + `components/ExercisePanel.tsx` (approved-only filter default, skeleton/empty/error); wired into `/body/[part]`; `tests/exercise-card.test.tsx`. All gates pass.
-- 2026-08-10 (S15, COMPLETE): `components/VideoPlayer.tsx` (native `<video controls>`, no autoplay, `<track>` captions, poster, transcript link, graceful no-video fallback), `components/SafetyNotice.tsx` (stop signals, rendered before the action — the page-level safety prompt), `app/exercise/[id]/page.tsx` (safety before action, player, steps readable without video, source/review/license shown, invalid→notFound), `tests/exercise-page.test.tsx`. All gates pass.
+- 2026-08-10 (S12/S13, spec drafted): production/post-production protocols + media/log/templates; capture/editing pending.
+- 2026-08-10 (S14, COMPLETE): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter default, skeleton/empty/error); wired into `/body/[part]`; tests.
+- 2026-08-10 (S15, COMPLETE): `VideoPlayer` (native controls, no autoplay, `<track>` captions, transcript, graceful fallback), `SafetyNotice` (before action), enhanced exercise detail page; tests.
+- 2026-08-10 (S16, COMPLETE): `lib/timer-math.ts` (pure ratios/remaining/ring/clamp), `hooks/useExerciseTimer.ts` (drift-free state machine; completion once in effect; refs only in effects/handlers), `components/Timer.tsx` (SVG ring + controls + reduced-motion), `tests/timer.test.ts` (math boundaries + fake-timer hook tests). All gates pass.
 
 ## Known Issues
 - ⚠️ Qualified content reviewer not yet named (DC-3) — S11 parked (`<<REVIEWER_NAME_TBD>>`); S11 sign-off + sources deferred. S12 capture + S13 editing deferred (need footage).
@@ -76,38 +77,33 @@ Status: **Activated — not yet started.** S16 is pure code (no content dependen
 - Authoritative proposal PDF is 11 pages (canonical).
 - S02 refusal test is a defined contract (not live); build-time enforcement wired (S10); page-level safety prompt implemented (S15).
 - S03 study execution pending; S04 screens not yet hand-drawn/Figma'd.
-- Deferred screenshots/recordings (no headless browser / real device): `homepage-S05.png`, `route-evidence-S08.png`, S06/S07 PNGs (SVG rasterizations), `mobile-touch-S07.mp4`, `ankle-slice-S09.mp4`, `card-desktop-S14.png`, `card-mobile-S14.png`, `exercise-page-S15.png`.
+- Deferred screenshots/recordings (no headless browser / real device): `homepage-S05.png`, `route-evidence-S08.png`, S06/S07 PNGs (SVG rasterizations), `mobile-touch-S07.mp4`, `ankle-slice-S09.mp4`, `card-desktop-S14.png`, `card-mobile-S14.png`, `exercise-page-S15.png`, `timer-demo-S16.mp4`.
 - S09 `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
 - S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content is only the DRAFT ankle placeholder; no approved content.
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. **S15:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 8 files / 43 tests passed exit 0 (incl. `tests/exercise-page.test.tsx`: VideoPlayer controls/no-autoplay/track + fallback, SafetyNotice, valid page renders steps+safety, invalid→notFound); `npm run build` exit 0 → **all PASS** (see `docs/a11y-video-S15.md`).
-- Manual: S01–S10 + S14 + S15 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S15 player/safety authored by implementation partner; on-device fullscreen + keyboard + caption walk-throughs are student manual work (pending real media).
-- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) done; content review (S11) + capture (S12) + editing (S13) real-world pending.
+- Automated: `node scripts/check-environment.mjs` → exit 0. **S16:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 9 files / 52 tests passed exit 0 (incl. `tests/timer.test.ts`: math boundaries 0/1/T/T+1 + ring/clamp; `useExerciseTimer` transitions, paused-doesn't-decrement, completion-once, reset-re-enables); `npm run build` exit 0 → **all PASS** (see `docs/timer-tests-S16.txt`).
+- Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 timer math/hook authored by implementation partner; stopwatch spot-checks (30/60/90s), tab-switch, and SR cadence are student manual work.
+- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) done; content review (S11) + capture (S12) + editing (S13) real-world pending.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15); timer next (S16).
+- End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15) → timer (S16); player+timer+steps sync next (S17).
 
 ## Completion notes (checkpoints)
 - S01: `dc9c0d6` → `3717579` → `d69336a`. · S02: `d69336a` → `99b410d`. · S03: `99b410d` → `7d51f58`.
 - S04: `7d51f58` → `e44248d`. · S05: `2deec09` → `c2e4431`. · S06: `c2e4431` → `682d828` → `42be299`.
 - S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
-- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → (this commit).
+- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → (this commit).
 
 ## S11 / S12 / S13 — parked (content-production, deferred per user direction)
-- S11: reviewer `<<REVIEWER_NAME_TBD>>`; `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7 done; sign-off + sources deferred.
-- S12: `docs/VideoProductionProtocol.md` + `media/production-log.csv` + `media/raw/README.md` done; filming deferred.
-- S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md` done; editing deferred.
-- These unblock when a reviewer is named (DC-3) + the student films/edits real footage.
+- S11: reviewer `<<REVIEWER_NAME_TBD>>`; `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred.
+- S12: `docs/VideoProductionProtocol.md` + `media/production-log.csv` + `media/raw/README.md`; filming deferred.
+- S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md`; editing deferred.
+- Unblock when a reviewer is named (DC-3) + the student films/edits real footage.
 
-## S14 Completion Notes (completed 2026-08-10)
-- Enhanced `ExerciseCard`; new `ExercisePanel` (approved-only filter default + skeleton/empty/error); wired into `/body/[part]`; `tests/exercise-card.test.tsx`; fixed S09 banner-text regression. Checkpoint: `6e5fde0`.
-
-## S15 Completion Notes (completed 2026-08-10)
-- **Deliverables:** `components/VideoPlayer.tsx`, `components/SafetyNotice.tsx`, enhanced `app/exercise/[id]/page.tsx`, `tests/exercise-page.test.tsx`; evidence `docs/a11y-video-S15.md`.
-- **Acceptance:** no JS exceptions — MET; captions enableable (`<track>`) — MET; steps readable without video — MET; safety notice before action — MET.
-- **Verification:** lint/typecheck/build exit 0; test 8 files / 43 tests → ALL PASS.
-- **Changed files (S15):** `components/VideoPlayer.tsx`, `components/SafetyNotice.tsx`, `app/exercise/[id]/page.tsx`, `tests/exercise-page.test.tsx`, `docs/a11y-video-S15.md`, `TASKS.md`.
-- **Honest scope note:** native controls (no custom); no autoplay; no tracking; `exercise-page-S15.png` deferred (no browser); real captions/transcript arrive with S13 footage.
+## S14 / S15 / S16 Completion Notes (completed 2026-08-10)
+- **S14** (`6e5fde0`): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter, states); wired into `/body/[part]`; tests.
+- **S15** (`ce582f4`): `VideoPlayer` (native controls, no autoplay, captions, transcript, fallback) + `SafetyNotice` (before action) + enhanced detail page; tests.
+- **S16** (this commit): `lib/timer-math.ts` + `hooks/useExerciseTimer.ts` (drift-free FSM, completion once) + `components/Timer.tsx` + `tests/timer.test.ts`; evidence `docs/timer-tests-S16.txt`. Acceptance met (deterministic transitions; visual progress = remaining; completion once). Timer not yet wired into the flow (S17).
 
 ## Next Unit
-- S17 - 分步指引、播放器与计时同步; step guidance, player, and timer synchronization only. (S16 is now the active unit; do not implement S16 or S17 until opened.)
+- S18 - 完成反馈、粒子效果与减少动画; completion feedback, particle effects, reduced motion only. (S17 is now the active unit; do not implement S17 or S18 until opened.)

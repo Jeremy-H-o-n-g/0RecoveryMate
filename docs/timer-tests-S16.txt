@@ -1,0 +1,37 @@
+RecoverMate - S16 timer test report
+Generated: 2026-08-10
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 9 files / 52 tests passed, exit 0
+   incl. tests/timer.test.ts:
+     - math boundaries: 0 / 1 / T / T+1 elapsed, remaining, ring geometry, clamp
+     - useExerciseTimer:
+         * idle -> running -> complete; completion fires exactly once
+         * paused time does not count toward elapsed
+         * reset returns to idle with full remaining and re-enables completion
+4. npm run build     -> next build, exit 0
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S16):
+- Deterministic, repeatable state transitions: MET (idle/running/paused/complete/reset; tested).
+- Visual progress matches remaining time: MET (ringGeometry: dashoffset = circumference *
+  elapsedRatio; the ring is driven by the remainingMs state; boundary-tested).
+- Completion event fires exactly once: MET (completedRef guard; tested with fake timers).
+
+Design notes (S16 do-not-do honored):
+- Drift-free: time is computed from Date.now() timestamps, NOT from the setInterval tick
+  count (the interval only re-renders for display). Background-tab throttling therefore
+  does not cause drift — remaining time is recomputed from real elapsed time.
+- The completion side-effect fires in a useEffect (not during render) and exactly once.
+- Refs are read/written only inside effects and event handlers (satisfies react-hooks/refs).
+- The Timer is a self-contained, unit-tested component; wiring it into the exercise flow
+  (player + steps sync) is S17.
+
+Deferred evidence (NOT fabricated):
+- timer-demo-S16.mp4: a screen recording needs a browser; pending.
+- Stopwatch spot-checks (30/60/90s), tab-switch behavior, and screen-reader remaining-time
+  cadence are student manual work.
