@@ -34,9 +34,9 @@ Status: **Activated — not yet started.** S18 is code (completion feedback laye
 - [x] S08 - BodyMap 状态、数据契约与路由
 - [x] S09 - 脚踝垂直切片验收
 - [x] S10 - 动作内容 Schema 与构建时校验
-- [ ] S11 - 来源台账、专业审核与内容锁定 *(PARKED — `<<REVIEWER_NAME_TBD>>`; sign-off deferred)*
-- [ ] S12 - 拍摄规范、分镜与首条视频采集 *(PARKED — spec drafted; capture deferred)*
-- [ ] S13 - 视频编辑、字幕、转录与媒体优化 *(PARKED — spec drafted; editing deferred)*
+- [ ] S11 - 来源台账、专业审核与内容锁定 *(PARKED — reviewer authorization pending; user will supply when obtained)*
+- [x] S12 - 拍摄规范、分镜与首条视频采集 *(PASSED 2026-08-14 per user direction: placeholder-media strategy; protocol + log/templates drafted; real capture deferred and swappable in later; production log honestly empty)*
+- [ ] S13 - 视频编辑、字幕、转录与媒体优化 *(PARKED — spec drafted; editing deferred until real footage; student review checklist defined in `docs/caption-review-S13.md`)*
 - [x] S14 - 动作卡片、筛选与渐进呈现
 - [x] S15 - 动作详情路由与可访问视频播放器
 - [x] S16 - 环形计时器状态机与数学验证
@@ -69,10 +69,15 @@ Status: **Activated — not yet started.** S18 is code (completion feedback laye
 - 2026-08-10 (S15, COMPLETE): `VideoPlayer` (native controls, no autoplay, `<track>` captions, transcript, graceful fallback), `SafetyNotice` (before action), enhanced exercise detail page; tests.
 - 2026-08-10 (S16, COMPLETE): `lib/timer-math.ts` (pure ratios/remaining/ring/clamp), `hooks/useExerciseTimer.ts` (drift-free state machine; completion once in effect; refs only in effects/handlers), `components/Timer.tsx` (SVG ring + controls + reduced-motion), `tests/timer.test.ts` (math boundaries + fake-timer hook tests). All gates pass.
 - 2026-08-14 (S17, COMPLETE): `hooks/useExerciseSession.ts` (session controller; ONE timer; media events lead, controls delegate to the video; idempotent play sync; step timer per step; no forced advance; media errors surfaced), `components/StepIndicator.tsx` (aria-current highlight, click + Arrow/Home/End keyboard nav, clamped), `components/ExerciseSession.tsx` (client composition: native-controls video + steps + timer ring + live status + safe Stop/Reset), `tests/exercise-session.test.tsx` (16 tests). All gates pass.
+- 2026-08-14 (user direction): `Manual_Instructions.md` committed as DRAFT content source (student-authored; NOT reviewed): 18 exercise entries across all six regions (17 unique — 腰背 婴儿式 #1/#3 to merge when converting), 通用要点 (3 general safety points), 7-sport→sore-region table. Raw material for S20 (12–18 exercises) + S21 sport entries. Becomes reviewable S11 input once the reviewer is authorized.
+- 2026-08-14 (user direction, feature backlog): (a) user-adjustable circular timer with configurable defaults — extends the S16/S17 timer; unit assignment pending (candidate: S22 user-control scope or a dedicated unit; decide before S22). (b) body-map hotspot → show which sports mainly use those muscles (S21 scope, needs the sport table above).
+- 2026-08-14 (user direction): S12 PASSED via placeholder-media strategy — no filming required to proceed; real videos swap in later through the existing local-media pipeline (`public/videos/<id>.mp4` + `videoUrl` in `data/exercises.json`; no CMS per DC). `media/production-log.csv` stays empty until real takes exist (nothing fabricated).
+- 2026-08-14 (user direction): S11 remains parked — the user will provide reviewer authorization when obtained; until then no content may be marked `approved` (build gate enforces).
 
 ## Known Issues
-- ⚠️ Qualified content reviewer not yet named (DC-3) — S11 parked (`<<REVIEWER_NAME_TBD>>`); S11 sign-off + sources deferred. S12 capture + S13 editing deferred (need footage).
-- S11/S12/S13 are real-world content-production sessions; their review/capture/editing cannot be done or fabricated. Code sessions S14+ proceed against placeholder content; real media/review swapped in when S11–S13 unblock.
+- ⚠️ Qualified content reviewer not yet authorized (DC-3) — S11 parked (user will supply authorization; `<<REVIEWER_NAME_TBD>>` until then); sign-off + sources deferred. No content may be marked `approved` before that (build gate + policy).
+- S12 passed via placeholder media (2026-08-14 user direction): code proceeds with empty/placeholder `videoUrl`s; real videos are dropped into `public/videos/<id>.mp4` + referenced in `data/exercises.json` when captured — no pipeline change needed. S13 editing deferred until real footage exists; its review checklist is ready (`docs/caption-review-S13.md`).
+- S11/S13 are the remaining real-world content-production sessions; review/editing cannot be done or fabricated. Code sessions proceed against placeholder content; real media/review swapped in when they unblock.
 - SVG is self-authored (DC-2): student should save original-work proof + mentor confirmation (pending).
 - Media hosting remains local-first (DC-5) until the performance budget (S24).
 - Authoritative proposal PDF is 11 pages (canonical).
@@ -87,7 +92,7 @@ Status: **Activated — not yet started.** S18 is code (completion feedback laye
 ## Last Test Evidence
 - Automated: `node scripts/check-environment.mjs` → exit 0. **S17:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 10 files / 68 tests passed exit 0 (incl. `tests/exercise-session.test.tsx`: player/timer sync, controls-delegate-to-video, ended-no-auto-advance, seek-does-not-perturb, media-error-surfaced, step-completion-once-no-advance, manual-step-fresh-timer, safe-reset, no-video fallback, keyboard nav + clamping); `npm run build` exit 0 → **all PASS** (see `docs/test-report-S17.txt`).
 - Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 stopwatch spot-checks/tab-switch/SR cadence pending. S17 session authored + tested by implementation partner; first-video walk-through, pause-then-read-steps, and classmate state-clarity check are student manual work (pending).
-- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) + session sync (S17) done; content review (S11) + capture (S12) + editing (S13) real-world pending.
+- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) + session sync (S17) done; S12 passed via placeholder (2026-08-14); content review (S11 — awaiting reviewer auth) + editing (S13 — awaiting footage) real-world pending; `Manual_Instructions.md` committed as draft content source.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
 - End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15) → timer (S16) → session sync (S17, unit-level); completion feedback next (S18).
 
@@ -97,11 +102,11 @@ Status: **Activated — not yet started.** S18 is code (completion feedback laye
 - S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
 - S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → (this commit).
 
-## S11 / S12 / S13 — parked (content-production, deferred per user direction)
-- S11: reviewer `<<REVIEWER_NAME_TBD>>`; `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred.
-- S12: `docs/VideoProductionProtocol.md` + `media/production-log.csv` + `media/raw/README.md`; filming deferred.
-- S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md`; editing deferred.
-- Unblock when a reviewer is named (DC-3) + the student films/edits real footage.
+## S11 / S13 — parked; S12 passed via placeholder (content-production, per user directions)
+- S11: reviewer authorization pending (user to supply); `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred. `Manual_Instructions.md` (committed) is the draft content the reviewer will review.
+- S12 (PASSED 2026-08-14, placeholder strategy): `docs/VideoProductionProtocol.md` + `media/production-log.csv` + `media/raw/README.md` remain the capture pipeline; filming deferred, videos uploadable later via local files + `videoUrl` (no CMS).
+- S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md`; editing deferred until real footage; the student review checklist is defined and waiting.
+- Unblock S11 when reviewer authorization arrives; unblock S13 when real footage exists.
 
 ## S14 / S15 / S16 / S17 Completion Notes (S14–S16 completed 2026-08-10; S17 completed 2026-08-14)
 - **S14** (`6e5fde0`): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter, states); wired into `/body/[part]`; tests.
