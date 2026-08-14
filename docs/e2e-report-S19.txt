@@ -1,0 +1,63 @@
+RecoverMate - S19 responsive integration + regression test report
+Generated: 2026-08-14
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 12 files / 86 tests passed, exit 0
+   incl. tests/e2e/core-flow.spec.tsx (10 tests) - the core regression suite:
+     - home renders the body-map entry point (with next/navigation mocked)
+     - region page -> placeholder card -> detail link chain (no break)
+     - detail integrates safety + S17 session: exactly ONE level-2 Steps
+       heading, step button, step timer, Stop/Reset exit, no-video fallback
+     - back path computed from the OWNING region (fixes the S09 hardcoded
+       /body/ankle): /body/ankle for the placeholder
+     - completion is user-confirmed + URL-driven: "?done=1" link only after
+       user taps; done=1 renders the S18 static cue (reduced motion) with
+       user-chosen next links; nothing auto-completes or auto-navigates
+     - media failure recoverable in the integrated session: error surfaced,
+       steps stay usable, Stop/Reset clears the error
+     - ErrorState: role=alert, non-diagnostic copy (asserted free of
+       injury/sprain/diagnose wording), recovery actions present
+     - responsive contract: pages use mobile-first fluid widths + breakpoint
+       paddings (px-4 / sm:px-6); NO overflow-x-hidden anywhere in the route
+       pages or globals.css (S19 do-not-do: never mask layout errors)
+     - console stays clean across home/region/detail/done renders
+4. npm run build     -> next build, exit 0 (routes unchanged; /exercise/[id]
+   still dynamic for ?done=)
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S19):
+- Ankle slice at three viewports: STRUCTURALLY MET (fluid containers,
+  breakpoint paddings, no horizontal-scroll hacks - asserted); the real
+  375/768/1280 walkthrough is the student's responsive-matrix-S19.pdf (pending
+  placeholder per user direction - not fabricated).
+- Error states have a next step: MET (ErrorState with recovery links for
+  degenerate content; media errors recoverable in-session; invalid ids still
+  404 as before).
+- Visual state not lost: MET (completion persists in the URL ?done=1 -
+  refreshable/deep-linkable; step state is in-page by S17 design).
+
+Integration notes:
+- /exercise/[id] now runs the REAL stack: SafetyNotice -> ExerciseSession
+  (video + steps + timer, S17) -> user-confirmed ?done=1 -> CompletionFeedback
+  (S18). The S15 placeholder timer block and "Complete (placeholder)" are gone.
+- The page's own static Steps section was REPLACED by the session's
+  StepIndicator (single Steps heading - also keeps the S15 test contract).
+- Back link generalized to the exercise's owning region (bodyParts lookup).
+- ErrorState guards degenerate draft content (steps: [] is schema-valid for
+  drafts and would break the session) - a real S20 bulk-content risk.
+- Lazy-confetti proof (deferred from S18): canvas-confetti now referenced by a
+  route, and the build keeps it in its OWN chunk (3orrfx3-5ebwo.js) separate
+  from the component chunk (1zfj6-if05mr-.js); the only reference is the
+  dynamic import() inside ConfettiEffect, so it is fetched at fire time, never
+  at page load. (Turbopack's route->chunk manifest is inconclusive; the
+  two-chunk split + dynamic-import-only reference is the evidence.)
+- NOT done (out of S19 allowlist, still open): unifying ExerciseSession's
+  media element with VideoPlayer (component files were not in scope).
+
+Deferred evidence (placeholders, student will supply - per user direction):
+- responsive-matrix-S19.pdf: three-viewport manual walkthrough.
+- Manual checks: low-speed network simulation; real-phone touch testing.

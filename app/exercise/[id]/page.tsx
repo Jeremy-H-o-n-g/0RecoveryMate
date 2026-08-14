@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CompletionFeedback from "../../../components/CompletionFeedback";
+import ErrorState from "../../../components/ErrorState";
+import ExerciseSession from "../../../components/ExerciseSession";
 import SafetyNotice from "../../../components/SafetyNotice";
-import VideoPlayer from "../../../components/VideoPlayer";
-import { getExercise, getExerciseIds } from "../../../lib/content";
+import { bodyParts, getExercise, getExerciseIds } from "../../../lib/content";
 
 export function generateStaticParams() {
   return getExerciseIds().map((id) => ({ id }));
@@ -26,11 +28,22 @@ export default async function ExercisePage({
   const isDone = done === "1";
   const isPlaceholder = exercise.reviewStatus !== "approved";
 
+  // Owning body part for the back path (replaces the S09 hardcoded
+  // /body/ankle; every state keeps an explicit return route - S19).
+  const owningPart = bodyParts.find((p) => p.exerciseIds.includes(exercise.id));
+  const partHref = owningPart ? `/body/${owningPart.id}` : "/";
+  const partLabel = owningPart ? `Back to ${owningPart.nameEn}` : "Back to home";
+
+  // Degenerate-content guard: `steps: []` is schema-valid for DRAFT records
+  // (a real risk once S20 bulk-adds 17 entries) but would render an unusable
+  // session. Recoverable ErrorState instead of a broken experience (S19).
+  const contentIncomplete = exercise.steps.length === 0;
+
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
+    <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
       <p className="text-sm text-muted">
-        <Link href="/body/ankle" className="underline hover:text-accent">
-          Back
+        <Link href={partHref} className="underline hover:text-accent">
+          {partLabel}
         </Link>
       </p>
 
@@ -44,7 +57,7 @@ export default async function ExercisePage({
         </p>
       )}
 
-      <h1 className="mt-4 text-3xl font-semibold text-accent">
+      <h1 className="mt-4 break-words text-2xl font-semibold text-accent sm:text-3xl">
         {exercise.nameZh}
       </h1>
       <p className="mt-1 text-muted">
@@ -57,26 +70,64 @@ export default async function ExercisePage({
         <SafetyNotice stopSignals={exercise.stopSignals} />
       </div>
 
-      {/* Accessible video player (the action). Native controls, no autoplay. */}
-      <div className="mt-6">
-        <VideoPlayer
-          videoUrl={exercise.videoUrl}
-          posterUrl={exercise.posterUrl}
-          captionUrl={exercise.captionUrl}
-          transcriptUrl={exercise.transcriptUrl}
-          exerciseId={exercise.id}
-        />
-      </div>
+      {contentIncomplete ? (
+        /* Recoverable failure: explicit next steps, no self-assessment
+           language, safety copy above stays visible (S19). */
+        <div className="mt-6">
+          <ErrorState
+            title="This exercise isn't ready to display"
+            message="The steps for this exercise are incomplete, so the guided session can't start. This is a content issue on our side — it will be available after review."
+          >
+            <Link
+              href={partHref}
+              className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+            >
+              {partLabel}
+            </Link>
+            <Link
+              href="/"
+              className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
+            >
+              Home
+            </Link>
+          </ErrorState>
+        </div>
+      ) : (
+        <>
+          {/* Guided session: video + steps + timer coordinated under user
+              control (S17), wired into the flow here (S19). */}
+          <ExerciseSession
+            steps={exercise.steps}
+            stepDurationSeconds={exercise.durationSeconds}
+            videoUrl={exercise.videoUrl}
+            posterUrl={exercise.posterUrl}
+            captionUrl={exercise.captionUrl}
+            transcriptUrl={exercise.transcriptUrl}
+          />
 
-      {/* Steps are readable without playing the video. */}
-      <section aria-label="Steps" className="mt-6">
-        <h2 className="text-xl font-semibold text-foreground">Steps</h2>
-        <ol className="mt-1 list-decimal pl-6 text-foreground">
-          {exercise.steps.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ol>
-      </section>
+          {/* Completion is USER-CONFIRMED (tap the link); ?done=1 keeps the
+              state in the URL (refreshable/deep-linkable). Feedback + optional
+              confetti arrive from S18; the next step is a user choice. */}
+          <section aria-label="Finish exercise" className="mt-8">
+            {isDone ? (
+              <CompletionFeedback
+                triggerKey={exercise.id}
+                nextHref={partHref}
+                nextLabel={partLabel}
+                backHref="/"
+                backLabel="Home"
+              />
+            ) : (
+              <Link
+                href="?done=1"
+                className="inline-block rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+              >
+                Mark exercise complete
+              </Link>
+            )}
+          </section>
+        </>
+      )}
 
       {/* Source / review / license — never hidden (S15 do-not-do). */}
       <section aria-label="Source and review" className="mt-6">
@@ -101,22 +152,6 @@ export default async function ExercisePage({
           </p>
         ) : null}
         <p className="text-muted">License: {exercise.licenseId || "[pending]"}</p>
-      </section>
-
-      {/* Completion placeholder; the real timer arrives in S16. */}
-      <section aria-label="Timer (placeholder)" className="mt-8">
-        {isDone ? (
-          <p className="rounded-md border border-accent/50 p-3 text-foreground">
-            Complete ✓ (placeholder)
-          </p>
-        ) : (
-          <Link
-            href="?done=1"
-            className="inline-block rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
-          >
-            Start / Mark complete (placeholder)
-          </Link>
-        )}
       </section>
     </main>
   );
