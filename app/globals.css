@@ -14,6 +14,7 @@
   --accent-2: #7c5cff;     /* neon violet accent */
   --focus: #ffd24d;        /* high-visibility focus ring */
   --border: #1c2740;       /* hairline border */
+  --success: #4ade80;      /* completion state (paired with shape + text, never color alone) */
   --motion-scale: 1;       /* reduced-motion toggle (1 = motion enabled) */
 }
 
@@ -25,6 +26,7 @@
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
   --color-focus: var(--focus);
+  --color-success: var(--success);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -56,4 +58,35 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+  /* S18: completion feedback is a static cue under reduced motion — no bounce,
+   * no particles (ConfettiEffect also self-checks and never loads the library). */
+  .completion-bounce {
+    animation: none !important;
+  }
+}
+
+/*
+ * S18: one-shot completion feedback.
+ * Gentle single bounce (no flashing, no looping); amplitude scales with
+ * --motion-scale so it is a no-op under reduced motion even before the media
+ * query above kills the animation entirely.
+ */
+@keyframes completion-bounce {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(calc(1 + 0.12 * var(--motion-scale)));
+  }
+  70% {
+    transform: scale(calc(1 - 0.04 * var(--motion-scale)));
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.completion-bounce {
+  animation: completion-bounce 0.6s ease-out 1;
+  transform-origin: center;
 }

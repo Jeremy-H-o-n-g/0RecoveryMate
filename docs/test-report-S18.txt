@@ -1,0 +1,65 @@
+RecoverMate - S18 completion feedback test report
+Generated: 2026-08-14
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0 (no warnings)
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 11 files / 76 tests passed, exit 0
+   incl. tests/completion-feedback.test.tsx (8 tests):
+     - static cue: role="status" announced, non-clinical default copy (asserted
+       free of heal/cure/treat/guarantee wording), decorative aria-hidden ring,
+       next/back rendered as user-clicked links
+     - no forced redirect: ZERO timers scheduled after mount and after 5s
+       advanced (the "forced 3s jump" pattern cannot occur; also verified absent
+       from the codebase by grep - only user-initiated router.push on the home
+       hotspot exists)
+     - reduced motion: static cue intact, no completion-bounce class, confetti
+       never called (component gate AND ConfettiEffect's own media check)
+     - motion allowed: one-shot bounce class applied
+     - idempotency: confetti fires exactly once per triggerKey across
+       re-renders; a NEW key re-arms and fires exactly once more; the library is
+       called with disableForReducedMotion: true as a second guard
+     - disabled prop: nothing fires
+     - dynamic import failure fallback: mocked module failure -> no particles,
+       no crash, static cue + user actions still present
+4. npm run build     -> next build, exit 0
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S18):
+- Effects trigger only once: MET (firedForRef keyed by triggerKey; tested across
+  re-renders; new completion re-arms).
+- Reduced motion = no particles/scaling: MET (skip at both component and effect
+  level; CSS media query kills the bounce animation as a third guard; the
+  keyframe amplitude also scales with --motion-scale, which is 0 under reduced
+  motion).
+- User controls the next step: MET (actions are plain links; the component
+  schedules no timers and performs no navigation - tested via getTimerCount 0).
+
+Design notes (S18 do-not-do honored):
+- canvas-confetti (+@types) added as a dependency and loaded ONLY via dynamic
+  import() inside ConfettiEffect - never in a first-screen bundle. Verified in
+  the current build output: the library string appears in NO chunk because no
+  route references CompletionFeedback yet; when S19 wires it into
+  /exercise/[id], Turbopack will emit it as a separate async chunk. Bundle-level
+  proof deferred to S19 (honestly noted, not claimed now).
+- Import/runtime failure of the decorative effect degrades silently BY DESIGN
+  to the static cue (S18 fallback requirement); this is not error suppression -
+  health/media/test errors remain unsuppressed elsewhere.
+- No flashing: one gentle 0.6s bounce, amplitude motion-scaled; the success
+  state is text + check shape + green (--success token added to the S05 token
+  set) - never color or motion alone.
+- Copy safety: "at your own pace... doesn't require pushing through pain" -
+  the reward celebrates pacing, not pain-pushing; no treatment claims.
+- "Remove forced 3s redirect": no such redirect exists in the codebase
+  (grep-verified); a regression test now enforces zero scheduled timers.
+- CompletionFeedback is self-contained and unit-tested here (like Timer in S16
+  / ExerciseSession in S17); wiring it into the exercise flow is S19.
+
+Deferred evidence (NOT fabricated):
+- completion-normal-S18.mp4 / completion-reduced-S18.mp4: need a real browser
+  and OS-level reduced-motion toggling; pending.
+- Student manual work pending: test under normal AND reduced-motion system
+  settings; check particles never obscure safety controls; verify the next
+  exercise step is user-confirmed.
