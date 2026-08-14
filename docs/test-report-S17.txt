@@ -1,0 +1,67 @@
+RecoverMate - S17 session sync test report
+Generated: 2026-08-14
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 10 files / 68 tests passed, exit 0
+   incl. tests/exercise-session.test.tsx (16 tests):
+     - render: native-controls video, NO autoplay, captions <track>, idle status,
+       aria-current="step" on step 1, timer ring aria-label
+     - player/timer sync: video play -> Playing + timer running; video pause ->
+       Paused + timer frozen (paused time does not count); play again resumes
+     - controls delegate to the media element: Start calls video.play() once
+       (single source of truth, no second timer)
+     - ended: session "Ended" WITHOUT step advance; timer back to ready; Replay
+       + Next step remain available
+     - seek: seeked event does not perturb phase, step, or timer (playing stays
+       running; paused stays frozen) — regression guard until reviewed timecodes
+     - media error: role=alert surfaces the native error (not suppressed) and
+       pauses the timer
+     - step-timer completion: "step complete" status + notice, step unchanged,
+       Next step still enabled (no forced advance)
+     - manual step change: fresh timer for the new step; restarts while playing
+     - safe reset: after playing + step 2 + media error, Stop/Reset restores
+       step 1 / idle / full timer / error cleared
+     - no-video fallback: notice + transcript link; Start/Pause drive the timer
+       directly (user-controlled automation)
+     - keyboard: ArrowRight/ArrowLeft/Home/End move the current step AND focus,
+       clamped at the ends; keyboard nav alone never starts playback
+     - manual: clicking a step button selects it; Previous/Next disabled at bounds
+     - hook: step completion fires exactly once per step, reports the step index,
+       never advances; goToStep clamps; ended callback fires once; safe reset
+4. npm run build     -> next build, exit 0
+
+RESULT: all four commands PASS.
+
+Acceptance mapping (S17):
+- Pausing the video also pauses the timer: MET (handlePause -> timer.pause();
+  tested with fake timers: paused time does not decrement remaining).
+- The user can manually adjust the current step: MET (click, Prev/Next buttons,
+  Arrow/Home/End keys; current step held in page state via the session hook).
+- Any exception can be safely reset: MET (media errors surfaced + paused;
+  Stop/Reset always enabled and returns step/phase/timer/error to a safe idle).
+
+Design notes (S17 do-not-do honored):
+- Exactly ONE timer per session, owned by useExerciseSession (wraps the S16
+  useExerciseTimer). Session controls delegate to the <video> element; media
+  events drive phase + timer through the idempotent syncTimerToPlaying, so the
+  control path and the event path can never double-start the timer.
+- Native media errors are surfaced with a role=alert and a safe paused state;
+  they are never suppressed. A rejected play() (non-AbortError) is surfaced too.
+- No forced auto-advance anywhere: a completed step timer or an ended video only
+  informs; the user taps Next step (S17 safety: do not force the next movement).
+- No completion effects (that is S18).
+- Step timer is per-step (stepDurationSeconds, from exercise.durationSeconds
+  until reviewed content defines per-step timing - S11/S13). Changing steps
+  gives the new step a fresh timer; if the session is playing it restarts.
+- ExerciseSession renders its own <video> because the session needs direct
+  media-event access; the S15 accessibility rules are preserved (native
+  controls, no autoplay, captions, transcript, graceful fallback). Unifying
+  with VideoPlayer is S19 integration work (S17 file allowlist excludes it).
+
+Deferred evidence (NOT fabricated):
+- session-sync-S17.mp4: a screen recording needs a browser; pending.
+- Manual walk-through of the first video, pause-then-read-steps check, and a
+  classmate verifying the state reads clearly are student manual work.

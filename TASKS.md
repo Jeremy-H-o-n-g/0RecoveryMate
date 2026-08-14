@@ -11,17 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S17
-Unit title: 分步指引、播放器与计时同步
-Unit focus: Coordinate the video player, step highlighting, and timer under user control; keep them consistent on pause/seek; allow manual step navigation.
-Current prompt: `prompts/S17-Step-Video-Timer-Synchronization.md`
-Prior-state requirement: S16 timer state machine tests passed.
-Status: **Activated — not yet started.** S17 is code (a session controller coordinating the S15 player + S16 timer + steps). Do not implement until S17 is opened.
+Unit code: S18
+Unit title: 完成反馈、粒子效果与减少动画
+Unit focus: Completion feedback, particle effects, and reduced motion only (no new flow logic).
+Current prompt: `prompts/S18-Completion-and-Reduced-Motion.md`
+Prior-state requirement: S17 session controller tests passed.
+Status: **Activated — not yet started.** S18 is code (completion feedback layered on the S17 session). Do not implement until S18 is opened.
 
 ## Acceptance Criteria for Current Unit
-- Pausing the video also pauses the timer.
-- The user can manually adjust the current step.
-- Any exception can be safely reset.
+- Completion feedback is perceivable without relying on motion or color alone.
+- Particle effects respect `prefers-reduced-motion` (disabled or replaced by a static cue).
+- No completion effect delays, obscures, or replaces the safety content or the stop exit.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -40,7 +40,7 @@ Status: **Activated — not yet started.** S17 is code (a session controller coo
 - [x] S14 - 动作卡片、筛选与渐进呈现
 - [x] S15 - 动作详情路由与可访问视频播放器
 - [x] S16 - 环形计时器状态机与数学验证
-- [ ] S17 - 分步指引、播放器与计时同步
+- [x] S17 - 分步指引、播放器与计时同步
 - [ ] S18 - 完成反馈、粒子效果与减少动画
 - [ ] S19 - 响应式集成、错误状态与第一轮回归
 - [ ] S20 - 六部位与 12–18 条动作内容集成
@@ -68,6 +68,7 @@ Status: **Activated — not yet started.** S17 is code (a session controller coo
 - 2026-08-10 (S14, COMPLETE): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter default, skeleton/empty/error); wired into `/body/[part]`; tests.
 - 2026-08-10 (S15, COMPLETE): `VideoPlayer` (native controls, no autoplay, `<track>` captions, transcript, graceful fallback), `SafetyNotice` (before action), enhanced exercise detail page; tests.
 - 2026-08-10 (S16, COMPLETE): `lib/timer-math.ts` (pure ratios/remaining/ring/clamp), `hooks/useExerciseTimer.ts` (drift-free state machine; completion once in effect; refs only in effects/handlers), `components/Timer.tsx` (SVG ring + controls + reduced-motion), `tests/timer.test.ts` (math boundaries + fake-timer hook tests). All gates pass.
+- 2026-08-14 (S17, COMPLETE): `hooks/useExerciseSession.ts` (session controller; ONE timer; media events lead, controls delegate to the video; idempotent play sync; step timer per step; no forced advance; media errors surfaced), `components/StepIndicator.tsx` (aria-current highlight, click + Arrow/Home/End keyboard nav, clamped), `components/ExerciseSession.tsx` (client composition: native-controls video + steps + timer ring + live status + safe Stop/Reset), `tests/exercise-session.test.tsx` (16 tests). All gates pass.
 
 ## Known Issues
 - ⚠️ Qualified content reviewer not yet named (DC-3) — S11 parked (`<<REVIEWER_NAME_TBD>>`); S11 sign-off + sources deferred. S12 capture + S13 editing deferred (need footage).
@@ -77,22 +78,24 @@ Status: **Activated — not yet started.** S17 is code (a session controller coo
 - Authoritative proposal PDF is 11 pages (canonical).
 - S02 refusal test is a defined contract (not live); build-time enforcement wired (S10); page-level safety prompt implemented (S15).
 - S03 study execution pending; S04 screens not yet hand-drawn/Figma'd.
-- Deferred screenshots/recordings (no headless browser / real device): `homepage-S05.png`, `route-evidence-S08.png`, S06/S07 PNGs (SVG rasterizations), `mobile-touch-S07.mp4`, `ankle-slice-S09.mp4`, `card-desktop-S14.png`, `card-mobile-S14.png`, `exercise-page-S15.png`, `timer-demo-S16.mp4`.
+- Deferred screenshots/recordings (no headless browser / real device): `homepage-S05.png`, `route-evidence-S08.png`, S06/S07 PNGs (SVG rasterizations), `mobile-touch-S07.mp4`, `ankle-slice-S09.mp4`, `card-desktop-S14.png`, `card-mobile-S14.png`, `exercise-page-S15.png`, `timer-demo-S16.mp4`, `session-sync-S17.mp4`.
+- S17: `ExerciseSession`/`StepIndicator` are built and unit-tested but NOT yet wired into `/exercise/[id]` (the S17 file allowlist excluded the page; the page still shows the S15 placeholder timer section). Route integration is S18/S19 work. ExerciseSession renders its own `<video>` (needs direct media-event access); unifying with `VideoPlayer` is S19 integration.
+- S17 student manual work pending: first-video walk-through, pause-then-read-steps check, classmate state-clarity check.
 - S09 `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
 - S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content is only the DRAFT ankle placeholder; no approved content.
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. **S16:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 9 files / 52 tests passed exit 0 (incl. `tests/timer.test.ts`: math boundaries 0/1/T/T+1 + ring/clamp; `useExerciseTimer` transitions, paused-doesn't-decrement, completion-once, reset-re-enables); `npm run build` exit 0 → **all PASS** (see `docs/timer-tests-S16.txt`).
-- Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 timer math/hook authored by implementation partner; stopwatch spot-checks (30/60/90s), tab-switch, and SR cadence are student manual work.
-- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) done; content review (S11) + capture (S12) + editing (S13) real-world pending.
+- Automated: `node scripts/check-environment.mjs` → exit 0. **S17:** `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 10 files / 68 tests passed exit 0 (incl. `tests/exercise-session.test.tsx`: player/timer sync, controls-delegate-to-video, ended-no-auto-advance, seek-does-not-perturb, media-error-surfaced, step-completion-once-no-advance, manual-step-fresh-timer, safe-reset, no-video fallback, keyboard nav + clamping); `npm run build` exit 0 → **all PASS** (see `docs/test-report-S17.txt`).
+- Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 stopwatch spot-checks/tab-switch/SR cadence pending. S17 session authored + tested by implementation partner; first-video walk-through, pause-then-read-steps, and classmate state-clarity check are student manual work (pending).
+- Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) + session sync (S17) done; content review (S11) + capture (S12) + editing (S13) real-world pending.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15) → timer (S16); player+timer+steps sync next (S17).
+- End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15) → timer (S16) → session sync (S17, unit-level); completion feedback next (S18).
 
 ## Completion notes (checkpoints)
 - S01: `dc9c0d6` → `3717579` → `d69336a`. · S02: `d69336a` → `99b410d`. · S03: `99b410d` → `7d51f58`.
 - S04: `7d51f58` → `e44248d`. · S05: `2deec09` → `c2e4431`. · S06: `c2e4431` → `682d828` → `42be299`.
 - S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
-- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → (this commit).
+- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → (this commit).
 
 ## S11 / S12 / S13 — parked (content-production, deferred per user direction)
 - S11: reviewer `<<REVIEWER_NAME_TBD>>`; `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred.
@@ -100,10 +103,11 @@ Status: **Activated — not yet started.** S17 is code (a session controller coo
 - S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md`; editing deferred.
 - Unblock when a reviewer is named (DC-3) + the student films/edits real footage.
 
-## S14 / S15 / S16 Completion Notes (completed 2026-08-10)
+## S14 / S15 / S16 / S17 Completion Notes (S14–S16 completed 2026-08-10; S17 completed 2026-08-14)
 - **S14** (`6e5fde0`): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter, states); wired into `/body/[part]`; tests.
 - **S15** (`ce582f4`): `VideoPlayer` (native controls, no autoplay, captions, transcript, fallback) + `SafetyNotice` (before action) + enhanced detail page; tests.
-- **S16** (this commit): `lib/timer-math.ts` + `hooks/useExerciseTimer.ts` (drift-free FSM, completion once) + `components/Timer.tsx` + `tests/timer.test.ts`; evidence `docs/timer-tests-S16.txt`. Acceptance met (deterministic transitions; visual progress = remaining; completion once). Timer not yet wired into the flow (S17).
+- **S16** (`e12c309`): `lib/timer-math.ts` + `hooks/useExerciseTimer.ts` (drift-free FSM, completion once) + `components/Timer.tsx` + `tests/timer.test.ts`; evidence `docs/timer-tests-S16.txt`. Acceptance met (deterministic transitions; visual progress = remaining; completion once).
+- **S17** (this commit): `hooks/useExerciseSession.ts` + `components/StepIndicator.tsx` + `components/ExerciseSession.tsx` + `tests/exercise-session.test.tsx`; evidence `docs/test-report-S17.txt`. Acceptance met (video pause pauses timer; manual + keyboard step adjustment; safe reset from any state incl. media errors; no forced advance). Session not yet on the `/exercise/[id]` route (S18/S19).
 
 ## Next Unit
-- S18 - 完成反馈、粒子效果与减少动画; completion feedback, particle effects, reduced motion only. (S17 is now the active unit; do not implement S17 or S18 until opened.)
+- S19 - 响应式集成、错误状态与第一轮回归 (after S18): wire the session into the exercise route, unify ExerciseSession's media element with VideoPlayer, responsive pass, error states, first regression round. (S18 is now the active unit; do not implement S18 or S19 until opened.)
