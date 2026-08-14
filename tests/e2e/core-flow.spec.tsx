@@ -79,8 +79,10 @@ describe("core flow regression (S19): home -> region -> detail -> finish", () =>
       `a[href="/exercise/${EXERCISE_ID}"]`
     );
     expect(cardLink).not.toBeNull();
-    // The placeholder is clearly marked (not medical content).
-    expect(screen.getByText(/\[Placeholder/i)).toBeTruthy();
+    // Every unreviewed (draft) card is clearly marked — since the S20 fill all
+    // entries are draft, so every visible card carries the banner (S19 wrote
+    // this when the ankle page had a single card).
+    expect(screen.getAllByText(/\[Placeholder/i).length).toBeGreaterThanOrEqual(1);
     // Home return path (every state has a return route).
     expect(screen.getByRole("link", { name: "Home" })).toBeTruthy();
     expect(container.querySelector("main")?.className).toContain("px-4");

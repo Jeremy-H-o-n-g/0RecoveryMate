@@ -1,0 +1,27 @@
+RecoverMate - S20 content validation evidence
+Generated: 2026-08-14
+Environment: node v24.18.0, npm 11.16.0
+
+== npm run validate:content ==
+
+RecoverMate content validation
+OK - no content errors.
+
+== npm run lint ==
+eslint, exit 0
+
+== npm run typecheck ==
+tsc --noEmit, exit 0
+
+== npm run test ==
+ Test Files  12 passed (12)
+      Tests  86 passed (86)
+
+== npm run build ==
+next build, exit 0
+
+== media existence / orphan check (scripted) ==
+exercises with any media URL: 0 (all empty - S12 placeholder strategy; graceful fallback)
+orphan media files: NONE (public/{videos,captions,transcripts} contain READMEs only)
+unreferenced exercises: NONE; duplicate ids: NONE
+manifest: docs/content-manifest-S20.csv (18 exercises, real data)

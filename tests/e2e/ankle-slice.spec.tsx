@@ -50,10 +50,25 @@ describe("ankle vertical slice (S09) - end-to-end data chain", () => {
     expect(getExerciseIds()).toContain(ANKLE_EXERCISE_ID);
   });
 
-  it("the slice stays ankle-thin (no 18x copy across regions)", () => {
+  it("all six regions list exercises (S20 fill supersedes the S09 ankle-thin contract)", () => {
+    // S09 kept the slice ankle-only; S20 is the approved six-region fill
+    // (12-18 entries, all DRAFT). Every region must now have guidance.
     const withExercises = getBodyParts().filter(
       (p) => getPartExercises(p.id).length > 0
     );
-    expect(withExercises.map((p) => p.id)).toEqual(["ankle"]);
+    expect(withExercises.map((p) => p.id)).toEqual([
+      "shoulder",
+      "arm",
+      "lower-back",
+      "knee",
+      "calf",
+      "ankle",
+    ]);
+    // All entries remain unreviewed (draft) - publish stays blocked (S11).
+    for (const part of getBodyParts()) {
+      for (const ex of getPartExercises(part.id)) {
+        expect(ex.reviewStatus).toBe("draft");
+      }
+    }
   });
 });
