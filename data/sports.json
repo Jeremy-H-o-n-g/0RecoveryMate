@@ -1,0 +1,58 @@
+[
+  {
+    "id": "basketball",
+    "nameZh": "篮球",
+    "nameEn": "Basketball",
+    "regionIds": ["knee", "calf", "lower-back", "shoulder", "arm"],
+    "reasonZh": "篮球常见跳跃、急停与变向，上肢大量参与传球投篮。大腿前后侧、小腿、髋臀、肩后侧、腰腹与手臂通常承受较高训练负荷。"
+  },
+  {
+    "id": "soccer",
+    "nameZh": "足球",
+    "nameEn": "Soccer",
+    "regionIds": ["knee", "calf", "lower-back"],
+    "reasonZh": "足球以跑动、变向与射门为主。大腿后侧、大腿内侧、小腿、髋臀与腰腹通常承受较高训练负荷。"
+  },
+  {
+    "id": "badminton",
+    "nameZh": "羽毛球",
+    "nameEn": "Badminton",
+    "regionIds": ["knee", "lower-back", "calf", "shoulder", "arm"],
+    "reasonZh": "羽毛球包含大量跨步救球与 overhead 挥拍。大腿前侧、髋臀、小腿、肩前后侧、手臂与腰腹通常承受较高训练负荷。"
+  },
+  {
+    "id": "flag-football",
+    "nameZh": "腰旗橄榄球",
+    "nameEn": "Flag Football",
+    "regionIds": ["knee", "calf", "lower-back", "shoulder", "arm"],
+    "reasonZh": "腰旗橄榄球结合 sprint、变向与接传球。大腿前后侧、小腿、髋臀、腰腹、肩后侧、手臂与背部通常承受较高训练负荷。"
+  },
+  {
+    "id": "archery",
+    "nameZh": "射箭",
+    "nameEn": "Archery",
+    "regionIds": ["lower-back", "shoulder"],
+    "reasonZh": "射箭需要长时间保持开弓姿势。背部、肩后侧与腰腹通常承受较高静态训练负荷。"
+  },
+  {
+    "id": "tennis",
+    "nameZh": "网球",
+    "nameEn": "Tennis",
+    "regionIds": ["knee", "calf", "lower-back", "shoulder", "arm"],
+    "reasonZh": "网球包含反复挥拍与横向移动。大腿前后侧、小腿、髋臀、肩后侧、手臂与腰腹通常承受较高训练负荷。"
+  },
+  {
+    "id": "ultimate",
+    "nameZh": "飞盘",
+    "nameEn": "Ultimate Frisbee",
+    "regionIds": ["knee", "calf", "lower-back", "shoulder", "arm"],
+    "reasonZh": "飞盘结合长距离跑动、跳跃与掷盘。大腿前后侧、小腿、髋臀、腰腹、肩后侧与手臂通常承受较高训练负荷。"
+  },
+  {
+    "id": "general",
+    "nameZh": "通用",
+    "nameEn": "General",
+    "regionIds": ["shoulder", "arm", "lower-back", "knee", "calf", "ankle"],
+    "reasonZh": "通用全身热身与放松入口，不预设任何运动项目；你可以直接从人体图选择任意部位。"
+  }
+]

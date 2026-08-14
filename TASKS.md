@@ -11,17 +11,17 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S21
-Unit title: 运动类型快捷入口与部位高亮
-Unit focus: Sport quick entries from the 7-sport table (`Manual_Instructions.md`) + body-map region highlighting; verify the sport table with the user (their direction 2026-08-14).
-Current prompt: `prompts/S21-Sport-Quick-Entry.md`
-Prior-state requirement: S20 six-region content integration passing (all gates + `validate:content`).
-Status: **Activated — not yet started.** Do not implement until S21 is opened.
+Unit code: S22
+Unit title: 运动恢复流程队列与用户控制
+Unit focus: Recovery-flow queue (multi-exercise sequence) + user control; candidate home for the adjustable-timer-with-defaults feature request and the 15 s rest-interval timer preset (user backlog 2026-08-14).
+Current prompt: `prompts/S22-Sport-Flow-Queue.md`
+Prior-state requirement: S21 sport quick entry passing.
+Status: **Activated — not yet started.** Do not implement until S22 is opened.
 
 ## Acceptance Criteria for Current Unit
-- Sport quick entries (7 sports from the user's table) filter/highlight the relevant body regions on the map.
-- The sport→region mapping data is verified against the user's table (not assumed).
-- Keyboard/touch parity; selection state never color-alone; a clear way back.
+- A user can queue multiple exercises into a flow and step through them under their own control (no auto-advance between exercises).
+- The queue is reviewable and editable before/during; exiting always returns to a safe place.
+- Timer adjustability + rest intervals are either implemented or explicitly deferred with a recorded decision.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -44,7 +44,7 @@ Status: **Activated — not yet started.** Do not implement until S21 is opened.
 - [x] S18 - 完成反馈、粒子效果与减少动画
 - [x] S19 - 响应式集成、错误状态与第一轮回归
 - [x] S20 - 六部位与 12–18 条动作内容集成
-- [ ] S21 - 运动类型快捷入口与部位高亮
+- [x] S21 - 运动类型快捷入口与部位高亮
 - [ ] S22 - 运动恢复流程队列与用户控制
 - [ ] S23 - 自动化、可访问性与安全回归
 - [ ] S24 - 性能、媒体预算与离线演示回退
@@ -78,6 +78,8 @@ Status: **Activated — not yet started.** Do not implement until S21 is opened.
 - 2026-08-14 (user direction): deferred student evidence (mp4s, PDFs, viewport/slow-network/touch checks) stays as tracked placeholders in TASKS.md; the student will supply them later. Never fabricated.
 - 2026-08-14 (S19, COMPLETE): `/exercise/[id]` now runs the real stack — SafetyNotice → `ExerciseSession` (S17) → user-confirmed `?done=1` → `CompletionFeedback` (S18); the S15 placeholder timer/complete blocks removed; back link generalized to the owning region (fixes S09's hardcoded `/body/ankle`). `components/ErrorState.tsx` (role=alert, non-diagnostic copy, recovery links) guards degenerate draft content (`steps: []`). Responsive polish on all three routes (mobile-first fluid containers, `px-4`/`sm:px-6`, `min-w-0`, `break-words`; no `overflow-x-hidden` — asserted). `tests/e2e/core-flow.spec.tsx` (10 tests) = core regression suite. Lazy-confetti proof: library in its own chunk (`3orrfx3`), component code separate (`1zfj6`), dynamic-import-only reference. All gates pass.
 - 2026-08-14 (S20, COMPLETE — content decisions applied): 17 new DRAFT exercises from `Manual_Instructions.md` + the retained `ankle-pilot-placeholder` = **18 entries** across all six regions (肩3 · 手臂4 · 腰背2 · 膝盖2 · 小腿3 · 脚踝3+placeholder). All `reviewStatus: "draft"` (publish-blocked by the build gate), `difficulty: "not-set"` (user decision), no fabricated sources/licenses. **durationSeconds = 30 for all** (user's 30 s/set rule; wider hold ranges default to 30). **Rest 15 s recorded as a bilingual tip** on every 膝盖/手臂 entry — the schema has no rest field; timer-preset support deferred to the adjustable-timer backlog (S22). Deviation documented: 手臂 has 4 entries (guidance was 2–3/region) because the user's manual defines 4; authored content kept. Justified test-contract updates (S09 precedent): `tests/e2e/ankle-slice.spec.tsx` ankle-thin → six-region-fill assertion (all draft); `tests/e2e/core-flow.spec.tsx` single-banner → all-draft-cards-marked assertion. Evidence: `docs/content-manifest-S20.csv` (real data), `docs/validation-S20.txt` (all gates + validate:content + media/orphan checks), `docs/review-sampling-S20.md` (reviewer template — S11 pending, ankle-inversion risk flag included). All gates pass.
+- 2026-08-14 (user decisions, S21): entry set = **the user's 7 sports + 通用** (8 entries; the prompt's running/swimming/strength list dropped — no authored mapping, nothing invented); area mapping = **大腿→膝区，髋臀/腰腹→腰背区** (six regions have no standalone thigh/hip/core region).
+- 2026-08-14 (S21, COMPLETE): `schemas/sport.ts` (Zod: id/names/regionIds≥1/reasonZh), `data/sports.json` (8 entries; reasons use 常见训练负荷相关区域 phrasing), `components/SportQuickEntry.tsx` (aria-pressed toggle buttons, live reason panel + region chips via callbacks, 通用 = all six regions, no-match safe fallback keeps the direct map path, persistent non-diagnostic disclaimer, works without callbacks), `tests/sport-entry.test.tsx` (12 tests: schema/data contract incl. banned-wording regex, entry-set + per-sport mapping assertions, component behavior incl. fallback + degradation). Self-contained component (S16/S17 pattern) — NOT yet wired into the home route (page wiring is a later unit; body-parts.json `commonSports` superseded, cleanup later). Evidence: `docs/mapping-review-S21.md` (user-confirmed mapping table + reviewer checklist pending S11); `sports-entry-S21.png` deferred (placeholder per user direction). All gates pass.
 
 ## Known Issues
 - ⚠️ Qualified content reviewer not yet authorized (DC-3) — S11 parked (user will supply authorization; `<<REVIEWER_NAME_TBD>>` until then); sign-off + sources deferred. No content may be marked `approved` before that (build gate + policy).
@@ -96,9 +98,10 @@ Status: **Activated — not yet started.** Do not implement until S21 is opened.
 - S09 `/exercise/[id]` renders dynamically (reads `?done=`); static-export optimization is S24/S27.
 - S10: `data/sample/exercises.json` superseded by `data/exercises.json` (kept). Current content (S20): 18 DRAFT entries across six regions — none approved; sources/licenses honestly `[pending]`; reviewer spot-check template ready (`docs/review-sampling-S20.md`, incl. the ankle-inversion risk flag).
 - S20: media fields all empty by design (S12 placeholder strategy) — zero videos, zero orphan files; "all videos have captions + transcripts" is vacuously true until S13 produces media. Left/right + front/back view verification and per-entry visual review are student/reviewer manual work (pending).
+- S21: `SportQuickEntry` is self-contained + unit-tested but NOT yet wired into the home page (page files were outside the allowlist); sport→region wording review by the reviewer is pending (S11) — `docs/mapping-review-S21.md`; `sports-entry-S21.png` + keyboard/touch + 通用-entry manual checks are student work (placeholders).
 
 ## Last Test Evidence
-- Automated: `node scripts/check-environment.mjs` → exit 0. **S20:** `npm run validate:content` exit 0 ("OK - no content errors": schemas, unique ids, six-region referential integrity); `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 12 files / 86 tests passed exit 0 (incl. updated S09 six-region-fill assertion + S19 core-flow all-draft-cards assertion); `npm run build` exit 0 → **all PASS** (see `docs/validation-S20.txt`; manifest `docs/content-manifest-S20.csv`).
+- Automated: `node scripts/check-environment.mjs` → exit 0. **S21:** `npm run validate:content` exit 0; `npm run lint` exit 0; `npm run typecheck` exit 0; `npm run test` 12 files / 98 tests passed exit 0 (incl. `tests/sport-entry.test.tsx`: schema/data contract + banned-wording regex, user-confirmed entry set + mapping assertions, component toggle/reason/chips/fallback/degradation); `npm run build` exit 0 → **all PASS** (mapping doc `docs/mapping-review-S21.md`).
 - Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 stopwatch spot-checks/tab-switch/SR cadence pending. S17 session authored + tested by implementation partner; first-video walk-through, pause-then-read-steps, and classmate state-clarity check are student manual work (pending).
 - Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) + session sync (S17) + completion feedback (S18) + integrated flow/regression (S19) + six-region content fill (S20: 18 draft entries) done; S12 passed via placeholder (2026-08-14); content review (S11 — awaiting reviewer auth) + editing (S13 — awaiting footage) real-world pending; `Manual_Instructions.md` committed as draft content source.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
@@ -108,7 +111,7 @@ Status: **Activated — not yet started.** Do not implement until S21 is opened.
 - S01: `dc9c0d6` → `3717579` → `d69336a`. · S02: `d69336a` → `99b410d`. · S03: `99b410d` → `7d51f58`.
 - S04: `7d51f58` → `e44248d`. · S05: `2deec09` → `c2e4431`. · S06: `c2e4431` → `682d828` → `42be299`.
 - S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
-- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → `4f4f7bb`. · S18: `7236da8` → `2cbbe4f`. · S19: `2cbbe4f` → `d13297e`. · S20: `d13297e` → (this commit).
+- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → `4f4f7bb`. · S18: `7236da8` → `2cbbe4f`. · S19: `2cbbe4f` → `d13297e`. · S20: `d13297e` → `3535eb0`. · S21: `3535eb0` → (this commit).
 
 ## S11 / S13 — parked; S12 passed via placeholder (content-production, per user directions)
 - S11: reviewer authorization pending (user to supply); `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred. `Manual_Instructions.md` (committed) is the draft content the reviewer will review.
@@ -123,7 +126,8 @@ Status: **Activated — not yet started.** Do not implement until S21 is opened.
 - **S17** (`4f4f7bb`): `hooks/useExerciseSession.ts` + `components/StepIndicator.tsx` + `components/ExerciseSession.tsx` + `tests/exercise-session.test.tsx`; evidence `docs/test-report-S17.txt`. Acceptance met (video pause pauses timer; manual + keyboard step adjustment; safe reset from any state incl. media errors; no forced advance).
 - **S18** (`2cbbe4f`): `components/CompletionFeedback.tsx` + `components/ConfettiEffect.tsx` + `app/globals.css` (success token + one-shot bounce) + `tests/completion-feedback.test.tsx`; evidence `docs/test-report-S18.txt`. Acceptance met (effects fire once; reduced motion = no particles/scaling, static cue intact; next step user-controlled, zero timers).
 - **S19** (`d13297e`): routes wired (`/exercise/[id]` runs session + completion; back path per owning region), `components/ErrorState.tsx` guard, responsive polish on all routes, `tests/e2e/core-flow.spec.tsx` regression suite; evidence `docs/e2e-report-S19.txt`. Acceptance met (structural responsive contract + regression suite; viewport matrix is student placeholder evidence). VideoPlayer/session media unification still open.
-- **S20** (this commit): 18 DRAFT exercises across all six regions in `data/exercises.json` + `data/body-parts.json` wiring (17 from `Manual_Instructions.md` + retained placeholder); all user content decisions applied (30 s/set, 15 s rest as tips, no difficulty labels); two justified test-contract updates (S09 ankle-thin→six-region; S19 single-banner→all-draft-cards); evidence `docs/validation-S20.txt` + `docs/content-manifest-S20.csv` + `docs/review-sampling-S20.md` (reviewer template). Acceptance met in the placeholder mode: six regions filled, no orphan/bad references, media vacuously complete (none yet).
+- **S20** (`3535eb0`): 18 DRAFT exercises across all six regions in `data/exercises.json` + `data/body-parts.json` wiring (17 from `Manual_Instructions.md` + retained placeholder); all user content decisions applied (30 s/set, 15 s rest as tips, no difficulty labels); two justified test-contract updates (S09 ankle-thin→six-region; S19 single-banner→all-draft-cards); evidence `docs/validation-S20.txt` + `docs/content-manifest-S20.csv` + `docs/review-sampling-S20.md` (reviewer template). Acceptance met in the placeholder mode: six regions filled, no orphan/bad references, media vacuously complete (none yet).
+- **S21** (this commit): `schemas/sport.ts` + `data/sports.json` (8 user-confirmed entries; 大腿→膝，髋臀/腰腹→腰背) + `components/SportQuickEntry.tsx` (explainable, non-diagnostic navigation; safe no-match fallback; direct map path never blocked) + `tests/sport-entry.test.tsx`; evidence `docs/mapping-review-S21.md`. Acceptance met (8 entries reachable, reasons visible + wording-regex-enforced, no individualized-medical claims; component self-contained — page wiring later).
 
 ## Next Unit
-- S22 - 运动恢复流程队列与用户控制 (after S21): recovery-flow queue + user control; candidate home for the adjustable-timer-with-defaults feature request (user backlog 2026-08-14) and the rest-interval timer preset. (S21 is now the active unit; do not implement S21 or S22 until opened.)
+- S23 - 自动化、可访问性与安全回归 (after S22): automated a11y + safety regression; candidate home for the VideoPlayer/session media unification still open from S19. (S22 is now the active unit; do not implement S22 or S23 until opened.)
