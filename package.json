@@ -12,7 +12,8 @@
     "validate:content": "tsx scripts/validate-content.ts",
     "test:e2e": "playwright test --project=e2e",
     "test:a11y": "playwright test --project=a11y",
-    "check:safety": "tsx scripts/check-safety-copy.ts"
+    "check:safety": "tsx scripts/check-safety-copy.ts",
+    "test:smoke": "playwright test --project=smoke"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",

@@ -1,0 +1,28 @@
+RecoverMate - S27 release gates evidence (pre-deployment)
+Generated: 2026-08-17
+Environment: node v24.18.0, npm 11.16.0, Chromium (Playwright)
+
+Local release gates (all verified on the release candidate):
+1. npm run validate:content -> exit 0 (OK - no content errors)
+2. npm run check:safety    -> exit 0 (OK - safety copy intact; release-blocking contract)
+3. npm run test           -> 14 files / 114 tests, exit 0
+4. npm run test:e2e       -> 4 passed (production build, local)
+5. npm run test:a11y      -> 7 passed (axe, zero violations)
+6. npm run build          -> exit 0
+7. npm run lint / typecheck -> exit 0 / exit 0
+8. npm run test:smoke     -> 3 SKIPPED by design (PRODUCTION_SMOKE_URL unset;
+   suite skips loudly, never silently tests localhost). Run against the live
+   URL after the student connects Vercel: see docs/DeploymentGuide.md para4.
+
+Deployment readiness:
+- vercel.json: intentionally ABSENT (defaults sufficient; documented).
+- No env vars / secrets required (.env.example documents this).
+- App code: zero fetch, zero console logging (privacy/log-minimization by
+  construction; production URLs carry no health data - only ?done=1).
+- data/research/raw/ gitignored: no research/consent material can deploy.
+- Rollback: docs/RecoveryGuide.md (Promote to Production + rehearsal script);
+  release checklist: docs/ReleaseChecklist.md (student sign-offs pending).
+
+PENDING (student manual, not fabricated): Vercel connection + URL, live
+smoke run (release-S27.txt to be extended with its output), real-device
+checks, rollback rehearsal (rollback-S27.mp4), production-smoke-S27.pdf.
