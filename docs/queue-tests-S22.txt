@@ -1,0 +1,45 @@
+RecoverMate - S22 flow queue test evidence
+Generated: 2026-08-17
+Environment: node v24.18.0, npm 11.16.0
+
+Commands and exact results:
+1. npm run lint      -> eslint, exit 0
+2. npm run typecheck -> tsc --noEmit, exit 0
+3. npm run test      -> vitest: 14 files / 114 tests passed, exit 0
+   incl. tests/flow-controller.test.tsx (16 tests):
+   Queue builder:
+     - APPROVED-ONLY CONTRACT: default mode on the draft-only repo yields an
+       EMPTY queue (all regions skipped) - production flow cannot leak
+       unreviewed content; approved fixtures are included
+     - demo(all) mode: 5-min basketball queue (>=10 items, <=480s), region
+       order follows the sport mapping, no duplicate exercises
+     - degenerate records (steps:[]) excluded even in all mode
+     - hard trim at 480s ceiling reported via limited flag
+     - referential integrity: every item resolves to real exercise+region
+   FlowController:
+     - no auto-advance: 60s/120s of fake time passing leaves position 1
+       (user taps only - no countdown pressure); progress + estimated
+       total always visible
+     - advance on tap only; prev disabled at start; skip removes +
+       restore returns items (reviewable + editable queue)
+     - completion = S18 one-shot feedback with user-chosen exits;
+       restart re-arms for a second full pass
+     - exits neutral (no fail/quit/guilt wording - regex asserted); flow
+       labeled 不是治疗方案 + 不会自动播放下一个动作
+     - skipped regions surfaced honestly
+   Route /flow/[sport]:
+     - generateStaticParams = 8 sports; basketball renders progress +
+       draft banner + why-these-regions reason; invalid id -> notFound
+     - static scan: no localStorage/sessionStorage in the flow sources
+       (不要持久化健康选择)
+4. npm run build     -> next build exit 0; all 8 /flow/[sport] routes
+   prerender as SSG
+
+Defects caught and fixed during the session:
+- restart() typo (newSet) threw on click - caught by the unhandled-error
+  report + restart re-arm test.
+
+Deferred evidence (placeholder per user direction, NOT fabricated):
+- flow-basketball-S22.mp4: real-browser walkthrough, student manual work.
+- Per-sport walkthrough, mid-flow exit test, and reviewer approval of the
+  queue ORDER are student/reviewer manual work (S11 pending).
