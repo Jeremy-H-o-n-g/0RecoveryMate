@@ -1,0 +1,7 @@
+id,severity,found_by,description,status,action
+S23-01,high,playwright e2e (no-horizontal-scroll @375px),"Home page overflowed horizontally by 41px at 375px: the body map used a fixed 400px container width; jsdom (S19 structural check) cannot see layout, so this first appeared in the real-browser suite",fixed,"BodyMapFront/BodyMapBack containers now fluid (w-full + maxWidth 400 + aspectRatio); hotspots position in percentages via BodyPart base prop (44px touch minimum preserved); e2e regression test added"
+S23-02,low,test-authoring,e2e heading regex matched 3 headings (region h1 + card h2 titles) causing a strict-mode failure,fixed,"Test tightened to exact h1 name; no product change"
+S23-03,low,test-authoring,Playwright specs were picked up by the vitest glob (2 files failed at collection),fixed,"vitest.config.ts excludes tests/browser/** (runs under Playwright per S23 scope)"
+S23-04,low,code-review,check-safety-copy.ts had an unused import + a nonexistent field reference (reasonZhSafe),fixed,Removed before ship; script verified OK on real data
+S23-05,moderate,manual-walkthrough-pending,"VideoPlayer / ExerciseSession dual media markup still not unified (S19 leftover); no user-facing defect, drift risk only",open,"Recorded; candidate for S24/S27 cleanup — not blocking (no axe findings on either path)"
+S23-06,info,known,SportQuickEntry + /flow routes lack in-app entry links (reachable by URL only),open,"Integration wiring deferred by design (page files outside S14-S22 allowlists); candidate for S24 polish"

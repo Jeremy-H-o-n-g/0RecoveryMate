@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RecoverMate test summary S23</title>
+<style>
+  body { font-family: system-ui; margin: 2rem; color: #111; }
+  table { border-collapse: collapse; margin-top: 1rem; }
+  td, th { border: 1px solid #999; padding: .4rem .8rem; text-align: left; font-size: .9rem; }
+  .pass { color: #067d47; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>RecoverMate — release regression summary (S23)</h1>
+<p>Generated 2026-08-17 · node v24.18.0 · npm 11.16.0 · Chromium (Playwright) against the production build (<code>next build</code> + <code>next start</code>).</p>
+
+<table>
+  <tr><th>suite</th><th>command</th><th>result</th><th>notes</th></tr>
+  <tr><td>content gate</td><td><code>npm run validate:content</code></td><td class="pass">exit 0</td><td>OK — no content errors (schemas, ids, referential integrity)</td></tr>
+  <tr><td>safety copy</td><td><code>npm run check:safety</code></td><td class="pass">exit 0</td><td>contract intact (new S23 script; release-blocking)</td></tr>
+  <tr><td>unit/integration (vitest)</td><td><code>npm test</code></td><td class="pass">14 files / 114 tests</td><td>all prior suites + config now excludes tests/browser/**</td></tr>
+  <tr><td>browser e2e</td><td><code>npm run test:e2e</code></td><td class="pass">4 passed</td><td>core path, keyboard-only map, no horizontal scroll @375px, 404 + no-auto-advance</td></tr>
+  <tr><td>accessibility</td><td><code>npm run test:a11y</code></td><td class="pass">7 passed</td><td>axe wcag2a/2aa/21a/21aa × 6 routes: ZERO violations of any impact</td></tr>
+  <tr><td>build</td><td><code>npm run build</code></td><td class="pass">exit 0</td><td>incl. 8 SSG /flow routes</td></tr>
+  <tr><td>lint / types</td><td><code>npm run lint</code> / <code>typecheck</code></td><td class="pass">exit 0 / exit 0</td><td></td></tr>
+</table>
+
+<h2>Defects found &amp; fixed this session (real-browser findings)</h2>
+<ul>
+  <li><strong>S23-01 (high, fixed)</strong>: home page scrolled horizontally by 41px at 375px — the body map used a fixed 400px container. Fixed with fluid containers + percentage-positioned hotspots (44px touch minimum kept); regression test added. The S19 jsdom structural check could not see layout — the real browser did.</li>
+  <li>S23-02/03/04 (low, fixed): test-authoring issues (strict-mode heading regex; Playwright files in the vitest glob; unused import).</li>
+</ul>
+<p>Full list: <code>docs/defect-log-S23.csv</code>. Full axe detail: <code>docs/a11y-report-S23.html</code>.</p>
+
+<h2>Honest scope notes</h2>
+<ul>
+  <li>Automated scans do not replace human checks (S23 do-not-do): keyboard walkthrough, screen-reader sampling, and color-blind/high-contrast simulation remain student manual work — pending, not fabricated.</li>
+  <li>Open non-blocking items: VideoPlayer/session media unification (S19 leftover), in-app entry links for SportQuickEntry + /flow.</li>
+  <li>Safety failure blocks release: <code>check:safety</code> exits non-zero if any safety copy drifts — it is wired as a standalone gate for CI/local use.</li>
+</ul>
+</body>
+</html>

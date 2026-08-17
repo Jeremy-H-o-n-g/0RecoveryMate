@@ -30,8 +30,11 @@ export type BodyMapBackProps = {
 export default function BodyMapBack({ onSelect }: BodyMapBackProps) {
   return (
     <div
-      className="relative mx-auto"
-      style={{ width: BODY_BACK_SIZE.width, height: BODY_BACK_SIZE.height }}
+      className="relative mx-auto w-full min-w-0"
+      style={{
+        maxWidth: BODY_BACK_SIZE.width,
+        aspectRatio: `${BODY_BACK_SIZE.width} / ${BODY_BACK_SIZE.height}`,
+      }}
       role="group"
       aria-label="Back body map"
     >
@@ -42,7 +45,12 @@ export default function BodyMapBack({ onSelect }: BodyMapBackProps) {
         className="pointer-events-none absolute inset-0 h-full w-full"
       />
       {BACK_HOTSPOTS.map((hotspot) => (
-        <BodyPart key={hotspot.id} hotspot={hotspot} onSelect={onSelect} />
+        <BodyPart
+          key={hotspot.id}
+          hotspot={hotspot}
+          onSelect={onSelect}
+          base={BODY_BACK_SIZE}
+        />
       ))}
     </div>
   );

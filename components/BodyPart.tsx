@@ -12,6 +12,13 @@ export type Hotspot = {
 export type BodyPartProps = {
   hotspot: Hotspot;
   onSelect?: (id: string) => void;
+  /**
+   * Base coordinate space of the map artwork. When provided, the hotspot is
+   * positioned with PERCENTAGES so the map scales fluidly on small viewports
+   * (S23 fix: the fixed 400px map overflowed 375px screens). The 44x44 touch
+   * minimum is preserved in px.
+   */
+  base?: { width: number; height: number };
 };
 
 /**
@@ -23,15 +30,24 @@ export type BodyPartProps = {
  * enforced via inline style so the hit area stays usable on mobile even when the
  * visual region is smaller.
  */
-export default function BodyPart({ hotspot, onSelect }: BodyPartProps) {
-  const style: CSSProperties = {
-    left: hotspot.x,
-    top: hotspot.y,
-    width: hotspot.width,
-    height: hotspot.height,
-    minWidth: 44,
-    minHeight: 44,
-  };
+export default function BodyPart({ hotspot, onSelect, base }: BodyPartProps) {
+  const style: CSSProperties = base
+    ? {
+        left: `${(hotspot.x / base.width) * 100}%`,
+        top: `${(hotspot.y / base.height) * 100}%`,
+        width: `${(hotspot.width / base.width) * 100}%`,
+        height: `${(hotspot.height / base.height) * 100}%`,
+        minWidth: 44,
+        minHeight: 44,
+      }
+    : {
+        left: hotspot.x,
+        top: hotspot.y,
+        width: hotspot.width,
+        height: hotspot.height,
+        minWidth: 44,
+        minHeight: 44,
+      };
 
   return (
     <button
