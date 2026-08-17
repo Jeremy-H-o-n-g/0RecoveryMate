@@ -38,6 +38,20 @@ Missing any field, or `reviewStatus != approved` ⇒ build gate fails (excluded 
 
 Final `licenseId` values, reviewer identities, and consent records are confirmed in S06/S11/S12.
 
+## 4a. Site artwork (redesign, 2026-08-17)
+
+| Asset | Source | License | Notes |
+|---|---|---|---|
+| `public/anatomy/muscles-anterior.png` | "Muscles anterior labeled" — after Henry Gray, *Anatomy of the Human Body* (1918), via Wikimedia Commons ([file page](https://commons.wikimedia.org/wiki/File:Muscles_anterior_labeled.png)) | Public domain (US; published pre-1929) | 760px display version resized locally from the Commons original (1156×1342); labels intact |
+| `public/anatomy/muscles-posterior.png` | "Muscle posterior labeled" — after Henry Gray, *Anatomy of the Human Body* (1918), via Wikimedia Commons ([file page](https://commons.wikimedia.org/wiki/File:Muscle_posterior_labeled.png)) | Public domain (US; published pre-1929) | 760px display version resized locally from the Commons original (1063×1297) |
+
+Attribution appears on-site: home footer + map figure captions ("Gray's
+Anatomy (1918), public domain"). The former self-authored stick-figure SVGs
+(`public/body-front.svg`, `public/body-back.svg`, S06/S07) were removed when
+the map switched to these plates; S06 original-work proof requirement (DC-2)
+no longer applies to site artwork. Fonts (Fraunces, Manrope) are self-hosted
+via `next/font` (SIL OFL).
+
 ## 5. Ledger template
 | exerciseId | sourceTitle | sourceUrl | licenseId | reviewedBy | reviewedAt | captions | transcript | stopSignals | reviewStatus |
 |---|---|---|---|---|---|---|---|---|---|

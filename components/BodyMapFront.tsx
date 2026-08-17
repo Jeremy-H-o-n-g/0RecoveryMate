@@ -1,34 +1,41 @@
+"use client";
+
 import BodyPart, { type Hotspot } from "./BodyPart";
 
-/** Fixed canvas size for the front body map (px). Hotspot geometry is in px. */
-export const BODY_FRONT_SIZE = { width: 400, height: 720 } as const;
+/**
+ * Display canvas for the front plate, in the SAME coordinate space as the
+ * shipped 760px image (`public/anatomy/muscles-anterior.png`). Hotspot coords
+ * are defined against BODY_FRONT_SIZE; BodyPart converts them to percentages
+ * so the map scales fluidly (S23 responsive fix preserved).
+ */
+export const BODY_FRONT_SIZE = { width: 760, height: 883 } as const;
 
 /**
- * Front-view hotspots. Lower back is intentionally omitted from the front view
- * (it is reached via the back view in S07). Geometry is hand-placed so no two
- * hotspots overlap and each meets the 44x44 touch target.
+ * Front-view hotspots over the Gray's Anatomy anterior muscle plate
+ * (public-domain, 1918; see docs/SourceLedger.md). Coordinates sit on the
+ * visibly correct muscle groups in the engraving.
  */
 export const FRONT_HOTSPOTS: Hotspot[] = [
-  { id: "shoulder-left", label: "Left shoulder", x: 108, y: 70, width: 48, height: 48 },
-  { id: "shoulder-right", label: "Right shoulder", x: 244, y: 70, width: 48, height: 48 },
-  { id: "arm-left", label: "Left arm", x: 70, y: 150, width: 48, height: 110 },
-  { id: "arm-right", label: "Right arm", x: 282, y: 150, width: 48, height: 110 },
-  { id: "knee-left", label: "Left knee", x: 120, y: 430, width: 48, height: 70 },
-  { id: "knee-right", label: "Right knee", x: 232, y: 430, width: 48, height: 70 },
-  { id: "calf-left", label: "Left calf", x: 122, y: 520, width: 46, height: 90 },
-  { id: "calf-right", label: "Right calf", x: 232, y: 520, width: 46, height: 90 },
-  { id: "ankle-left", label: "Left ankle", x: 124, y: 626, width: 46, height: 60 },
-  { id: "ankle-right", label: "Right ankle", x: 230, y: 626, width: 46, height: 60 },
+  { id: "shoulder-left", label: "Left shoulder", x: 252, y: 145, width: 78, height: 72 },
+  { id: "shoulder-right", label: "Right shoulder", x: 430, y: 145, width: 78, height: 72 },
+  { id: "arm-left", label: "Left arm", x: 208, y: 225, width: 68, height: 190 },
+  { id: "arm-right", label: "Right arm", x: 484, y: 225, width: 68, height: 190 },
+  { id: "knee-left", label: "Left knee", x: 300, y: 610, width: 76, height: 95 },
+  { id: "knee-right", label: "Right knee", x: 386, y: 610, width: 76, height: 95 },
+  { id: "calf-left", label: "Left calf", x: 298, y: 715, width: 72, height: 118 },
+  { id: "calf-right", label: "Right calf", x: 392, y: 715, width: 72, height: 118 },
+  { id: "ankle-left", label: "Left ankle", x: 302, y: 836, width: 66, height: 47 },
+  { id: "ankle-right", label: "Right ankle", x: 394, y: 836, width: 66, height: 47 },
 ];
 
-/** True if two hotspot rectangles overlap (axis-aligned). */
+/** True when the two hotspots' rectangles intersect (test invariant). */
 export function rectsOverlap(a: Hotspot, b: Hotspot): boolean {
-  const separate =
+  return !(
     a.x + a.width <= b.x ||
     b.x + b.width <= a.x ||
     a.y + a.height <= b.y ||
-    b.y + b.height <= a.y;
-  return !separate;
+    b.y + b.height <= a.y
+  );
 }
 
 export type BodyMapFrontProps = {
@@ -46,12 +53,13 @@ export default function BodyMapFront({ onSelect }: BodyMapFrontProps) {
       role="group"
       aria-label="Front body map"
     >
-      {/* Plain <img> for a static, self-authored SVG; alt carries the name. */}
+      {/* Public-domain engraving (Gray's Anatomy, 1918) — decorative layer;
+          the hotspot buttons carry the semantics. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/body-front.svg"
-        alt="Stylized front view of a human body for navigation"
-        className="pointer-events-none absolute inset-0 h-full w-full"
+        src="/anatomy/muscles-anterior.png"
+        alt="Front view of the muscles of the human body (Gray's Anatomy, 1918)"
+        className="pointer-events-none absolute inset-0 h-full w-full max-w-full object-contain"
       />
       {FRONT_HOTSPOTS.map((hotspot) => (
         <BodyPart

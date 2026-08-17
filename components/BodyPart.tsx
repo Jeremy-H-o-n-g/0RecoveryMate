@@ -54,8 +54,9 @@ export default function BodyPart({ hotspot, onSelect, base }: BodyPartProps) {
       type="button"
       data-part-id={hotspot.id}
       aria-label={hotspot.label}
+      title={hotspot.label}
       onClick={() => onSelect?.(hotspot.id)}
-      className="absolute rounded-md border border-accent/50 bg-accent/10 hover:bg-accent/20"
+      className="hotspot-marker absolute"
       style={style}
     />
   );

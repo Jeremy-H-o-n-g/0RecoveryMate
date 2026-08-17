@@ -43,17 +43,20 @@ export default async function FlowPage({
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
-      <p className="text-sm text-muted">
-        <Link href="/" className="underline hover:text-accent">
-          首页
+      <p className="plate-caption">
+        <Link
+          href="/"
+          className="underline decoration-border underline-offset-4 hover:text-accent"
+        >
+          Atlas
         </Link>{" "}
         / 运动流程
       </p>
 
-      <h1 className="mt-2 text-2xl font-semibold text-accent sm:text-3xl">
+      <h1 className="font-display mt-1 text-3xl font-semibold text-foreground sm:text-4xl">
         {sport.nameZh}恢复流程
       </h1>
-      <p className="mt-1 text-muted">
+      <p className="mt-2 text-muted">
         按常见训练负荷相关部位生成的建议顺序，约 5–8 分钟。全程由你控制。
       </p>
 
@@ -75,13 +78,13 @@ export default async function FlowPage({
           >
             <Link
               href="/"
-              className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+              className="rounded-md border border-accent/60 bg-surface px-4 py-2 hover:bg-accent-soft/50"
             >
               返回首页
             </Link>
             <Link
               href="/body/ankle"
-              className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
+              className="rounded-md border border-border bg-surface px-4 py-2 hover:bg-accent-soft/40"
             >
               浏览部位指引
             </Link>

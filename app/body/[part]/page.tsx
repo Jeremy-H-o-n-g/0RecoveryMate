@@ -21,14 +21,17 @@ export default async function BodyPartPage({
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
-      <p className="text-sm text-muted">
-        <Link href="/" className="underline hover:text-accent">
+      <p className="plate-caption">
+        <Link href="/" className="underline decoration-border underline-offset-4 hover:text-accent">
           Home
         </Link>{" "}
         / Body
       </p>
-      <h1 className="mt-2 break-words text-2xl font-semibold text-accent sm:text-3xl">
+      <h1 className="font-display mt-1 break-words text-3xl font-semibold text-foreground sm:text-4xl">
         {bodyPart.nameZh}
+        <span className="ml-3 align-middle text-lg font-normal text-muted">
+          {bodyPart.nameEn}
+        </span>
       </h1>
       <p className="mt-1 text-muted">
         {bodyPart.nameEn} · view: {bodyPart.view}

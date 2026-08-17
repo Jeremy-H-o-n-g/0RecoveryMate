@@ -14,8 +14,10 @@ test.describe("core path (S23)", () => {
     // Region page via a real hotspot click.
     await page.getByRole("button", { name: /ankle/i }).first().click();
     await expect(page).toHaveURL(/\/body\/ankle$/);
+    // Heading shows zh + en (redesign); the ml-3 span yields no space in the
+    // accessible name, so match flexibly.
     await expect(
-      page.getByRole("heading", { name: "脚踝", exact: true })
+      page.getByRole("heading", { name: /脚踝\s*Ankle/ })
     ).toBeVisible();
 
     // Card -> detail.

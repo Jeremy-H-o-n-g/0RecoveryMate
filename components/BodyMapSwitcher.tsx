@@ -36,7 +36,7 @@ export default function BodyMapSwitcher({
           type="button"
           aria-pressed={isFront}
           onClick={() => setView("front")}
-          className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+          className="rounded-md border border-border bg-surface px-4 py-2 text-sm hover:bg-accent-soft/50 aria-pressed:bg-accent aria-pressed:text-surface aria-pressed:border-accent"
         >
           Front
         </button>
@@ -44,7 +44,7 @@ export default function BodyMapSwitcher({
           type="button"
           aria-pressed={!isFront}
           onClick={() => setView("back")}
-          className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+          className="rounded-md border border-border bg-surface px-4 py-2 text-sm hover:bg-accent-soft/50 aria-pressed:bg-accent aria-pressed:text-surface aria-pressed:border-accent"
         >
           Back
         </button>
@@ -52,11 +52,17 @@ export default function BodyMapSwitcher({
       <p aria-live="polite" className="sr-only">
         {isFront ? "Showing front body map" : "Showing back body map"}
       </p>
-      {isFront ? (
-        <BodyMapFront onSelect={onSelect} />
-      ) : (
-        <BodyMapBack onSelect={onSelect} />
-      )}
+      <figure className="plate-frame rounded-lg p-3">
+        {isFront ? (
+          <BodyMapFront onSelect={onSelect} />
+        ) : (
+          <BodyMapBack onSelect={onSelect} />
+        )}
+        <figcaption className="plate-caption mt-2 text-center">
+          Muscles of the human body — {isFront ? "anterior" : "posterior"} view
+          · Gray&rsquo;s Anatomy (1918), public domain
+        </figcaption>
+      </figure>
     </div>
   );
 }
