@@ -46,10 +46,6 @@ Build a competition-ready static web app that uses an interactive body map to co
 - [ ] S26 - 研究分析、证据化迭代与限制 *(DEFERRED — requires real S25 data)*
 - [x] S27 - Vercel 部署、烟雾测试与回滚 *(code/docs COMPLETE 2026-08-17; LIVE deployment + smoke run + rollback rehearsal = student manual work pending)*
 - [x] S28 - 报告、演示、竞赛叙事与答辩 *(materials COMPLETE 2026-08-17; rehearsals + recordings = student manual work pending)*
-- [ ] S25 - 10 人可用性研究执行
-- [ ] S26 - 研究分析、证据化迭代与限制
-- [ ] S27 - Vercel 部署、烟雾测试与回滚
-- [ ] S28 - 报告、演示、竞赛叙事与答辩
 
 ## Decisions
 - 2026-07-27: Preserve the Next.js App Router architecture; use a currently supported patched LTS line for a new repository.
@@ -113,13 +109,13 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Manual: S01–S10 + S14–S16 drafted/executed by implementation partner. S11/S12/S13 (content-production): specs drafted; review/capture/editing are student manual work (pending). S16 stopwatch spot-checks/tab-switch/SR cadence pending. S17 session authored + tested by implementation partner; first-video walk-through, pause-then-read-steps, and classmate state-clarity check are student manual work (pending).
 - Content/media: Schema + build gate done (S10); cards (S14) + detail/player (S15) + timer (S16) + session sync (S17) + completion feedback (S18) + integrated flow/regression (S19) + six-region content fill (S20: 18 draft entries) done; S12 passed via placeholder (2026-08-14); content review (S11 — awaiting reviewer auth) + editing (S13 — awaiting footage) real-world pending; `Manual_Instructions.md` committed as draft content source.
 - Research: Protocol designed (S03); execution scheduled for S25, pilot before that.
-- End-to-end demo path: ankle slice (S09) → cards (S14) → detail/player+safety (S15) → timer (S16) → session sync (S17) → completion feedback (S18) → integrated flow + regression suite (S19); six-region content next (S20).
+- End-to-end demo path (complete, S09→S28): ankle slice → cards → detail/player+safety → timer → session sync → completion feedback → integrated flow + regression → six-region content → sport entries → flows → release suite → perf/offline → deployment docs → report/demo/defense materials.
 
 ## Completion notes (checkpoints)
 - S01: `dc9c0d6` → `3717579` → `d69336a`. · S02: `d69336a` → `99b410d`. · S03: `99b410d` → `7d51f58`.
 - S04: `7d51f58` → `e44248d`. · S05: `2deec09` → `c2e4431`. · S06: `c2e4431` → `682d828` → `42be299`.
 - S07: `42be299` → `ca0b543`. · S08: `ca0b543` → `9dbd94b`. · S09: `9dbd94b` → `6d95164`. · S10: `6d95164` → `299ba2a`.
-- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → `4f4f7bb`. · S18: `7236da8` → `2cbbe4f`. · S19: `2cbbe4f` → `d13297e`. · S20: `d13297e` → `3535eb0`. · S21: `3535eb0` → `d6879de`. · S22: `d6879de` → `36b0a66`. · S23: `36b0a66` → `4bdaa51`. · S24: `4bdaa51` → `66ee0a1`. · S25 scaffolding/parked: `4036a3c`. · S27: `4036a3c` → (this commit).
+- S11 parked: `4d6ec2c`. · S12 spec: `27310d2`. · S13 spec: `0952d23`. · S14: `0952d23` → `6e5fde0`. · S15: `6e5fde0` → `ce582f4`. · S16: `ce582f4` → `e12c309`. · S17: `e12c309` → `4f4f7bb`. · S18: `7236da8` → `2cbbe4f`. · S19: `2cbbe4f` → `d13297e`. · S20: `d13297e` → `3535eb0`. · S21: `3535eb0` → `d6879de`. · S22: `d6879de` → `36b0a66`. · S23: `36b0a66` → `4bdaa51`. · S24: `4bdaa51` → `66ee0a1`. · S25 scaffolding/parked: `4036a3c`. · S27: `4036a3c` → `f45626c`. · S28: `f45626c` → `3fec20b`.
 
 ## S11 / S13 — parked; S12 passed via placeholder (content-production, per user directions)
 - S11: reviewer authorization pending (user to supply); `docs/ContentReviewLog.md` + `docs/SourceLedger.md` §7; sign-off + sources deferred. `Manual_Instructions.md` (committed) is the draft content the reviewer will review.
@@ -127,7 +123,7 @@ Build a competition-ready static web app that uses an interactive body map to co
 - S13: `docs/VideoPostProductionProtocol.md` + `docs/media-report-S13.txt` + `docs/caption-review-S13.md` + `public/{videos,captions,transcripts}/README.md`; editing deferred until real footage; the student review checklist is defined and waiting.
 - Unblock S11 when reviewer authorization arrives; unblock S13 when real footage exists.
 
-## S14–S19 Completion Notes (S14–S16 completed 2026-08-10; S17–S19 completed 2026-08-14)
+## S14–S28 Completion Notes (S14–S16 completed 2026-08-10; S17–S22 + S23–S28 completed 2026-08-14/17)
 - **S14** (`6e5fde0`): enhanced `ExerciseCard` + `ExercisePanel` (approved-only filter, states); wired into `/body/[part]`; tests.
 - **S15** (`ce582f4`): `VideoPlayer` (native controls, no autoplay, captions, transcript, fallback) + `SafetyNotice` (before action) + enhanced detail page; tests.
 - **S16** (`e12c309`): `lib/timer-math.ts` + `hooks/useExerciseTimer.ts` (drift-free FSM, completion once) + `components/Timer.tsx` + `tests/timer.test.ts`; evidence `docs/timer-tests-S16.txt`. Acceptance met (deterministic transitions; visual progress = remaining; completion once).
@@ -140,7 +136,8 @@ Build a competition-ready static web app that uses an interactive body map to co
 - **S23** (`4bdaa51`): release-regression suite — `scripts/check-safety-copy.ts` (safety-copy contract, release-blocking), `playwright.config.ts` + `tests/browser/core-path.spec.ts` (e2e: 4) + `tests/browser/a11y-scan.spec.ts` (axe: 7, zero violations) + `vitest.config.ts` browser exclusion; deps `@playwright/test` + `@axe-core/playwright`; **real defect fixed: 375px horizontal overflow from the fixed-width body map** (fluid containers + %-positioned hotspots). Evidence: `docs/test-summary-S23.html` + `docs/a11y-report-S23.html` + `docs/defect-log-S23.csv`. Acceptance met (core paths green; no serious/high a11y issues; safety copy contract-protected against content drift).
 - **S24** (`66ee0a1`): `VideoPlayer` preload=metadata + poster slot + lazy preview contract; `next.config.ts` cache headers; `docs/PerformanceBudget.md` (measured v1 + exception E1 recorded with fix plan); `docs/OfflineDemo.md` (ankle-loop offline checklist); `public/demo-media/README.md` (license-first, intentionally empty); evidence `docs/performance-S24.html`. Acceptance met (zero first-screen video bytes; offline ankle loop covered by the 9-step checklist + existing fallback behavior; budget + exceptions documented).
 - **S25** (`4036a3c`, PARKED per user direction): study scaffolding only — run log + raw CSV template (zero fabricated rows); execution awaits mentor approval + pilot + 10 sessions.
-- **S27** (this commit): production-smoke project (env-driven URL, skips loudly without it) + 3-test live suite (routes/markers/404/console-clean, security headers, zero third-party requests); `docs/DeploymentGuide.md` + `docs/RecoveryGuide.md` + `docs/ReleaseChecklist.md`; vercel.json intentionally absent (documented). Acceptance met on the code/docs side (live steps honestly recorded as student-pending; rollback procedure documented + rehearsal scripted; offline plan independent per `docs/OfflineDemo.md`).
+- **S27** (`f45626c`): production-smoke project (env-driven URL, skips loudly without it) + 3-test live suite (routes/markers/404/console-clean, security headers, zero third-party requests); `docs/DeploymentGuide.md` + `docs/RecoveryGuide.md` + `docs/ReleaseChecklist.md`; vercel.json intentionally absent (documented). Acceptance met on the code/docs side (live steps honestly recorded as student-pending; rollback procedure documented + rehearsal scripted; offline plan independent per `docs/OfflineDemo.md`).
+- **S28** (`3fec20b`): `docs/FinalReport.md` + `docs/DemoScript.md` (4:20 timed, per-beat fallbacks, <30 s offline switch) + `docs/DefenseQandA.md` + `docs/EvidenceIndex.md` (51 refs, machine-verified) + `docs/rehearsals-S28.md` template. Acceptance met on the materials side (student-original decisions showcased; health boundary + research limits proactive; citations complete). S01–S28 plan closed.
 
 ## Next Unit
-- S26 - 研究分析、证据化迭代与限制 (when S25 data exists): analyze study data, drive evidence-based iterations, document limitations. *(S28 is now the active unit; do not implement S28 or S26 until opened.)*
+*(none — plan closed 2026-08-17; see Post-S28 state above. S26 opens only when real S25 data exists; code backlog opens on user request.)*
