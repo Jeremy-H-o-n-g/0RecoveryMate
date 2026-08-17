@@ -11,17 +11,11 @@ Build a competition-ready static web app that uses an interactive body map to co
 - Preserve failed evidence, limitations, and student manual work; never fabricate approval, media, testing, or research.
 
 ## Current Unit
-Unit code: S28
-Unit title: 报告、演示、竞赛叙事与答辩
-Unit focus: Final report, demo, competition narrative, and Q&A/defense preparation.
-Current prompt: `prompts/S28-Report-Demo-and-Defense.md`
-Prior-state requirement: S27 deployment session closed (docs + smoke tooling; live deployment is student-executed).
-Status: **Activated — not yet started.** Do not implement until S28 is opened.
+*(none — S28 was the final planned unit; see Post-S28 below)*
 
-## Acceptance Criteria for Current Unit
-- Report/demo materials drafted from REAL project history (no fabricated results; parked items stated as such).
-- Demo script follows the documented core path incl. the offline fallback.
-- Defense Q&A prep includes honest limitations (draft content, pending review/research).
+## Post-S28 state (2026-08-17)
+- All 28 sessions closed or parked-with-record. Remaining REAL-WORK placeholders (student, non-fabricatable): S11 reviewer authorization + sign-off; S13 media editing (needs footage); S25 study execution (mentor approval + pilot + 10 sessions); S26 analysis (needs S25 data); S27 live deploy + smoke + rollback rehearsal + PDF/mp4 exports; S28 rehearsals + `final-demo-S28.mp4`.
+- Remaining CODE backlog (unassigned, recorded 2026-08-17): perf exception E1 fix (`app/page.tsx`/`SportQuickEntry` client-import of zod+data); in-app entry links for SportQuickEntry + `/flow`; VideoPlayer/session media unification; adjustable timer with defaults + 15 s rest preset (user requests); body-parts `commonSports` cleanup. Open as a bounded session on user request.
 
 ## Completed Units
 - [x] S01 - 基线台账与完整垂直切片
@@ -51,6 +45,7 @@ Status: **Activated — not yet started.** Do not implement until S28 is opened.
 - [ ] S25 - 10 人可用性研究执行 *(PARKED 2026-08-17 per user direction — placeholder; scaffolding complete; mentor approval + pilot + 10 sessions pending)*
 - [ ] S26 - 研究分析、证据化迭代与限制 *(DEFERRED — requires real S25 data)*
 - [x] S27 - Vercel 部署、烟雾测试与回滚 *(code/docs COMPLETE 2026-08-17; LIVE deployment + smoke run + rollback rehearsal = student manual work pending)*
+- [x] S28 - 报告、演示、竞赛叙事与答辩 *(materials COMPLETE 2026-08-17; rehearsals + recordings = student manual work pending)*
 - [ ] S25 - 10 人可用性研究执行
 - [ ] S26 - 研究分析、证据化迭代与限制
 - [ ] S27 - Vercel 部署、烟雾测试与回滚
@@ -87,7 +82,7 @@ Status: **Activated — not yet started.** Do not implement until S28 is opened.
 - 2026-08-17 (S23, COMPLETE): release-regression suite established. `scripts/check-safety-copy.ts` (+ `npm run check:safety`): safety-copy CONTRACT test — component sources must keep the red-flag stop-signal list/error/completion/flow/sport non-diagnostic copy (needles per component), every exercise carries stop signals, banned diagnostic regexes scanned across shipped data + components; failures BLOCK release. `playwright.config.ts` + `tests/browser/core-path.spec.ts` (+ `npm run test:e2e`): production-build browser e2e — core path incl. safety-before-media DOM order, keyboard-only body map, **no horizontal scroll @375px**, 404s, flow no-auto-advance. `tests/browser/a11y-scan.spec.ts` (+ `npm run test:a11y`): axe wcag2a/2aa/21a/21aa on 6 routes — **zero violations of any impact**; writes `docs/a11y-report-S23.html`. `vitest.config.ts` excludes `tests/browser/**`. Deps added: `@playwright/test`, `@axe-core/playwright` (+ Chromium). **Real defect found & fixed (justified component scope addition, S23 purpose): fixed-width 400px body map overflowed 375px screens by 41px** — BodyMapFront/Back now fluid (`w-full` + maxWidth + aspectRatio) with percentage-positioned hotspots (44px touch minimum kept); jsdom-based S19 check couldn't see layout. Evidence: `docs/test-summary-S23.html`, `docs/defect-log-S23.csv` (6 entries: 4 fixed incl. the overflow; 2 open non-blocking). All gates pass (validate/safety/test 14×114/e2e 4/a11y 7/build/lint/typecheck). VideoPlayer unification + entry-link wiring remain open (S24 candidates).
 - 2026-08-17 (S25, SCAFFOLDING ONLY — execution is student manual work): `docs/ResearchRunLog.md` (mentor-approval + pilot gates, AB/BA 5/5 assignment table, per-session quick-log template, deviation log, post-study de-anonymization + integrity checks) and `data/research/raw/` (README with access rules + `usability-observations.csv` with the header row EXACTLY matching the frozen S03 template; 0 data rows — nothing fabricated; gitignored by design so raw records stay out of the repo). Record-integrity self-check run: header OK / 11 columns OK / identical to template OK / 0 rows OK. **S25 remains open** pending: mentor approval, pilot run, 10 moderated sessions, post-study sweeps.
 - 2026-08-17 (user direction): **partial approval to proceed past the research blocker** — S25 execution + S26 analysis parked as placeholders (study runs later); app construction continues (S27 → S28).
-- 2026-08-17 (S27, COMPLETE — code/docs; live steps are student manual work): production-smoke tooling: `playwright.config.ts` gains a `smoke` project (env-driven `PRODUCTION_SMOKE_URL`; no local webServer when set) + `tests/browser/production-smoke.spec.ts` (3 tests: routes/deep-links/placeholder-marking/404/zero-client-errors; security headers nosniff+HSTS+no report-to; **zero third-party runtime requests**) + `npm run test:smoke` (skips loudly without the env var — never silently tests localhost). `docs/DeploymentGuide.md` (Vercel first-deploy + custom domain; vercel.json intentionally absent — defaults sufficient, documented; env separation; log-minimization evidence: zero fetch/console in app code, URLs carry no health data; local demo copy); `docs/RecoveryGuide.md` (Promote-to-Production rollback + revert path + local emergency demo + rehearsal script for `rollback-S27.mp4`); `docs/ReleaseChecklist.md` (release identity, 8 automated gates, safety/privacy truthfulness checks, student manual sign-offs, incident log). Evidence `docs/release-S27.txt`: all local gates re-verified green (validate/safety/test 14×114/e2e 4/a11y 7/build/lint/tsc; smoke 3 skipped-by-design). PENDING (student): Vercel connection + URL, live smoke run, real-device checks, rollback rehearsal, PDF/mp4 evidence.
+- 2026-08-17 (S28, COMPLETE — materials; rehearsals are student manual work): `docs/FinalReport.md` (problem → student-authored decision table → built system → health boundary → honest research status → 5 stated limitations → competition narrative); `docs/DemoScript.md` (timed 4:20 script, 7 beats, per-beat fallback branches — never one network path; <30 s offline switch; pre-demo checklist); `docs/DefenseQandA.md` (5 attack categories with evidence-pointed answers + hard rules for the room); `docs/EvidenceIndex.md` (**51 file references, machine-verified all resolve**; ⏳ marks pending student artifacts); `docs/rehearsals-S28.md` (empty template — timings/mentor-Q&A/attribution checks to be filled for real). Gates re-verified green (lint/tsc/test 14×114). Acceptance: student-original decisions explicitly showcased; health boundary + research limits stated proactively in every artifact; all citations resolve to real files/licenses. **S28 closed the S01–S28 plan; no next unit — see Post-S28.**
 
 ## Known Issues
 - ⚠️ Qualified content reviewer not yet authorized (DC-3) — S11 parked (user will supply authorization; `<<REVIEWER_NAME_TBD>>` until then); sign-off + sources deferred. No content may be marked `approved` before that (build gate + policy).
