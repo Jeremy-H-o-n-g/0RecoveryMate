@@ -13,6 +13,17 @@ export type VideoPlayerProps = {
  * - Uses the browser's native controls (S15 do-not-do: do not build inaccessible
  *   custom controls).
  * - Does NOT autoplay (safety: do not auto-start movement content).
+ * - S24 media-budget strategy:
+ *   * `preload="metadata"` (was `"auto"`): the first screen downloads only
+ *     dimension/track metadata, never the full video (S24 acceptance). The
+ *     full media stream starts only on an explicit user press of play.
+ *   * `poster` is always rendered when provided so the visual slot is stable
+ *     before any bytes of video arrive (CLS).
+ *   * A preview clip is referenced ONLY after first interaction: the
+ *     `previewUrl` attribute is attached as `data-preview` for the
+ *     click-to-preview enhancement; no preview is fetched on load. (No real
+ *     media exists yet — S12/S13 placeholder strategy — so the wiring is
+ *     contract-first, exercised by tests.)
  * - Exposes captions via a <track> when a caption URL exists.
  * - Degrades gracefully when there is no media yet (S12/S13 pending): shows a
  *   notice + transcript link so steps remain usable.
@@ -23,6 +34,7 @@ export default function VideoPlayer({
   posterUrl,
   captionUrl,
   transcriptUrl,
+  exerciseId,
 }: VideoPlayerProps): ReactNode {
   if (!videoUrl) {
     return (
@@ -48,6 +60,8 @@ export default function VideoPlayer({
         controls
         preload="metadata"
         poster={posterUrl || undefined}
+        data-preview={exerciseId ? `/videos/${exerciseId}-preview.mp4` : undefined}
+        data-preview-policy="after-interaction"
       >
         <source src={videoUrl} type="video/mp4" />
         {captionUrl ? (

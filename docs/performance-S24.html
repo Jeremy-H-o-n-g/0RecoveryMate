@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>RecoverMate performance S24</title><style>body{font-family:system-ui;margin:2rem;color:#111}table{border-collapse:collapse;margin-top:1rem}td,th{border:1px solid #999;padding:.35rem .7rem;font-size:.85rem;text-align:left}</style></head><body><h1>RecoverMate — performance &amp; media budget evidence (S24)</h1><p>Production build (next build, Turbopack), 2026-08-17. Gzip sizes via zlib at level default. Full contract: docs/PerformanceBudget.md.</p><p><b>Total JS: 901.7 KB raw / 259.0 KB gzip</b> (budget ceiling 300 KB gzip — PASS). CSS: 2n41tj8tf39gf.css: 22.1 KB / 5.1 KB gzip (ceiling 12 KB gzip — PASS).</p><table><tr><th>chunk</th><th>raw</th><th>gzip</th></tr>
+<tr><td>08ttfj81-47mu.js</td><td>223.7 KB</td><td>69.9 KB</td></tr>
+<tr><td>2qjgq_7bjt42e.js</td><td>297.3 KB</td><td>69.4 KB</td></tr>
+<tr><td>213zvx-x_gk21.js</td><td>154.8 KB</td><td>42.4 KB</td></tr>
+<tr><td>0cz1d0mv5g_q7.js</td><td>110.0 KB</td><td>38.7 KB</td></tr>
+<tr><td>2mmpezlrfmbu5.js</td><td>33.9 KB</td><td>8.5 KB</td></tr>
+<tr><td>1zfj6-if05mr-.js</td><td>18.9 KB</td><td>7.0 KB</td></tr>
+<tr><td>1zn542v-yg5lr.js</td><td>15.5 KB</td><td>6.2 KB</td></tr>
+<tr><td>3orrfx3-5ebwo.js</td><td>10.2 KB</td><td>4.1 KB</td></tr>
+<tr><td>turbopack-2yx5tmgpd3t6c.js</td><td>9.4 KB</td><td>3.7 KB</td></tr>
+<tr><td>3fntmmi971322.js</td><td>14.0 KB</td><td>3.6 KB</td></tr>
+<tr><td>22i43cg4l4-dq.js</td><td>8.7 KB</td><td>3.5 KB</td></tr>
+<tr><td>310vm2bl3xxpt.js</td><td>5.2 KB</td><td>1.9 KB</td></tr></table><h2>First-screen media</h2><p>0 bytes of video on any first screen: preload="metadata" (S24 VideoPlayer change), no autoplay, poster-only visual slot; canvas-confetti async-only (4.1 KB chunk fetched at fire time). No real media files exist yet (S12/S13 placeholder strategy) — media budget rows are n/a until then.</p><h2>Third-party runtime requests</h2><p>NONE — fonts self-hosted (next/font), no CDN/analytics (privacy).</p><h2>Recorded exception E1</h2><p>zod + content JSON live in a 69.4 KB-gzip client chunk loaded on home (cause: app/page.tsx client-imports lib/content; SportQuickEntry imports sports.json+SportSchema). Fix plan + owners in docs/PerformanceBudget.md §4; page files were outside the S24 allowlist. Within the 200 KB first-screen ceiling today (~180 KB).</p><h2>Gates this run</h2><p>lint 0 · typecheck 0 · vitest 14 files/114 · e2e 4 · a11y 7 (zero violations) · build 0. Lighthouse not run (scores are not the sole target; real-device timing = student manual work).</p></body></html>
