@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 /*
- * RecoverMate design tokens — "modern anatomical atlas" (redesign, 2026-08-17).
- * Warm paper ground, ink typography, anatomical sienna accent. Editorial and
- * clinical, deliberately NOT corporate-SaaS or neon-gym.
+ * RecoverMate design tokens — "dark science lab" (restyle 2026-09-05, per the
+ * owner's UI mockup: near-black navy canvas, electric blue + cyan accents,
+ * bold sans display type). Content and structure untouched; tokens only.
  *
  * Token categories (S05 contract preserved): background, text/surface,
- * focus, accent, success, border, motion.
+ * focus, accent, success, border, motion. All text tokens chosen for
+ * WCAG AA on their backgrounds (axe scans enforce serious/critical).
  */
 :root {
-  --background: #f7f3ec;      /* warm paper */
-  --surface: #fffdf9;         /* card paper */
-  --surface-2: #efe9df;       /* sunk panel */
-  --foreground: #1f1a15;      /* ink */
-  --muted: #5d564d;           /* graphite (AA on paper incl. tinted panels) */
-  --accent: #8f3e13;          /* anatomical sienna, darkened for AA text use */
-  --accent-soft: #ead3c1;     /* sienna wash for hovers */
-  --focus: #7c340f;           /* deep sienna focus ring */
-  --success: #2e7d4f;         /* completion green (ink-compatible) */
-  --border: #ddd3c4;          /* hairline */
+  --background: #0a0f16;      /* deep navy-black canvas */
+  --surface: #111a26;         /* raised card */
+  --surface-2: #182333;       /* sunk panel */
+  --foreground: #edf2f8;      /* near-white ink (15:1 on canvas) */
+  --muted: #a0abb9;           /* cool grey (7+:1 on canvas and cards) */
+  --accent: #6db1ff;          /* electric blue (text/lines on dark) */
+  --accent-soft: rgba(109, 177, 255, 0.14); /* blue wash for hovers */
+  --focus: #7dd3fc;           /* cyan focus ring */
+  --success: #4ade80;         /* completion green (dark-compatible) */
+  --border: rgba(148, 163, 184, 0.22);      /* hairline */
   --motion-scale: 1;          /* reduced-motion toggle (1 = motion enabled) */
 }
 
@@ -34,7 +35,6 @@
   --color-success: var(--success);
   --color-border: var(--border);
   --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
-  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 body {
@@ -43,7 +43,7 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Paper grain: two ultra-light radial washes, no images, no repaint cost. */
+/* Lab glow: two ultra-light cool radial washes, no images, no repaint cost. */
 body::before {
   content: "";
   position: fixed;
@@ -51,8 +51,8 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(1100px 500px at 85% -5%, rgba(143, 62, 19, 0.05), transparent 60%),
-    radial-gradient(900px 600px at -10% 105%, rgba(31, 26, 21, 0.04), transparent 55%);
+    radial-gradient(1100px 500px at 85% -5%, rgba(59, 130, 246, 0.1), transparent 60%),
+    radial-gradient(900px 600px at -10% 105%, rgba(45, 212, 191, 0.06), transparent 55%);
 }
 
 main {
@@ -60,27 +60,110 @@ main {
   z-index: 1;
 }
 
-/* Editorial display face for headings (atlas plate titles). */
-.font-display {
-  font-family: var(--font-serif), Georgia, serif;
-  font-variation-settings: "opsz" 40, "SOFT" 50;
-  letter-spacing: -0.01em;
+/*
+ * Large-screen adaptation (TV / big desktop displays): everything downstream
+ * is rem-based, so stepping the root font size on very wide viewports scales
+ * type AND spacing together for at-a-distance legibility. Layouts widen via
+ * their own container breakpoints; hotspot touch targets only grow with the
+ * (percentage-based) map, never shrink.
+ */
+@media (min-width: 1920px) {
+  html {
+    font-size: 18px;
+  }
+}
+@media (min-width: 2560px) {
+  html {
+    font-size: 20px;
+  }
 }
 
-/* Plate frame: hairline rule + small-caps caption row, like an atlas figure. */
+/*
+ * Body-map frame sizing (multi-device adaptation, 2026-09-05).
+ *
+ * Below lg (phones/tablets — touch-first) the map uses responsive width
+ * steps: hotspot targets keep their full >=44px design size even though the
+ * tall figure scrolls the page vertically.
+ *
+ * On lg+ (desktop mouse, TV remote/D-pad) the width is ALSO capped by
+ * viewport height so the whole figure is visible at once — no vertical
+ * scrollbar for the body image (owner request). Targets scale with the map
+ * there; that is acceptable for pointer/focus-ring interfaces and documented
+ * as the trade-off (the touch invariant is preserved where touch happens).
+ */
+.body-map-frame {
+  aspect-ratio: 320 / 911;
+  width: min(100%, 20rem);
+  margin-inline: auto;
+}
+@media (min-width: 640px) {
+  .body-map-frame {
+    width: min(100%, 22.5rem);
+  }
+}
+@media (min-width: 768px) {
+  .body-map-frame {
+    width: min(100%, 25rem);
+  }
+}
+@media (min-width: 1024px) {
+  .body-map-frame {
+    /* 0.35126 == 320/911 (virtual map ratio): turn the height budget into a
+       width so the whole figure AND the page chrome (header, toggles,
+       caption, footer note ≈ 23rem after the lg trims) fit the viewport —
+       no vertical scrollbar on the body-map page at >=768px-tall windows.
+       The 8.75rem floor only guards pathologically short windows. */
+    width: max(8.75rem, min(100%, 27.5rem, calc((100dvh - 23rem) * 0.35126)));
+  }
+}
+@media (min-width: 1536px) {
+  .body-map-frame {
+    width: max(8.75rem, min(100%, 32.5rem, calc((100dvh - 23rem) * 0.35126)));
+  }
+}
+
+/* Display face: heavy sans, tight tracking (mockup headline voice). Kept
+   free of text-transform so accessible names match the DOM text exactly. */
+.font-display {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+/* Blue→cyan gradient text for the display accent span (mockup headline). */
+.text-gradient {
+  background: linear-gradient(92deg, #4da3ff 10%, #53e8e0 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Frameless figure stage (mockup hero): soft radial spotlight behind the
+   floating anatomy, no card border. */
+.figure-glow {
+  background: radial-gradient(60% 55% at 50% 42%, rgba(59, 130, 246, 0.16), transparent 72%);
+}
+
+/* Card frame: dark panel, hairline rule, faint cool glow underneath. */
 .plate-frame {
   border: 1px solid var(--border);
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(31, 26, 21, 0.04), 0 12px 32px -24px rgba(31, 26, 21, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 12px 32px -24px rgba(0, 0, 0, 0.7),
+    0 0 48px -28px rgba(59, 130, 246, 0.35);
 }
+
+/* Micro-label: uppercase, letter-spaced (mockup small-caps voice). */
 .plate-caption {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
   font-size: 0.72rem;
+  font-weight: 600;
   color: var(--muted);
 }
 
-/* Focus visibility: ink-forward ring (state is never color alone). */
+/* Focus visibility: bright ring on dark (state is never color alone). */
 :where(a, button, [tabindex]):focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -134,19 +217,64 @@ main {
 }
 
 /*
- * Atlas hotspot markers (redesign): translucent sienna wash + hairline ring,
- * like a highlighted figure region. They sit ON the engraving, so they must
- * read on both light paper and dark ink lines; the wash uses color + a
- * visible ring + the label chip on hover/focus (never color alone).
+ * Atlas hotspot markers: invisible by default (the artwork carries the
+ * visual), with the part name shown as a chip on hover/focus. A faint wash
+ * on interaction plus the chip keeps the feedback never color-alone; the
+ * keyboard focus indicator is the dashed outline.
  */
 .hotspot-marker {
-  background: rgba(143, 62, 19, 0.16);
-  border: 1px solid rgba(124, 52, 15, 0.55);
-  border-radius: 999px 999px 999px 3px;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
-.hotspot-marker:hover,
+.hotspot-marker:hover {
+  background: rgba(109, 177, 255, 0.14);
+}
 .hotspot-marker:focus-visible {
-  background: rgba(143, 62, 19, 0.34);
-  box-shadow: 0 0 0 3px rgba(143, 62, 19, 0.18);
+  background: rgba(109, 177, 255, 0.14);
+  outline: 2px dashed rgba(125, 211, 252, 0.8);
+  outline-offset: 2px;
+}
+
+/* Hover/focus name chip. The map container clips, so alignment variants
+   keep the chip inside near the edges (BodyPart picks the class). */
+.hotspot-tip {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  background: rgba(10, 15, 22, 0.95);
+  color: #eaf4ff;
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 5;
+}
+.hotspot-tip.tip-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.hotspot-tip.tip-left {
+  left: 0;
+}
+.hotspot-tip.tip-right {
+  right: 0;
+}
+.hotspot-tip.tip-below {
+  bottom: auto;
+  top: 100%;
+  margin-bottom: 0;
+  margin-top: 6px;
+}
+.hotspot-marker:hover .hotspot-tip,
+.hotspot-marker:focus-visible .hotspot-tip {
+  opacity: 1;
 }

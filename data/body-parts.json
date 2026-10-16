@@ -1,8 +1,8 @@
 [
-  { "id": "shoulder", "nameZh": "肩", "nameEn": "Shoulder", "view": "both", "svgIds": ["shoulder-left", "shoulder-right"], "exerciseIds": ["shoulder-overhead-triceps-rear-stretch", "shoulder-clasped-hands-chest-opener", "shoulder-cross-body-stretch"], "commonSports": [] },
-  { "id": "arm", "nameZh": "手臂", "nameEn": "Arm", "view": "both", "svgIds": ["arm-left", "arm-right"], "exerciseIds": ["arm-wrist-rotations", "arm-forearm-extensor-stretch", "arm-forearm-flexor-stretch", "arm-fixed-grip-biceps-stretch"], "commonSports": [] },
-  { "id": "lower-back", "nameZh": "腰背", "nameEn": "Lower back", "view": "back", "svgIds": ["lower-back"], "exerciseIds": ["lower-back-cat-cow", "lower-back-childs-pose"], "commonSports": [] },
-  { "id": "knee", "nameZh": "膝", "nameEn": "Knee", "view": "both", "svgIds": ["knee-left", "knee-right"], "exerciseIds": ["knee-standing-quad-stretch", "knee-seated-hamstring-stretch"], "commonSports": [] },
-  { "id": "calf", "nameZh": "小腿", "nameEn": "Calf", "view": "both", "svgIds": ["calf-left", "calf-right"], "exerciseIds": ["calf-wall-gastrocnemius-stretch", "calf-wall-soleus-stretch", "calf-stair-depth-stretch"], "commonSports": [] },
-  { "id": "ankle", "nameZh": "脚踝", "nameEn": "Ankle", "view": "both", "svgIds": ["ankle-left", "ankle-right"], "exerciseIds": ["ankle-inversion-stretch", "ankle-eversion-stretch", "ankle-circles", "ankle-pilot-placeholder"], "commonSports": ["running", "basketball", "soccer"] }
+  { "id": "shoulder", "nameZh": "肩", "nameEn": "Shoulder", "view": "both", "svgIds": ["shoulder-left", "shoulder-right"], "exerciseIds": ["shoulder-overhead-triceps-rear-stretch", "shoulder-clasped-hands-chest-opener", "shoulder-cross-body-stretch"] },
+  { "id": "arm", "nameZh": "手臂", "nameEn": "Arm", "view": "both", "svgIds": ["arm-left", "arm-right"], "exerciseIds": ["arm-wrist-rotations", "arm-forearm-extensor-stretch", "arm-forearm-flexor-stretch", "arm-fixed-grip-biceps-stretch"] },
+  { "id": "lower-back", "nameZh": "腰背", "nameEn": "Lower back", "view": "back", "svgIds": ["lower-back"], "exerciseIds": ["lower-back-cat-cow", "lower-back-childs-pose"] },
+  { "id": "knee", "nameZh": "膝", "nameEn": "Knee", "view": "both", "svgIds": ["knee-left", "knee-right"], "exerciseIds": ["knee-standing-quad-stretch", "knee-seated-hamstring-stretch"] },
+  { "id": "calf", "nameZh": "小腿", "nameEn": "Calf", "view": "both", "svgIds": ["calf-left", "calf-right"], "exerciseIds": ["calf-wall-gastrocnemius-stretch", "calf-wall-soleus-stretch", "calf-stair-depth-stretch"] },
+  { "id": "ankle", "nameZh": "脚踝", "nameEn": "Ankle", "view": "both", "svgIds": ["ankle-left", "ankle-right"], "exerciseIds": ["ankle-inversion-stretch", "ankle-eversion-stretch", "ankle-circles", "ankle-pilot-placeholder"] }
 ]

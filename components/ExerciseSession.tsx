@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ringGeometry } from "../lib/timer-math";
 import {
   useExerciseSession,
   type SessionPhase,
 } from "../hooks/useExerciseSession";
 import StepIndicator from "./StepIndicator";
+import TimerDurationControl from "./TimerDurationControl";
+import VideoPlayer from "./VideoPlayer";
 
 export type ExerciseSessionProps = {
   steps: string[];
@@ -17,6 +19,8 @@ export type ExerciseSessionProps = {
   posterUrl: string;
   captionUrl: string;
   transcriptUrl: string;
+  /** Feeds the S24 click-to-preview data contract on the session video. */
+  exerciseId?: string;
 };
 
 const RADIUS = 54;
@@ -33,11 +37,12 @@ const PHASE_LABEL: Record<SessionPhase, string> = {
  * Exercise session: video player + step guidance + step timer, coordinated by
  * the session controller hook (S17).
  *
- * Media: rendered here (not via VideoPlayer) because the session needs direct
- * media-event access (play/pause/ended/seeked/error) to keep one source of
- * truth. The S15 accessibility rules are preserved: native controls, NO
- * autoplay, captions <track>, graceful no-video fallback with transcript link.
- * Unifying this with VideoPlayer is S19 integration work.
+ * Media: rendered through the shared VideoPlayer (2026-09-01 unification — the
+ * former second <video> markup lived here). The session borrows the element
+ * via videoRef + mediaHandlers so media events still lead and controls still
+ * delegate (one source of truth). The S15 accessibility rules come with the
+ * shared player: native controls, NO autoplay, captions <track>, graceful
+ * no-video fallback with transcript link.
  *
  * Safety: no auto-advance when a step timer or the video completes; Stop/Reset
  * is always available; native media errors are surfaced, not suppressed.
@@ -49,19 +54,23 @@ export default function ExerciseSession({
   posterUrl,
   captionUrl,
   transcriptUrl,
+  exerciseId,
 }: ExerciseSessionProps) {
   const hasVideo = videoUrl !== "";
   // The component owns the media element; the session controller only borrows
   // the ref (reads it in handlers/controls), so its return stays ref-free.
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  // User-adjustable step duration (2026-09-01 backlog): defaults to the
+  // exercise's authored duration; presets/stepper adjust it while idle.
+  const [durationSeconds, setDurationSeconds] = useState(stepDurationSeconds);
   const session = useExerciseSession({
     stepCount: steps.length,
-    stepDurationSeconds,
+    stepDurationSeconds: durationSeconds,
     hasVideo,
     videoRef,
   });
 
-  const durationMs = stepDurationSeconds * 1000;
+  const durationMs = durationSeconds * 1000;
   const { circumference, dashoffset } = ringGeometry(
     session.timer.elapsedMs,
     durationMs,
@@ -95,52 +104,20 @@ export default function ExerciseSession({
         </p>
       ) : null}
 
-      {/* The action: follow-along video (native controls, no autoplay). */}
-      {hasVideo ? (
-        <div className="mt-4 overflow-hidden rounded-lg border border-accent/30">
-          <video
-            ref={videoRef}
-            className="w-full"
-            controls
-            preload="metadata"
-            poster={posterUrl || undefined}
-            {...session.mediaHandlers}
-          >
-            <source src={videoUrl} type="video/mp4" />
-            {captionUrl ? (
-              <track
-                default
-                kind="subtitles"
-                srcLang="en"
-                src={captionUrl}
-                label="English"
-              />
-            ) : null}
-            Your browser does not support the video tag.
-          </video>
-          {transcriptUrl ? (
-            <div className="border-t border-accent/20 p-2">
-              <a className="text-sm underline hover:text-accent" href={transcriptUrl}>
-                Read transcript
-              </a>
-            </div>
-          ) : null}
-        </div>
-      ) : (
-        <div className="mt-4 rounded-lg border border-accent/30 bg-surface/40 p-4">
-          <p className="text-sm text-muted">
-            Video pending (awaiting capture + review). The steps and timer below
-            still work.
-          </p>
-          {transcriptUrl ? (
-            <p className="mt-1">
-              <a className="text-sm underline hover:text-accent" href={transcriptUrl}>
-                Read transcript
-              </a>
-            </p>
-          ) : null}
-        </div>
-      )}
+      {/* The action: follow-along video via the shared player (native
+          controls, no autoplay; media events lead the session — S17). */}
+      <div className="mt-4">
+        <VideoPlayer
+          videoUrl={videoUrl}
+          posterUrl={posterUrl}
+          captionUrl={captionUrl}
+          transcriptUrl={transcriptUrl}
+          exerciseId={exerciseId}
+          videoRef={videoRef}
+          mediaHandlers={session.mediaHandlers}
+          emptyStateNote="The steps and timer below still work."
+        />
+      </div>
 
       {/* Step guidance under user control (manual navigation, keyboard). */}
       <StepIndicator
@@ -199,6 +176,15 @@ export default function ExerciseSession({
             Stop / Reset
           </button>
         </div>
+
+        {/* User-adjustable countdown: presets (incl. 15 s rest) + stepper.
+            Idle-only; a live countdown is never silently re-timed. */}
+        <TimerDurationControl
+          valueSeconds={durationSeconds}
+          defaultSeconds={stepDurationSeconds}
+          disabled={session.timer.phase !== "idle"}
+          onChange={setDurationSeconds}
+        />
 
         {session.stepComplete ? (
           <p className="text-sm text-muted">

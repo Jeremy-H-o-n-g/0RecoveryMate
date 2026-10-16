@@ -49,26 +49,34 @@ no CDN/analytics — privacy: 分析工具不得收集健康选择 → none exis
 
 ## 4. Exceptions (性能预算和例外有记录 — S24 acceptance)
 
-**E1 — Zod + content JSON in a client chunk (69.4 KB gzip).**
-Cause: `app/page.tsx` is a client component and imports `lib/content`, which
-module-loads Zod schemas and parses `body-parts.json` + `exercises.json`;
-`components/SportQuickEntry.tsx` similarly imports `data/sports.json` +
-`SportSchema`. The chunk loads on the home route (first screen).
-Fix (2-line changes, blocked by this session's file allowlist —
-`next.config.ts`/`VideoPlayer` only):
-  1. Move hotspot→region mapping into a server component boundary or a tiny
-     client-side lookup map (`{hotspotId: regionId}` generated from data).
-  2. Pre-validate `sports.json` at build time (lib/content-style module load)
-     and hand the parsed array to the client as props.
-Owners: next code unit with page-file access (S25+ integration or a dedicated
-chore). Not a release blocker; recorded here per the S24 mandate.
+**E1 — Zod + content JSON in a client chunk (69.4 KB gzip). FIXED 2026-09-01
+(backlog session).**
+Cause: `app/page.tsx` was a client component importing `lib/content` (module-
+loads Zod + parses `body-parts.json` + `exercises.json`);
+`components/SportQuickEntry.tsx` imported `data/sports.json` + `SportSchema`.
+Fix as prescribed here:
+  1. `app/page.tsx` is now a SERVER component; it derives the
+     `{hotspotId: regionId}` map + region names and hands them to a thin
+     client boundary `components/HomeExplorer.tsx`.
+  2. `lib/content.ts` pre-validates `sports.json` at module load (build gate)
+     and the parsed array reaches the client as props; `SportQuickEntry` is
+     now fully props-driven (no data/Zod import).
+Measured after fix (`node scripts/chunk-report.mjs`, the new §6 tool): no
+client chunk embeds Zod; total JS 195.9 KB gzip (was 259.0), 196.4 KB after
+the same session's adjustable-timer control; largest chunks
+69.9 (react-dom) / 43.6 / 38.7 (app code).
 
-**E2 — First-screen JS ≈ 180 KB gzip incl. E1.** Within the 200 KB ceiling;
-revisit to target once E1 lands (projected ≈ 110–120 KB).
+**E2 — First-screen JS ≈ 180 KB gzip incl. E1.** Re-measured 2026-09-01 after
+the E1 fix + home wiring of SportQuickEntry/flow links: **175.0 KB gzip** on
+the home route (8 chunks). Within the 200 KB ceiling, above the 150 KB target
+because home now ships the sport-entry + flow-link client UI. To close the gap
+later: split the body-map and sport-entry client islands further or lazy-mount
+the flow section. Not a release blocker (ceiling respected, zero third-party
+requests, no first-screen video).
 
 ## 5. Core Web Vitals posture (design-level, honest)
 
-- LCP element: body-map SVG on home (local, ~40 KB) — no remote candidates.
+- LCP element: body-map image on home (local webp, `muscle-chart-v4-front.webp`, ~83 KB) — no remote candidates.
 - CLS: poster slot reserved; fonts self-hosted with `next/font` (swap
   controlled); step cards use fixed aspect skeletons (S14).
 - INP: interactions are simple state updates; timers use timestamps, not tick
@@ -79,6 +87,6 @@ revisit to target once E1 lands (projected ≈ 110–120 KB).
 
 ```bash
 npm run build
-node -e "/* size report: read .next/static/chunks, gzip each */"  # see performance-S24.html for this run's output
+node scripts/chunk-report.mjs   # per-chunk raw/gzip sizes + Zod-presence (E1) guard
 npm run test:e2e   # includes 375px no-overflow + production-build path checks
 ```

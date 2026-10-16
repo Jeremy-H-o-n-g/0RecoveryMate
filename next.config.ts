@@ -24,8 +24,9 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Map artwork + demo media: static assets that change by filename.
-        source: "/:file(body-front|body-back|demo-:rest*).svg",
+        // Map artwork: static assets that change by filename
+        // (2026-09-01: muscle-chart.webp replaced the Gray plates).
+        source: "/anatomy/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],

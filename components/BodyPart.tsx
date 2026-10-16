@@ -49,15 +49,28 @@ export default function BodyPart({ hotspot, onSelect, base }: BodyPartProps) {
         minHeight: 44,
       };
 
+  // The map container clips (overflow-hidden), so the hover tip aligns
+  // inward near the horizontal edges instead of centering past them.
+  const cx = base ? (hotspot.x + hotspot.width / 2) / base.width : 0.5;
+  const tipAlign =
+    cx < 0.25 ? "tip-left" : cx > 0.75 ? "tip-right" : "tip-center";
+  const tipSide = base && hotspot.y < base.height * 0.08 ? "tip-below" : "tip-above";
+
   return (
     <button
       type="button"
       data-part-id={hotspot.id}
       aria-label={hotspot.label}
-      title={hotspot.label}
       onClick={() => onSelect?.(hotspot.id)}
       className="hotspot-marker absolute"
       style={style}
-    />
+    >
+      <span
+        aria-hidden="true"
+        className={`hotspot-tip ${tipAlign} ${tipSide}`}
+      >
+        {hotspot.label}
+      </span>
+    </button>
   );
 }

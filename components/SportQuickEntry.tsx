@@ -1,27 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import sportsData from "../data/sports.json";
-import bodyPartsData from "../data/body-parts.json";
-import { SportSchema, type Sport } from "../schemas/sport";
+import type { Sport } from "../schemas/sport";
 
 export type SportQuickEntryProps = {
-  /** Override the sport list (tests / future data swaps). */
-  sports?: Sport[];
-  /** Known region ids (defaults to the six regions in body-parts.json). */
-  knownRegionIds?: string[];
+  /** Validated sport list — injected by the server page (E1: data + Zod stay
+   * out of the client bundle; build-time validation lives in lib/content). */
+  sports: Sport[];
+  /** Known region ids (the six regions in body-parts.json). */
+  knownRegionIds: string[];
+  /** Region id -> display name (nameZh) for the navigation chips. */
+  regionNames: Record<string, string>;
   /** Notified with the highlighted region ids (null = cleared). Optional:
    * without it the entry still shows regions + reasons (graceful degradation). */
   onHighlight?: (regionIds: string[] | null) => void;
   /** Region chip activation (navigation decided by the parent). Optional. */
   onSelectRegion?: (regionId: string) => void;
+  /** Notified with the selected sport id (null = cleared). Optional; lets the
+   * parent offer a matching recovery-flow entry. */
+  onSelectSport?: (sportId: string | null) => void;
 };
-
-// Validate at module load (mirrors lib/content's build-time gate).
-const defaultSports = SportSchema.array().parse(sportsData);
-const defaultKnownRegionIds = (bodyPartsData as { id: string }[]).map(
-  (p) => p.id
-);
 
 /**
  * Sport quick entries (S21): 7 sports + 通用 as explainable navigation.
@@ -38,10 +36,12 @@ const defaultKnownRegionIds = (bodyPartsData as { id: string }[]).map(
  *   aria-pressed + border + text, never color alone.
  */
 export default function SportQuickEntry({
-  sports = defaultSports,
-  knownRegionIds = defaultKnownRegionIds,
+  sports,
+  knownRegionIds,
+  regionNames,
   onHighlight,
   onSelectRegion,
+  onSelectSport,
 }: SportQuickEntryProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -51,16 +51,12 @@ export default function SportQuickEntry({
     : [];
   const hasMatches = selected !== null && highlighted.length > 0;
 
-  const regionName = (id: string): string => {
-    const part = (bodyPartsData as { id: string; nameZh: string }[]).find(
-      (p) => p.id === id
-    );
-    return part ? `${part.nameZh} (${id})` : id;
-  };
+  const regionName = (id: string): string => regionNames[id] ?? id;
 
   const toggle = (sport: Sport) => {
     const next = selectedId === sport.id ? null : sport.id;
     setSelectedId(next);
+    onSelectSport?.(next);
     if (!onHighlight) return;
     if (next === null) {
       onHighlight(null);

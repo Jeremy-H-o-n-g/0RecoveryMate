@@ -8,6 +8,18 @@ import bodyPartsData from "../data/body-parts.json";
 
 const SIX_REGIONS = (bodyPartsData as { id: string }[]).map((p) => p.id);
 
+// The component is props-driven (E1: data + Zod stay server-side; lib/content
+// validates at build time). Tests inject the same data the server page passes.
+const SPORTS = SportSchema.array().parse(sportsData);
+const REGION_NAMES = Object.fromEntries(
+  (bodyPartsData as { id: string; nameZh: string }[]).map((p) => [p.id, p.nameZh])
+);
+const baseProps = {
+  sports: SPORTS,
+  knownRegionIds: SIX_REGIONS,
+  regionNames: REGION_NAMES,
+};
+
 afterEach(() => {
   cleanup();
 });
@@ -81,7 +93,7 @@ describe("sport schema + data (S21)", () => {
 
 describe("SportQuickEntry component (S21 acceptance)", () => {
   it("renders all 8 entries as keyboard-operable buttons", () => {
-    render(<SportQuickEntry />);
+    render(<SportQuickEntry {...baseProps} />);
     const names = ["篮球", "足球", "羽毛球", "腰旗橄榄球", "射箭", "网球", "飞盘", "通用"];
     for (const name of names) {
       const btn = screen.getByRole("button", { name: new RegExp(name) });
@@ -93,7 +105,13 @@ describe("SportQuickEntry component (S21 acceptance)", () => {
   it("selecting a sport shows the reason + region chips and highlights via callback", () => {
     const onHighlight = vi.fn();
     const onSelectRegion = vi.fn();
-    render(<SportQuickEntry onHighlight={onHighlight} onSelectRegion={onSelectRegion} />);
+    render(
+      <SportQuickEntry
+        {...baseProps}
+        onHighlight={onHighlight}
+        onSelectRegion={onSelectRegion}
+      />
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /篮球/ }));
     const btn = screen.getByRole("button", { name: /篮球/ });
@@ -124,7 +142,7 @@ describe("SportQuickEntry component (S21 acceptance)", () => {
   });
 
   it("shows the non-diagnostic disclaimer (never an individualized judgment)", () => {
-    render(<SportQuickEntry />);
+    render(<SportQuickEntry {...baseProps} />);
     expect(
       screen.getByText(/不构成个体化医学判断/)
     ).toBeTruthy();
@@ -133,7 +151,7 @@ describe("SportQuickEntry component (S21 acceptance)", () => {
 
   it("general entry assumes no sport and covers all six regions", () => {
     const onHighlight = vi.fn();
-    render(<SportQuickEntry onHighlight={onHighlight} />);
+    render(<SportQuickEntry {...baseProps} onHighlight={onHighlight} />);
     fireEvent.click(screen.getByRole("button", { name: /通用/ }));
     expect(onHighlight).toHaveBeenCalledWith([...SIX_REGIONS]);
     expect(screen.getByText(/不预设任何运动项目/)).toBeTruthy();
@@ -148,7 +166,13 @@ describe("SportQuickEntry component (S21 acceptance)", () => {
       regionIds: ["not-a-region"],
       reasonZh: "测试用无匹配区域。",
     };
-    render(<SportQuickEntry sports={[brokenSport]} onHighlight={onHighlight} />);
+    render(
+      <SportQuickEntry
+        {...baseProps}
+        sports={[brokenSport]}
+        onHighlight={onHighlight}
+      />
+    );
     fireEvent.click(screen.getByRole("button", { name: /测试运动/ }));
     // Filtered to the known set -> empty -> fallback notice, no fake matches.
     expect(onHighlight).toHaveBeenCalledWith([]);
@@ -158,9 +182,18 @@ describe("SportQuickEntry component (S21 acceptance)", () => {
   });
 
   it("works without callbacks (graceful degradation)", () => {
-    render(<SportQuickEntry />);
+    render(<SportQuickEntry {...baseProps} />);
     fireEvent.click(screen.getByRole("button", { name: /射箭/ }));
     expect(screen.getByText(/射箭需要长时间保持开弓姿势/)).toBeTruthy();
     expect(screen.getByRole("button", { name: /前往腰背/ })).toBeTruthy();
+  });
+
+  it("reports the selected sport id via onSelectSport (flow entry wiring)", () => {
+    const onSelectSport = vi.fn();
+    render(<SportQuickEntry {...baseProps} onSelectSport={onSelectSport} />);
+    fireEvent.click(screen.getByRole("button", { name: /网球/ }));
+    expect(onSelectSport).toHaveBeenCalledWith("tennis");
+    fireEvent.click(screen.getByRole("button", { name: /网球/ }));
+    expect(onSelectSport).toHaveBeenLastCalledWith(null);
   });
 });

@@ -22,6 +22,26 @@ export function remainingMs(elapsedMs: number, durationMs: number): number {
   return Math.max(0, durationMs - elapsedMs);
 }
 
+/** Adjustable-timer policy (2026-09-01 backlog): the user may re-time the step
+ * countdown within sane bounds. Presets include the 15 s between-set rest the
+ * student manual specifies for 膝盖/手臂 entries (S20 recorded it as a tip;
+ * timer-preset support landed here). Bounds keep the ring math meaningful
+ * (duration > 0) and the follow-along tool honest (no marathon presets). */
+export const TIMER_MIN_SECONDS = 5;
+export const TIMER_MAX_SECONDS = 120;
+export const TIMER_STEP_SECONDS = 5;
+export const TIMER_PRESET_SECONDS = [15, 30, 45, 60] as const;
+/** The between-set rest preset (user request). */
+export const REST_PRESET_SECONDS = 15;
+
+/** Clamp a user-chosen duration into [TIMER_MIN_SECONDS, TIMER_MAX_SECONDS]. */
+export function clampDurationSeconds(value: number): number {
+  return Math.min(
+    TIMER_MAX_SECONDS,
+    Math.max(TIMER_MIN_SECONDS, Math.round(value))
+  );
+}
+
 /**
  * SVG stroke-dash geometry for a circular ring of the given radius. `dashoffset`
  * goes from 0 (ring full, at start) to `circumference` (ring empty, at end) as

@@ -3,29 +3,35 @@
 import BodyPart, { type Hotspot } from "./BodyPart";
 
 /**
- * Display canvas for the front plate, in the SAME coordinate space as the
- * shipped 760px image (`public/anatomy/muscles-anterior.png`). Hotspot coords
- * are defined against BODY_FRONT_SIZE; BodyPart converts them to percentages
- * so the map scales fluidly (S23 responsive fix preserved).
+ * Display canvas for the FRONT (anterior) figure of the AI-generated
+ * color-coded muscle chart (`public/anatomy/muscle-chart-v3-front.webp`,
+ * normalized 460x1310 crop of the owner-supplied 人体图3.png — see
+ * docs/SourceLedger.md §4a). Coordinates live in a virtual 320x911 space
+ * (the crop scaled so virtual width == the SMALLEST rendered max width) so
+ * the >=44 touch-target invariant holds on touch-first viewports. Rendered
+ * sizing lives in `.body-map-frame` (globals.css): responsive width steps
+ * below lg, plus a viewport-height cap on lg+ so the whole figure fits on
+ * screen (owner request). BodyPart converts virtual coordinates to
+ * percentages, so the hotspots track the frame at every size.
  */
-export const BODY_FRONT_SIZE = { width: 760, height: 883 } as const;
+export const BODY_FRONT_SIZE = { width: 320, height: 911 } as const;
 
 /**
- * Front-view hotspots over the Gray's Anatomy anterior muscle plate
- * (public-domain, 1918; see docs/SourceLedger.md). Coordinates sit on the
- * visibly correct muscle groups in the engraving.
+ * Front-view hotspots over the anterior figure. Coordinates sit on the
+ * visibly correct muscle groups (measured against the v3 grid overlay);
+ * left/right follow the shipped convention (viewer-left = "-left").
  */
 export const FRONT_HOTSPOTS: Hotspot[] = [
-  { id: "shoulder-left", label: "Left shoulder", x: 252, y: 145, width: 78, height: 72 },
-  { id: "shoulder-right", label: "Right shoulder", x: 430, y: 145, width: 78, height: 72 },
-  { id: "arm-left", label: "Left arm", x: 208, y: 225, width: 68, height: 190 },
-  { id: "arm-right", label: "Right arm", x: 484, y: 225, width: 68, height: 190 },
-  { id: "knee-left", label: "Left knee", x: 300, y: 610, width: 76, height: 95 },
-  { id: "knee-right", label: "Right knee", x: 386, y: 610, width: 76, height: 95 },
-  { id: "calf-left", label: "Left calf", x: 298, y: 715, width: 72, height: 118 },
-  { id: "calf-right", label: "Right calf", x: 392, y: 715, width: 72, height: 118 },
-  { id: "ankle-left", label: "Left ankle", x: 302, y: 836, width: 66, height: 47 },
-  { id: "ankle-right", label: "Right ankle", x: 394, y: 836, width: 66, height: 47 },
+  { id: "shoulder-left", label: "Left shoulder", x: 40, y: 139, width: 56, height: 77 },
+  { id: "shoulder-right", label: "Right shoulder", x: 224, y: 139, width: 56, height: 77 },
+  { id: "arm-left", label: "Left arm", x: 14, y: 219, width: 76, height: 199 },
+  { id: "arm-right", label: "Right arm", x: 230, y: 219, width: 76, height: 199 },
+  { id: "knee-left", label: "Left knee", x: 95, y: 584, width: 52, height: 56 },
+  { id: "knee-right", label: "Right knee", x: 173, y: 584, width: 52, height: 56 },
+  { id: "calf-left", label: "Left calf", x: 75, y: 640, width: 70, height: 160 },
+  { id: "calf-right", label: "Right calf", x: 175, y: 640, width: 70, height: 160 },
+  { id: "ankle-left", label: "Left ankle", x: 82, y: 828, width: 63, height: 83 },
+  { id: "ankle-right", label: "Right ankle", x: 175, y: 828, width: 63, height: 83 },
 ];
 
 /** True when the two hotspots' rectangles intersect (test invariant). */
@@ -45,21 +51,18 @@ export type BodyMapFrontProps = {
 export default function BodyMapFront({ onSelect }: BodyMapFrontProps) {
   return (
     <div
-      className="relative mx-auto w-full min-w-0"
-      style={{
-        maxWidth: BODY_FRONT_SIZE.width,
-        aspectRatio: `${BODY_FRONT_SIZE.width} / ${BODY_FRONT_SIZE.height}`,
-      }}
+      className="body-map-frame relative min-w-0 overflow-hidden"
       role="group"
       aria-label="Front body map"
     >
-      {/* Public-domain engraving (Gray's Anatomy, 1918) — decorative layer;
-          the hotspot buttons carry the semantics. */}
+      {/* Anterior crop of the AI-generated muscle chart. Decorative layer —
+          the hotspot buttons carry the semantics. Source/license:
+          docs/SourceLedger.md §4a. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/anatomy/muscles-anterior.png"
-        alt="Front view of the muscles of the human body (Gray's Anatomy, 1918)"
-        className="pointer-events-none absolute inset-0 h-full w-full max-w-full object-contain"
+        src="/anatomy/muscle-chart-v4-front.webp"
+        alt="Front view of a color-coded chart of the muscles of the human body"
+        className="pointer-events-none absolute inset-0 h-full w-full object-fill"
       />
       {FRONT_HOTSPOTS.map((hotspot) => (
         <BodyPart

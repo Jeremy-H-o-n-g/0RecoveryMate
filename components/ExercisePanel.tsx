@@ -29,7 +29,7 @@ export default function ExercisePanel({
         role="list"
         aria-busy="true"
         aria-label="Loading exercises"
-        className="grid gap-3 sm:grid-cols-2"
+        className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
       >
         {Array.from({ length: 2 }).map((_, i) => (
           <li
@@ -72,7 +72,7 @@ export default function ExercisePanel({
   }
 
   return (
-    <ul role="list" className="grid gap-3 sm:grid-cols-2">
+    <ul role="list" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {visible.map((ex) => (
         <li key={ex.id} className="min-w-0">
           <ExerciseCard exercise={ex} />

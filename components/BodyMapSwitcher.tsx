@@ -31,7 +31,7 @@ export default function BodyMapSwitcher({
 
   return (
     <div>
-      <div role="group" aria-label="Body view" className="inline-flex gap-2 pb-4">
+      <div role="group" aria-label="Body view" className="inline-flex gap-2 pb-4 lg:pb-2">
         <button
           type="button"
           aria-pressed={isFront}
@@ -52,7 +52,7 @@ export default function BodyMapSwitcher({
       <p aria-live="polite" className="sr-only">
         {isFront ? "Showing front body map" : "Showing back body map"}
       </p>
-      <figure className="plate-frame rounded-lg p-3">
+      <figure className="figure-glow rounded-xl p-3 lg:p-2">
         {isFront ? (
           <BodyMapFront onSelect={onSelect} />
         ) : (
@@ -60,7 +60,8 @@ export default function BodyMapSwitcher({
         )}
         <figcaption className="plate-caption mt-2 text-center">
           Muscles of the human body — {isFront ? "anterior" : "posterior"} view
-          · Gray&rsquo;s Anatomy (1918), public domain
+          · color-coded muscle chart (provenance &amp; license:
+          docs/SourceLedger.md &sect;4a)
         </figcaption>
       </figure>
     </div>

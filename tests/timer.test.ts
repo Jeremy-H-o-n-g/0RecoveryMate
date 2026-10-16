@@ -2,11 +2,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import {
+  clampDurationSeconds,
   clampRatio,
   elapsedRatio,
   remainingMs,
   remainingRatio,
+  REST_PRESET_SECONDS,
   ringGeometry,
+  TIMER_MAX_SECONDS,
+  TIMER_MIN_SECONDS,
+  TIMER_PRESET_SECONDS,
+  TIMER_STEP_SECONDS,
 } from "../lib/timer-math";
 import { useExerciseTimer } from "../hooks/useExerciseTimer";
 
@@ -45,6 +51,32 @@ describe("timer math (boundaries 0 / 1 / T / T+1)", () => {
     expect(clampRatio(-1)).toBe(0);
     expect(clampRatio(0.5)).toBe(0.5);
     expect(clampRatio(2)).toBe(1);
+  });
+});
+
+describe("adjustable-duration policy (2026-09-01 backlog)", () => {
+  it("bounds are sane: min < max, positive step, ring math stays meaningful", () => {
+    expect(TIMER_MIN_SECONDS).toBeGreaterThan(0);
+    expect(TIMER_MIN_SECONDS).toBeLessThan(TIMER_MAX_SECONDS);
+    expect(TIMER_STEP_SECONDS).toBeGreaterThan(0);
+  });
+
+  it("presets include the 15 s rest and the 30 s authored default, within bounds", () => {
+    expect(TIMER_PRESET_SECONDS).toContain(REST_PRESET_SECONDS);
+    expect(REST_PRESET_SECONDS).toBe(15);
+    expect(TIMER_PRESET_SECONDS).toContain(30);
+    for (const p of TIMER_PRESET_SECONDS) {
+      expect(p).toBeGreaterThanOrEqual(TIMER_MIN_SECONDS);
+      expect(p).toBeLessThanOrEqual(TIMER_MAX_SECONDS);
+    }
+  });
+
+  it("clampDurationSeconds clamps below/above and rounds", () => {
+    expect(clampDurationSeconds(0)).toBe(TIMER_MIN_SECONDS);
+    expect(clampDurationSeconds(-10)).toBe(TIMER_MIN_SECONDS);
+    expect(clampDurationSeconds(10_000)).toBe(TIMER_MAX_SECONDS);
+    expect(clampDurationSeconds(32.4)).toBe(32);
+    expect(clampDurationSeconds(32.6)).toBe(33);
   });
 });
 
@@ -95,6 +127,27 @@ describe("useExerciseTimer state machine", () => {
     // The 2000 ms spent paused must NOT have been subtracted.
     expect(result.current.remainingMs).toBeGreaterThan(3900);
     expect(result.current.remainingMs).toBeLessThanOrEqual(4000);
+  });
+
+  it("idle remaining follows a changed duration; live phases are never re-timed", () => {
+    const { result, rerender } = renderHook(
+      ({ ms }) => useExerciseTimer({ durationMs: ms }),
+      { initialProps: { ms: 1000 } }
+    );
+    expect(result.current.remainingMs).toBe(1000);
+
+    // Idle: re-timing updates the displayed remaining immediately.
+    rerender({ ms: 15_000 });
+    expect(result.current.phase).toBe("idle");
+    expect(result.current.remainingMs).toBe(15_000);
+
+    // (Live phases are never re-timed through the UI: the duration control is
+    // disabled outside idle — asserted in timer-duration.test.tsx.)
+
+    // Reset lands on the NEW duration (idle sync).
+    act(() => result.current.start());
+    act(() => result.current.reset());
+    expect(result.current.remainingMs).toBe(15_000);
   });
 
   it("reset returns to idle with full remaining and re-enables completion", () => {

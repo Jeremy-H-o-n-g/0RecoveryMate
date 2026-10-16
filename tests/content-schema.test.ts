@@ -123,7 +123,6 @@ describe("validateContent (referential integrity + media)", () => {
         view: "both",
         svgIds: ["ankle-left"],
         exerciseIds: ["ap"],
-        commonSports: [],
       },
     ];
     const r = validateContent({

@@ -33,6 +33,13 @@ export function useExerciseTimer({ durationMs, onComplete }: UseExerciseTimerOpt
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
+  // Adjustable timer (2026-09-01): while idle, the remaining time is DERIVED
+  // from the current duration (no effect needed) so a re-timed countdown reads
+  // correctly before start. Running/paused/complete keep the stored value — a
+  // live countdown is never silently re-timed (the UI disables adjustment
+  // outside idle).
+  const effectiveRemainingMs = phase === "idle" ? durationMs : remainingMs;
+
   // Tick while running. Refs are read here (in an effect), not during render.
   useEffect(() => {
     if (phase !== "running") return;
@@ -88,8 +95,18 @@ export function useExerciseTimer({ durationMs, onComplete }: UseExerciseTimerOpt
     setPhase("idle");
   }, [durationMs]);
 
-  const elapsedMs = durationMs - remainingMs;
-  const progress = durationMs > 0 ? clampRatio(remainingMs / durationMs) : 0;
+  const elapsedMs = durationMs - effectiveRemainingMs;
+  const progress =
+    durationMs > 0 ? clampRatio(effectiveRemainingMs / durationMs) : 0;
 
-  return { phase, elapsedMs, remainingMs, progress, start, pause, resume, reset };
+  return {
+    phase,
+    elapsedMs,
+    remainingMs: effectiveRemainingMs,
+    progress,
+    start,
+    pause,
+    resume,
+    reset,
+  };
 }

@@ -40,7 +40,7 @@ export default async function ExercisePage({
   const contentIncomplete = exercise.steps.length === 0;
 
   return (
-    <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12 md:max-w-3xl lg:max-w-5xl">
       <p className="plate-caption">
         <Link
           href={partHref}
@@ -102,6 +102,7 @@ export default async function ExercisePage({
           <ExerciseSession
             steps={exercise.steps}
             stepDurationSeconds={exercise.durationSeconds}
+            exerciseId={exercise.id}
             videoUrl={exercise.videoUrl}
             posterUrl={exercise.posterUrl}
             captionUrl={exercise.captionUrl}

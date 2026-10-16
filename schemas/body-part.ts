@@ -9,7 +9,6 @@ export const BodyPartSchema = z.object({
   view: BodyViewSchema,
   svgIds: z.array(z.string().min(1)).min(1),
   exerciseIds: z.array(z.string()),
-  commonSports: z.array(z.string()),
 });
 
 /** Canonical BodyPart type, derived from the schema (single source of truth). */

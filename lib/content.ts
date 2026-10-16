@@ -1,7 +1,9 @@
 import bodyPartsData from "../data/body-parts.json";
 import exercisesData from "../data/exercises.json";
+import sportsData from "../data/sports.json";
 import { BodyPartSchema, type BodyPart } from "../schemas/body-part";
 import { ExerciseSchema, type Exercise } from "../schemas/exercise";
+import { SportSchema, type Sport } from "../schemas/sport";
 
 /**
  * Server-side content access. Both data files are validated with Zod at module
@@ -12,6 +14,11 @@ import { ExerciseSchema, type Exercise } from "../schemas/exercise";
 export const bodyParts: BodyPart[] = BodyPartSchema.array().parse(bodyPartsData);
 
 export const exercises: Exercise[] = ExerciseSchema.array().parse(exercisesData);
+
+/** Sport quick-entry + flow registry (S21/S22), validated at module load like
+ * the other content gates. Exposed so the home SERVER component can hand the
+ * parsed array to the client as props (E1: no zod/data in the client chunk). */
+export const sports: Sport[] = SportSchema.array().parse(sportsData);
 
 // Referential integrity: every referenced exercise id must exist (build gate).
 for (const part of bodyParts) {

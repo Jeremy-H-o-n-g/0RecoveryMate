@@ -39,5 +39,6 @@ PENDING (S11 — `<<REVIEWER_NAME_TBD>>`).** Nothing here is approved content.
 - [ ] 通用 entry wording is neutral.
 
 Note: `commonSports` in `data/body-parts.json` (S08 demo field, references
-running/basketball/soccer) is superseded by `data/sports.json` and left
-untouched (outside the S21 allowlist); cleanup can happen in a later unit.
+running/basketball/soccer) was superseded by `data/sports.json`. Removed in the
+2026-09-01 backlog session (schema field + data + test fixture; the S08 sample
+file keeps its historical copy, stripped harmlessly by Zod).

@@ -42,7 +42,7 @@ export default async function FlowPage({
   });
 
   return (
-    <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto w-full min-w-0 max-w-2xl px-4 py-8 sm:px-6 sm:py-12 md:max-w-3xl lg:max-w-5xl">
       <p className="plate-caption">
         <Link
           href="/"

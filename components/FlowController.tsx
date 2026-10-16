@@ -99,130 +99,136 @@ export default function FlowController({
             )}（共 ${formatMinutes(queue.totalSeconds)}）`}
       </p>
 
-      {finished ? (
-        <CompletionFeedback
-          triggerKey={`${sportId}-flow-${completionCount}`}
-          heading="本次流程完成"
-          message="你按自己的节奏完成了这份流程。拉伸感即可，不需要追求痛感——随时可以停止。"
-          nextHref={exitHref}
-          nextLabel="返回"
-          backHref="/"
-          backLabel="首页"
-        />
-      ) : (
-        current && (
-          <div className="mt-4 rounded-lg border border-accent/30 bg-surface/40 p-4">
-            <p className="text-sm text-muted">{sportNameZh} · 常见训练负荷相关区域流程</p>
-            <h2 className="mt-1 text-xl font-semibold text-foreground">
-              {current.item.nameZh}
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              约 {current.item.durationSeconds} 秒 · {current.item.regionId}
-            </p>
+      {/* Two-column on large screens (current step | editable queue); stacks
+          in the same order below lg — the grid gap preserves the spacing. */}
+      <div className="mt-4 grid items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div>
+          {finished ? (
+            <CompletionFeedback
+              triggerKey={`${sportId}-flow-${completionCount}`}
+              heading="本次流程完成"
+              message="你按自己的节奏完成了这份流程。拉伸感即可，不需要追求痛感——随时可以停止。"
+              nextHref={exitHref}
+              nextLabel="返回"
+              backHref="/"
+              backLabel="首页"
+            />
+          ) : (
+            current && (
+              <div className="rounded-lg border border-accent/30 bg-surface/40 p-4">
+                <p className="text-sm text-muted">{sportNameZh} · 常见训练负荷相关区域流程</p>
+                <h2 className="mt-1 text-xl font-semibold text-foreground">
+                  {current.item.nameZh}
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  约 {current.item.durationSeconds} 秒 · {current.item.regionId}
+                </p>
 
-            {/* User-controlled advance only — no timer, no auto-play. */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href={detailHref(current.item.exerciseId, current.index)}
-                className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
-              >
-                查看动作指引
-              </Link>
-              <button
-                type="button"
-                onClick={next}
-                className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
-              >
-                完成，下一个
-              </button>
-              <button
-                type="button"
-                onClick={prev}
-                disabled={position === 0}
-                className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20 disabled:opacity-40"
-              >
-                上一个
-              </button>
-              <button
-                type="button"
-                onClick={() => skip(current.index)}
-                className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
-              >
-                跳过这个动作
-              </button>
-              <Link
-                href={exitHref}
-                className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
-              >
-                本次先到这里（退出）
-              </Link>
-            </div>
-          </div>
-        )
-      )}
-
-      {/* Reviewable + editable queue. */}
-      <div className="mt-6">
-        <h3 className="text-sm font-semibold text-foreground">流程队列（可调整）</h3>
-        <ol className="mt-2 flex flex-col gap-1">
-          {queue.items.map((item, index) => {
-            const isCurrent = current?.index === index;
-            const isDone = active.findIndex((a) => a.index === index) < position;
-            const isRemoved = removed.has(index);
-            return (
-              <li key={item.exerciseId}>
-                <div
-                  className={`flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 ${
-                    isCurrent
-                      ? "border-accent bg-accent/10 ring-1 ring-accent/50"
-                      : "border-border"
-                  }`}
-                >
-                  <span className="text-sm text-foreground">
-                    {index + 1}. {item.nameZh}（{item.durationSeconds} 秒）
-                    {isCurrent ? "（当前）" : ""}
-                    {isDone && !isCurrent ? "（已完成）" : ""}
-                    {isRemoved ? "（已跳过）" : ""}
-                  </span>
-                  {isRemoved ? (
-                    <button
-                      type="button"
-                      onClick={() => restore(index)}
-                      className="rounded border border-accent/50 px-2 py-1 text-xs hover:bg-accent/20"
-                    >
-                      恢复
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => (isCurrent ? undefined : goto(
-                        active.findIndex((a) => a.index === index)
-                      ))}
-                      disabled={isCurrent}
-                      className="rounded border border-accent/50 px-2 py-1 text-xs hover:bg-accent/20 disabled:opacity-40"
-                    >
-                      从这里开始
-                    </button>
-                  )}
+                {/* User-controlled advance only — no timer, no auto-play. */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href={detailHref(current.item.exerciseId, current.index)}
+                    className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+                  >
+                    查看动作指引
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={next}
+                    className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+                  >
+                    完成，下一个
+                  </button>
+                  <button
+                    type="button"
+                    onClick={prev}
+                    disabled={position === 0}
+                    className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20 disabled:opacity-40"
+                  >
+                    上一个
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => skip(current.index)}
+                    className="rounded-md border border-accent/50 px-4 py-2 hover:bg-accent/20"
+                  >
+                    跳过这个动作
+                  </button>
+                  <Link
+                    href={exitHref}
+                    className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
+                  >
+                    本次先到这里（退出）
+                  </Link>
                 </div>
-              </li>
-            );
-          })}
-        </ol>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={restart}
-            className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
-          >
-            重新开始
-          </button>
-          <Link
-            href={exitHref}
-            className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
-          >
-            本次先到这里（退出）
-          </Link>
+              </div>
+            )
+          )}
+        </div>
+
+        {/* Reviewable + editable queue. */}
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">流程队列（可调整）</h3>
+          <ol className="mt-2 flex flex-col gap-1">
+            {queue.items.map((item, index) => {
+              const isCurrent = current?.index === index;
+              const isDone = active.findIndex((a) => a.index === index) < position;
+              const isRemoved = removed.has(index);
+              return (
+                <li key={item.exerciseId}>
+                  <div
+                    className={`flex flex-wrap items-center gap-2 rounded-md border px-3 py-2 ${
+                      isCurrent
+                        ? "border-accent bg-accent/10 ring-1 ring-accent/50"
+                        : "border-border"
+                    }`}
+                  >
+                    <span className="text-sm text-foreground">
+                      {index + 1}. {item.nameZh}（{item.durationSeconds} 秒）
+                      {isCurrent ? "（当前）" : ""}
+                      {isDone && !isCurrent ? "（已完成）" : ""}
+                      {isRemoved ? "（已跳过）" : ""}
+                    </span>
+                    {isRemoved ? (
+                      <button
+                        type="button"
+                        onClick={() => restore(index)}
+                        className="rounded border border-accent/50 px-2 py-1 text-xs hover:bg-accent/20"
+                      >
+                        恢复
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => (isCurrent ? undefined : goto(
+                          active.findIndex((a) => a.index === index)
+                        ))}
+                        disabled={isCurrent}
+                        className="rounded border border-accent/50 px-2 py-1 text-xs hover:bg-accent/20 disabled:opacity-40"
+                      >
+                        从这里开始
+                      </button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={restart}
+              className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
+            >
+              重新开始
+            </button>
+            <Link
+              href={exitHref}
+              className="rounded-md border border-border px-4 py-2 hover:bg-accent/10"
+            >
+              本次先到这里（退出）
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -19,6 +19,8 @@ Every claim in the report/demo/defense maps to an artifact below. Live items
 |---|---|
 | IA / state model / flow | `docs/UXBlueprint.md` · `docs/StateModel.md` · `ux-flow-S04.png` |
 | Original body-map artwork | `docs/svg-license-S06.md` · `docs/body-front-S06.png` / `body-back-S07.png` |
+| Current body-map artwork (2026-09-05 swap, AI-generated) | `public/anatomy/muscle-chart-v4-front.webp` + `muscle-chart-v4-back.webp` (transparent-background encodings of the v3 crops for the dark theme) · `docs/SourceLedger.md` §4a (owner-supplied AI-generated; rights recorded, no TBD) · hotspot alignment evidence: `docs/bodymap-v3-hotspot-check-front.png` / `-back.png` (geometry unchanged by the re-encode) |
+| Multi-device adaptation (TV/desktop/tablet/mobile, 2026-09-05) | `docs/preview-responsive-home-{375,768,1440,1920,2560}.png` + `preview-responsive-body-ankle-{375,1440,1920}.png` + `preview-responsive-flow-basketball-{1440,1920}.png` + `preview-responsive-exercise-ankle-pilot-placeholder-1440.png` (measured: no horizontal overflow; home fits viewport height at ≥768px-tall windows; root font 18/20px at 1920/2560; two-column layouts ≥1024) · sizing contract in `app/globals.css` (`.body-map-frame` + TV root-font steps) |
 | Sport mapping (user-confirmed) | `docs/mapping-review-S21.md` · `data/sports.json` |
 
 ## C. Content truthfulness
