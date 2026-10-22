@@ -7,8 +7,11 @@ credentials). Everything below is runnable from the repo as-is.
 ## 0. What deploys
 
 Static-first Next.js App Router. Build output: `/` + `/body/[part]` ×6 SSG +
-`/exercise/[id]` (dynamic, reads `?done=`) + `/flow/[sport]` ×8 SSG. No
-database, no API routes, no server state — any Vercel Hobby project works.
+`/exercise/[id]` (dynamic, reads `?done=` + the Blob media overlay) +
+`/flow/[sport]` ×8 SSG. No database and no user-facing server state.
+*(2026-10-22: the app now DOES contain admin-only API routes under
+`/api/admin/*` and an unlisted `/admin/upload` surface — see §8. The public
+app surface is unchanged.)*
 **All shipped exercise content is clearly-marked DRAFT** (S11 review pending);
 the app labels this on every affected page, which is acceptable for a demo
 deployment and required to stay truthful.
@@ -18,8 +21,12 @@ deployment and required to stay truthful.
 1. Push the repo to GitHub (main branch).
 2. vercel.com → Add New… → Project → import the repo. Framework preset:
    **Next.js** (auto). Build command / output: defaults.
-3. Environment variables: **none required** (`.env.example` documents this —
-   no secrets exist in the baseline; do not invent any. 不要把密钥放到客户端).
+3. Environment variables: **none required for the public baseline**
+   (`.env.example` documents this — 不要把密钥放到客户端). For the admin media
+   upload feature (2026-10-22): `BLOB_READ_WRITE_TOKEN` is auto-injected when
+   the Blob store is connected; `UPLOAD_ADMIN_TOKEN` must be added MANUALLY
+   (Settings → Environment Variables → Production, mark Sensitive) — see §8.
+   Without them the feature fails closed and the public app is unaffected.
 4. Deploy. Record the URL in `docs/ReleaseChecklist.md`.
 5. Custom domain (optional): Project → Settings → Domains → add
    `recovermate.example.org` → follow DNS instructions. HTTPS is automatic.
@@ -42,11 +49,13 @@ and re-run the smoke suite (security-header test guards the baseline).
 | Production | main branch → production URL |
 | Local demo | `npm run build && npx next start -p 3100` (see `docs/OfflineDemo.md`) |
 
-No env-driven behavior exists in the app (grep-verified S24: zero `fetch`, zero
-`console.*` in app code). 日志最小化：the app logs nothing and sends nothing
+The PUBLIC app has no env-driven behavior (grep-verified S24 for the baseline;
+the 2026-10-22 admin-upload additions are env-driven but admin-only and fail
+closed). 日志最小化：the public app logs nothing and sends nothing
 (no analytics); Vercel's default request logs contain URLs only — the app's
-URLs never encode health data (the only param is `?done=1`), satisfying
-生产日志不记录部位选择 by construction.
+public URLs never encode health data (the only param is `?done=1`), satisfying
+生产日志不记录部位选择 by construction. `/admin/*` URLs are unlisted, noindex,
+and carry no health data either (exercise ids are already public content ids).
 
 ## 4. Production smoke (automated)
 
@@ -80,3 +89,35 @@ the demo (学生手册工作: 演练回滚). Never delete previous deployments
 - `production-smoke-S27.pdf` — printout of the passing smoke run.
 - `rollback-S27.mp4` — screen recording of the rollback rehearsal.
 - Real-device/real-network checks per `docs/OfflineDemo.md` + ReleaseChecklist.
+
+## 8. Admin media uploads (2026-10-22) — deploy checklist
+
+The `/admin/upload` surface stores exercise media in the connected Vercel Blob
+store; uploads go live on `/exercise/[id]` WITHOUT a Git commit or redeploy
+(Blob overlay manifest, merged at request time).
+
+| Var | Vercel | Local dev |
+|---|---|---|
+| `BLOB_READ_WRITE_TOKEN` | auto-injected when the store is connected (Storage tab) | `.env.local` (copy from dashboard → Storage → store) |
+| `UPLOAD_ADMIN_TOKEN` | **MANUAL**: Settings → Environment Variables → Production (optionally Preview), value from `openssl rand -hex 32`, mark **Sensitive** | `.env.local` |
+
+Steps:
+
+1. Verify the Blob store shows **CONNECTED** to the project (Storage tab).
+2. Add `UPLOAD_ADMIN_TOKEN` (see table), then **REDEPLOY** — Vercel does not
+   hot-apply env changes to existing deployments.
+3. Smoke: `https://<app>/admin/upload` → token login works → part pages list
+   exercises → upload one small kind (e.g. captions `.vtt`) → the public
+   exercise page shows it on the next visit, no redeploy.
+4. Negative checks: `POST /api/admin/upload` without credentials → 401;
+   unknown `exerciseId` → 400; `/admin/upload` responds `noindex` and is not
+   linked from any public page.
+5. Record the token in the password manager. Rotation = update the env var +
+   redeploy + log in again (old cookies die: the hash no longer matches).
+6. Rollback: the feature is additive — redeploying any previous deployment
+   restores the pre-upload behavior (public pages render base JSON content;
+   blobs/manifest can stay in the store harmlessly).
+
+Without either env var the feature **fails closed**: admin endpoints answer
+503 and public pages render base content unchanged (no crashes, offline demo
+intact).

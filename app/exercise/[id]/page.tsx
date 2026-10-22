@@ -5,6 +5,7 @@ import ErrorState from "../../../components/ErrorState";
 import ExerciseSession from "../../../components/ExerciseSession";
 import SafetyNotice from "../../../components/SafetyNotice";
 import { bodyParts, getExercise, getExerciseIds } from "../../../lib/content";
+import { applyMediaOverlay, getMediaManifest } from "../../../lib/media-overlay";
 
 export function generateStaticParams() {
   return getExerciseIds().map((id) => ({ id }));
@@ -19,11 +20,17 @@ export default async function ExercisePage({
 }) {
   const { id } = await params;
   const { done } = await searchParams;
-  const exercise = getExercise(id);
-  if (!exercise) {
+  const base = getExercise(id);
+  if (!base) {
     // Invalid id -> safe error page (Next 404). No health/diagnostic content.
     notFound();
   }
+  // Admin-uploaded media (Vercel Blob overlay) is merged over the build-time
+  // record at request time — uploads go live without a Git commit/redeploy.
+  // The overlay carries media URLs ONLY: reviewStatus and provenance always
+  // come from the reviewed JSON (content-policy v1.1). Never throws: with no
+  // token/manifest/network, this renders the base record unchanged.
+  const exercise = applyMediaOverlay(base, await getMediaManifest());
 
   const isDone = done === "1";
   const isPlaceholder = exercise.reviewStatus !== "approved";
@@ -104,6 +111,7 @@ export default async function ExercisePage({
             stepDurationSeconds={exercise.durationSeconds}
             exerciseId={exercise.id}
             videoUrl={exercise.videoUrl}
+            previewUrl={exercise.previewUrl}
             posterUrl={exercise.posterUrl}
             captionUrl={exercise.captionUrl}
             transcriptUrl={exercise.transcriptUrl}

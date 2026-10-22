@@ -16,6 +16,9 @@ export type VideoPlayerProps = {
   transcriptUrl: string;
   /** Exercise id for the click-to-preview data contract (S24). Optional. */
   exerciseId?: string;
+  /** Authored/uploaded preview clip URL. Optional: wins over the
+   * /videos/<id>-preview.mp4 convention fallback when non-empty. */
+  previewUrl?: string;
   /** Session controller borrows the element (S17 single source of truth). */
   videoRef?: Ref<HTMLVideoElement>;
   /** Media events delegated to the session controller (S17 unification). */
@@ -54,6 +57,7 @@ export default function VideoPlayer({
   captionUrl,
   transcriptUrl,
   exerciseId,
+  previewUrl,
   videoRef,
   mediaHandlers,
   emptyStateNote,
@@ -84,7 +88,10 @@ export default function VideoPlayer({
         controls
         preload="metadata"
         poster={posterUrl || undefined}
-        data-preview={exerciseId ? `/videos/${exerciseId}-preview.mp4` : undefined}
+        data-preview={
+          previewUrl ||
+          (exerciseId ? `/videos/${exerciseId}-preview.mp4` : undefined)
+        }
         data-preview-policy="after-interaction"
         onPlay={mediaHandlers?.onPlay}
         onPause={mediaHandlers?.onPause}

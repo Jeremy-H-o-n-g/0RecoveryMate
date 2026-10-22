@@ -21,6 +21,9 @@ export type ExerciseSessionProps = {
   transcriptUrl: string;
   /** Feeds the S24 click-to-preview data contract on the session video. */
   exerciseId?: string;
+  /** Authored/uploaded preview clip URL. Optional: when absent, VideoPlayer
+   * falls back to the /videos/<id>-preview.mp4 convention (S24 contract). */
+  previewUrl?: string;
 };
 
 const RADIUS = 54;
@@ -55,6 +58,7 @@ export default function ExerciseSession({
   captionUrl,
   transcriptUrl,
   exerciseId,
+  previewUrl,
 }: ExerciseSessionProps) {
   const hasVideo = videoUrl !== "";
   // The component owns the media element; the session controller only borrows
@@ -113,6 +117,7 @@ export default function ExerciseSession({
           captionUrl={captionUrl}
           transcriptUrl={transcriptUrl}
           exerciseId={exerciseId}
+          previewUrl={previewUrl}
           videoRef={videoRef}
           mediaHandlers={session.mediaHandlers}
           emptyStateNote="The steps and timer below still work."

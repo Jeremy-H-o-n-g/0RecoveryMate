@@ -30,6 +30,37 @@ describe("VideoPlayer", () => {
     expect(screen.getByRole("link", { name: /read transcript/i })).toBeTruthy();
   });
 
+  it("uses the provided previewUrl for the S24 data-preview contract", () => {
+    const { container } = render(
+      <VideoPlayer
+        videoUrl="/videos/x.mp4"
+        posterUrl=""
+        captionUrl=""
+        transcriptUrl=""
+        exerciseId="x"
+        previewUrl="https://store.public.blob.vercel-storage.com/videos/x-preview.mp4"
+      />
+    );
+    const video = container.querySelector("video");
+    expect(video?.getAttribute("data-preview")).toBe(
+      "https://store.public.blob.vercel-storage.com/videos/x-preview.mp4"
+    );
+  });
+
+  it("falls back to the /videos/<id>-preview.mp4 convention when previewUrl is absent", () => {
+    const { container } = render(
+      <VideoPlayer
+        videoUrl="/videos/x.mp4"
+        posterUrl=""
+        captionUrl=""
+        transcriptUrl=""
+        exerciseId="x"
+      />
+    );
+    const video = container.querySelector("video");
+    expect(video?.getAttribute("data-preview")).toBe("/videos/x-preview.mp4");
+  });
+
   it("degrades gracefully when there is no video (transcript still reachable)", () => {
     render(
       <VideoPlayer

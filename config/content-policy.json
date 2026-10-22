@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "productBoundary": "general educational recovery/warm-up guidance only; non-diagnostic",
   "publishableReviewStatuses": [
     "approved"
@@ -77,5 +77,14 @@
   },
   "productionAnalytics": false,
   "publicUploads": false,
+  "adminUploads": {
+    "enabled": true,
+    "addedIn": "2026-10-22 (v1.1)",
+    "auth": "shared secret token (UPLOAD_ADMIN_TOKEN env var); httpOnly SameSite=strict cookie holding only sha256(token); verified inside every API handler; fails closed when unconfigured",
+    "storage": "Vercel Blob; media files under the docs/VideoPostProductionProtocol.md naming convention + media-manifest.json overlay only",
+    "scope": "media URLs only (video/preview/poster/captions/transcript); reviewStatus, provenance, licensing, and all content approval remain Git/JSON changes and can never be set through the upload surface",
+    "visibility": "/admin/* is unlisted and noindex; not part of the public surface",
+    "note": "publicUploads stays false: there is no user-facing upload of any kind"
+  },
   "dataMinimization": "collect no health history, diagnoses, or production body-part selections; research data is anonymized and offline"
 }

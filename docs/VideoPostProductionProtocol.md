@@ -44,6 +44,11 @@ media budget.
 - `transcriptUrl`: `/transcripts/<id>.md`
 - Set ONLY when the files exist + are reviewed. The build gate (`validate:content`)
   checks local media existence for `approved` exercises.
+- 2026-10-22: the admin upload tool (`/admin/upload`) stores files in Vercel
+  Blob under pathnames mirroring these conventions EXACTLY (`videos/<id>.mp4`
+  etc., enforced server-side); their URLs reach the page through the Blob
+  overlay manifest, not through `data/exercises.json`. Review/approval of
+  uploaded media still happens via the Git/JSON pipeline above.
 
 ## 8. Media budget + fallback
 - Per-exercise and total budgets are finalized in S24; S13 sets the targets above.
