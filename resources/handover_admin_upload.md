@@ -1,6 +1,6 @@
 # Handover — Admin Media Upload Feature (resume document)
 
-**Date:** 2026-10-31 · **Repo:** `C:\0RecoveryMate` (branch `main`) · **For:** local Cursor agent resuming this task
+**Date:** 2026-10-31, updated 2026-11-01 · **Repo:** `C:\0RecoveryMate` (branch `main`) · **For:** local Cursor agent resuming this task
 **Feature commit:** `ef4d44e` — "feat(admin): in-app media uploads per body part via Vercel Blob"
 **Production URL:** `https://0-recovery-mate.vercel.app` (GitHub `homepage`)
 
@@ -13,7 +13,7 @@ Remaining work is **operational rollout**: confirm deploy → upload the 11 prep
 videos through `/admin/upload` (or `scripts/admin-upload-batch.mjs`) → verify
 playback. No further code changes expected unless something fails.
 
-## 2. Precise current state (verified 2026-10-31 evening)
+## 2. Precise current state (verified 2026-10-31 → 2026-11-01)
 
 | Item | State |
 |---|---|
@@ -23,9 +23,10 @@ playback. No further code changes expected unless something fails.
 | Vercel Production deploy | ✅ **Ready** — GitHub Vercel status for `41fbcd4`: "Deployment has completed". Dashboard: https://vercel.com/jeremyh2008-8524/0-recovery-mate |
 | Live site | ✅ `https://0-recovery-mate.vercel.app/` serves RecoverMate |
 | `/admin/upload` | ✅ Login form (not "not configured") → `UPLOAD_ADMIN_TOKEN` is on this deployment |
-| Vercel Blob store | ✅ Connected (user confirmed earlier) |
+| Vercel Blob store | ⚠️ Connected but **PRIVATE** — root cause of the upload **400** ("Cannot use public access on a private store"). The app is public-access by design (visitors must stream videos). **Fix: create a new PUBLIC Blob store → Connect Project → Redeploy** (re-injects `BLOB_READ_WRITE_TOKEN`). See §3 item 4. |
+| Network routing (browser) | ✅ Solved 2026-10-31: `*.vercel.app` only reachable via proxy; `*.public.blob.vercel-storage.com` works DIRECT (probe: 404 in 1.7 s vs app timeout). Windows proxy bypass list now contains `*.vercel-storage.com` — **keep it**, else uploads hang at 0% (pending). |
 | Videos on disk | ✅ 11 × `.mp4` in `Desktop\Recoverymate videos\0Finalized\` (~867 MB total — under Hobby 1 GB with ~150 MB headroom) |
-| Videos uploaded to Blob | ⬜ **NOT YET** — blocked from this agent shell: local DNS/network cannot reach `*.vercel.app` (connect timeout). Browser upload OR batch script from a working network is required. |
+| Videos uploaded to Blob | ⬜ **NOT YET — blocked by the private-store 400.** After the public-store swap + Redeploy (§3 item 4): resume uploads, one at a time, browser UI or batch script. |
 | Batch helper | ✅ `scripts/admin-upload-batch.mjs` — dry-run resolved all 11 filenames → exercise ids |
 
 ## 3. Resume checklist (in this exact order)
@@ -33,12 +34,13 @@ playback. No further code changes expected unless something fails.
 1. ~~`git push`~~ ✅
 2. ~~Vercel deploy Ready~~ ✅ (`41fbcd4`)
 3. ~~Open `/admin/upload` — login form~~ ✅ confirmed live
-4. **User logs in** with `UPLOAD_ADMIN_TOKEN` (session = 8 h, httpOnly cookie). Never paste the token into chat.
-5. **Upload the 11 videos — one at a time** (wait for ✓ before the next). Use §6 mapping **or** run the batch script (§3a).
-6. Verify each: `https://0-recovery-mate.vercel.app/exercise/<id>` → hard-refresh → video plays.
-7. Cross-check: Vercel → Storage → `videos/` → 11 × `videos/<id>.mp4`.
-8. Negative checks (DeploymentGuide §8): unauthenticated `POST /api/admin/upload` → **401**; unknown `exerciseId` → **400**; `/admin/upload` is `noindex` / unlisted.
-9. Reminder: keep the token in the password manager.
+4. **❗ OPEN BLOCKER — swap to a PUBLIC Blob store:** Vercel → Storage → Create Store → **Blob** → visibility **Public** → **Connect Project** `0-recovery-mate` (auto-injects the new `BLOB_READ_WRITE_TOKEN`; if a manual env var was added for the old store, delete/replace it) → Deployments → ⋯ → **Redeploy**. Keep the old private store until uploads verify, then delete it.
+5. **User logs in** at `/admin/upload` with `UPLOAD_ADMIN_TOKEN` (session = 8 h, httpOnly cookie). Never paste the token into chat.
+6. **Upload the 11 videos — one at a time** (wait for ✓ before the next). Use §6 mapping **or** run the batch script (§3a). First % tick should appear within ~10–60 s (multipart chunks).
+7. Verify each: `https://0-recovery-mate.vercel.app/exercise/<id>` → hard-refresh → video plays.
+8. Cross-check: Vercel → Storage → new store → `videos/` → 11 × `videos/<id>.mp4`.
+9. Negative checks (DeploymentGuide §8): unauthenticated `POST /api/admin/upload` → **401**; unknown `exerciseId` → **400**; `/admin/upload` is `noindex` / unlisted.
+10. Reminder: keep the token in the password manager.
 
 ### 3a. Batch script (preferred when CLI can reach Vercel)
 
@@ -113,10 +115,12 @@ Re-run after ANY code change: `npm run typecheck && npm run lint && npm test && 
 | Symptom | Fix |
 |---|---|
 | Agent/CLI `curl` to `*.vercel.app` → timeout / status 000 | Local DNS/network cannot reach Vercel (observed 2026-10-31). Use browser UI, VPN/proxy, or alternate DNS; Cursor WebFetch can still see the site. |
+| `POST vercel.com/api/blob/mpu` → **400** (token OK, Content-Length 0 on create) | Blob store is **Private**; app uses `access: "public"`. Create a **new Public** store, reconnect, Redeploy. Confirm in DevTools → Response: `Cannot use public access on a private store`. |
 | Admin endpoints **503** | Env var missing on CURRENT deployment → Redeploy |
 | Login rejected | Wrong token, or env rotated without redeploy |
 | File picker rejects video | Not `.mp4` — re-export H.264 + AAC |
-| Upload stalls | Retry; scoped tokens valid 30 min |
+| Upload hangs at **0%**, blob request `(pending)` | Proxy is routing `*.vercel-storage.com` — add it to the proxy bypass / DIRECT rules (reachable directly on this network), then retry |
+| Upload stalls (other) | Retry; scoped tokens valid 30 min |
 | Video not on exercise page | Hard-refresh; confirm row ✓; Storage has `videos/<id>.mp4` |
 | Two uploads raced | Re-upload the missing one — overwrite fixes it |
 
