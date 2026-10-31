@@ -18,15 +18,15 @@ then verify public playback. No further code changes are expected unless somethi
 |---|---|
 | Code | ✅ Complete, committed as `ef4d44e` (29 files, +2166/−21) |
 | All regression gates | ✅ Green at this commit (see §9) |
-| `git push` to origin | ❌ **PENDING** — `origin/main` is still at `dc32933`. Two push attempts failed with `fatal: unable to access 'https://github.com/Jeremy-H-o-n-g/0RecoveryMate.git/': Recv failure: Connection was reset` (local network/GitHub reachability, likely needs the user's proxy/VPN). **Next action #1: retry `git push`** (user may need to run it in their own terminal). |
+| `git push` to origin | ✅ DONE 2026-10-31 — `origin/main` = `a7a7785` (feature `ef4d44e` + this doc). Earlier attempts hit `Recv failure: Connection was reset`; a retry succeeded. **Next action #1: confirm the Vercel deployment for `a7a7785` reaches Ready.** |
 | Vercel Blob store | ✅ Connected to the project (user confirmed) → `BLOB_READ_WRITE_TOKEN` auto-injects into every NEW deployment |
 | `UPLOAD_ADMIN_TOKEN` on Vercel | ✅ Set by the user (Settings → Env Vars → Production, Sensitive; value generated with `openssl rand -hex 32`). Value known only to the user — never ask for it, never commit it. |
 | Videos | ⬜ 11 `.mp4` files (~60 MB each) prepared locally by the user, not yet uploaded |
 
 ## 3. Resume checklist (in this exact order)
 
-1. **`git push`** from `C:\0RecoveryMate` (retry until GitHub is reachable; user's proxy may be required).
-2. Vercel dashboard → **Deployments** → new build for `ef4d44e` reaches **Ready** (~1–2 min).
+1. ~~`git push`~~ ✅ done — `origin/main` = `a7a7785` (if a future push hits `Connection was reset`, retry; the user's proxy may be needed).
+2. Vercel dashboard → **Deployments** → build for `a7a7785` reaches **Ready** (~1–2 min).
    Env var was added BEFORE the push, so this single deployment carries both secrets — no extra redeploy.
 3. Open `https://<app>.vercel.app/admin/upload`:
    - ✅ token **login form** → proceed
